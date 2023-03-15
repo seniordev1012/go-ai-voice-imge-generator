@@ -4,6 +4,7 @@ go 1.20
 
 require (
 	fyne.io/fyne/v2 v2.3.1
+	github.com/go-sql-driver/mysql v1.7.0
 	github.com/hegedustibor/htgo-tts v0.0.0-20220821045517-04f3cda7a12f
 	github.com/mattn/go-sqlite3 v1.14.16
 )

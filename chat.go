@@ -160,7 +160,7 @@ func userMessages(message string, tab1 *fyne.Container) {
 // addMessage adds a message to the database
 func addMessage(sender string, content string) error {
 	// Open a connection to the database
-	db, err := sql.Open("sqlite3", "./messages.db")
+	db, err := sql.Open("sqlite3", "DB/messages.db")
 	if err != nil {
 		return err
 	}

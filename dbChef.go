@@ -160,9 +160,38 @@ func kitchenLog(keylogger string) {
 	}
 }
 
-func dbInit() {
-	majorKeys := createKeyloggerDatabase()
-	if majorKeys != nil {
-		return
+// Create Sessions.db if it doesn't exist and create a table for sessions if it doesn't exist
+// Token is the session token
+// ID is the user ID
+func createSessionsDatabase() error {
+	// Open a connection to the database
+	db, err := sql.Open("sqlite3", "DB/sessions.db")
+	if err != nil {
+		return err
 	}
+	defer func(db *sql.DB) {
+		err := db.Close()
+		if err != nil {
+			log.Println(err)
+		}
+	}(db)
+
+	if db == nil {
+		log.Println("Database does not exist")
+	}
+	// Execute the SQL command to create the table
+	_, err = db.Exec(`
+		CREATE TABLE sessions (
+			id INTEGER PRIMARY KEY AUTOINCREMENT,
+			token TEXT NOT NULL,
+			userID INTEGER NOT NULL,
+			created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+		)
+	`)
+	if err != nil {
+		return err
+	}
+	log.Printf("Database created successfully")
+
+	return nil
 }
