@@ -1,7 +1,6 @@
 package main
 
 import (
-	"database/sql"
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/app"
 	"fyne.io/fyne/v2/container"
@@ -14,30 +13,14 @@ import (
 
 func main() {
 	// Stock Market Trader App
+	dbInit()
 	mapungubwe := app.New()
 	mapungubwe.Settings().SetTheme(theme.LightTheme())
 	mapungubwe.SendNotification(&fyne.Notification{
-		Title:   "Sage Chatbot",
-		Content: "Welcome to Sage Chatbot",
+		Title:   "AiGenie",
+		Content: "Welcome to Sage AiGenie",
 	})
 	mapungubwe.SetIcon(theme.MailAttachmentIcon())
-
-	//Create 3 Tabs, one for each of the 3 main functions of the app
-	//Home Tab(Automated Trading Inputs)
-	//1. Stock Market
-	//2. Crypto Market
-	//3. Forex Market
-	//4. News
-	//5. Settings
-	//Create 3 Tabs, one for each of the 3 main functions of the app
-	//Home Tab(Automated Trading Inputs)
-	//1. Stock Market
-	//2. Crypto Market
-	//3. Forex Market
-	//4. News
-	//5. Settings
-
-	//Create 3 tabs
 
 	stockMarketTab := container.NewTabItem("Stock Market", widget.NewAccordion(
 		widget.NewAccordionItem("Stock Market", widget.NewLabel("Stock Market Tab Content")),
@@ -46,6 +29,7 @@ func main() {
 		widget.NewAccordionItem("Stock Market", widget.NewLabel("Stock Market Tab Content")),
 	),
 	)
+
 	cryptoMarketTab := container.NewTabItem("Crypto Market",
 		&widget.Button{OnTapped: func() {
 			//pop up window
@@ -89,10 +73,8 @@ func main() {
 	newsTab := container.NewTabItem("News", widget.NewLabel("News Tab Content"))
 	//aiGen := container.NewTabItem("AiGen-Chat", widget.NewLabel("Chat With AiGen"))
 	chat := container.NewVBox()
+
 	aiGen := container.NewTabItem("AiGen-Chat", chat)
-	inputBox := widget.NewMultiLineEntry()
-	inputBox.Wrapping = fyne.TextWrapWord
-	inputBox.PlaceHolder = "Enter your message here..."
 
 	// Add chat bubbles to the message box
 	messages1, err := getMessages()
@@ -105,69 +87,47 @@ func main() {
 	}
 
 	messageCall, checkError := makeApiCall()
+
 	if checkError != nil {
 		log.Printf("Error making API call: %v", checkError)
 	}
+
 	addChatBubble(chat, "YOU: I am looking for a quote", false)
 	addChatBubble(chat, "Bot: "+messageCall, true)
-
-	sendButton := sendButton(inputBox, chat)
-	inputBoxContainer := container.NewVSplit(inputBox, sendButton)
-	chat.Add(inputBoxContainer)
 
 	settingsTab := container.NewTabItem("Settings", widget.NewLabel("Settings Tab Content"))
 	//	  <a href="https://docs.google.com/spreadsheets/d/e/2PACX-1vQzV37XPSMjYDi17SoskSvZbp2k3Iu4rAAp6RkU667Hbnd8Z3jO89VywBjYYhkubgMVWxHEmhwtYCS9/pubhtml?gid=0&single=true"><p style="color:#FFF">Link to the Google Sheet</p></a>
 	//
 	//Create Tab Container
 	tabs := container.NewAppTabs(
-		stockMarketTab,
+		aiGen,
 		cryptoMarketTab,
 		forexMarketTab,
 		newsTab,
-		aiGen,
+		stockMarketTab,
 		settingsTab,
 	)
 
+	inputBox := widget.NewMultiLineEntry()
+	inputBox.Wrapping = fyne.TextWrapWord
+	inputBox.OnChanged = func(s string) {
+		log.Printf("Input changed to: %s", s)
+		kitchenLog(s)
+	}
+	inputBox.PlaceHolder = "Enter your message here..."
+	sendButton := sendButton(inputBox, chat)
+	inputBoxContainer := container.NewVSplit(inputBox, sendButton)
+	chat.AddObject(inputBoxContainer)
+
 	//Create the main window and set the content to the tabs container
-	window := mapungubwe.NewWindow("Stock Market Trader App")
+	window := mapungubwe.NewWindow("AiGenie")
 
-	contentSize := fyne.NewSize(800, 600)
+	contentSize := fyne.NewSize(600, 400)
 	window.Resize(contentSize)
-
-	window.SetContent(tabs)
-
-	//Show the main window and run the application
-	window.ShowAndRun()
+	//Scroll the tabs container
+	scrollApp := container.NewVScroll(tabs)
+	window.SetContent(scrollApp)
 
 	//Show the main window and run the application
 	window.ShowAndRun()
-}
-func getMessages() ([]Message, error) {
-	// Open a connection to the database
-	db, err := sql.Open("sqlite3", "./messages.db")
-	if err != nil {
-		return nil, err
-	}
-	defer db.Close()
-
-	// Execute a SQL query to retrieve all messages
-	rows, err := db.Query("SELECT id, sender, content, created_at FROM messages ORDER BY created_at ASC")
-	if err != nil {
-		return nil, err
-	}
-	defer rows.Close()
-
-	// Iterate over the result set and create a slice of Message structs
-
-	var messages []Message
-	for rows.Next() {
-		var m Message
-		if err := rows.Scan(&m.ID, &m.Sender, &m.Content, &m.CreatedAt); err != nil {
-			return nil, err
-		}
-		messages = append(messages, m)
-		log.Printf("Message: %v", m)
-
-	}
-	return messages, nil
 }
