@@ -117,7 +117,15 @@ func main() {
 	inputBox.PlaceHolder = "Enter your message here..."
 	sendButton := sendButton(inputBox, chat)
 	inputBoxContainer := container.NewVSplit(inputBox, sendButton)
-	chat.AddObject(inputBoxContainer)
+	//Hide the input box container if it is not chat tab
+	//Use `AppTabs.Selected() *TabItem` instead.
+	tabs.OnSelected = func(tab *container.TabItem) {
+		if tab == aiGen {
+			inputBoxContainer.Show()
+		} else {
+			inputBoxContainer.Hide()
+		}
+	}
 
 	//Create the main window and set the content to the tabs container
 	window := mapungubwe.NewWindow("AiGenie")
@@ -126,7 +134,7 @@ func main() {
 	window.Resize(contentSize)
 	//Scroll the tabs container
 	scrollApp := container.NewVScroll(tabs)
-	window.SetContent(scrollApp)
+	window.SetContent(container.NewBorder(nil, inputBoxContainer, nil, nil, scrollApp))
 
 	//Show the main window and run the application
 	window.ShowAndRun()
