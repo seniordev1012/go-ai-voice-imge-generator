@@ -1,11 +1,15 @@
 package main
 
 import (
+	"database/sql"
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/app"
 	"fyne.io/fyne/v2/container"
 	"fyne.io/fyne/v2/theme"
 	"fyne.io/fyne/v2/widget"
+
+	_ "github.com/mattn/go-sqlite3"
+	"log"
 )
 
 func main() {
@@ -74,15 +78,43 @@ func main() {
 			window.Show()
 		})),
 
-		widget.NewAccordionItem("Stock Market", widget.NewLabel("Stock Market Tab Content")),
+		widget.NewAccordionItem("Add Watchlist", widget.NewLabel("Add a new stock to the watchlist")),
 
-		widget.NewAccordionItem("Stock Market", widget.NewLabel("Stock Market Tab Content")),
+		widget.NewAccordionItem("Create Watchlist", widget.NewLabel("Create a new watchlist")),
 
-		widget.NewAccordionItem("Stock Market", widget.NewLabel("Stock Market Tab Content")),
+		widget.NewAccordionItem("Automated Trading", widget.NewLabel("Automated Trading")),
 	),
 	)
 
 	newsTab := container.NewTabItem("News", widget.NewLabel("News Tab Content"))
+	//aiGen := container.NewTabItem("AiGen-Chat", widget.NewLabel("Chat With AiGen"))
+	chat := container.NewVBox()
+	aiGen := container.NewTabItem("AiGen-Chat", chat)
+	inputBox := widget.NewMultiLineEntry()
+	inputBox.Wrapping = fyne.TextWrapWord
+	inputBox.PlaceHolder = "Enter your message here..."
+
+	// Add chat bubbles to the message box
+	messages1, err := getMessages()
+	if err != nil {
+		log.Printf("Error getting messages: %v", err)
+	}
+
+	for _, message := range messages1 {
+		addChatBubble(chat, message.Sender+": "+message.Content, message.Sender == "Bot")
+	}
+
+	messageCall, checkError := makeApiCall()
+	if checkError != nil {
+		log.Printf("Error making API call: %v", checkError)
+	}
+	addChatBubble(chat, "YOU: I am looking for a quote", false)
+	addChatBubble(chat, "Bot: "+messageCall, true)
+
+	sendButton := sendButton(inputBox, chat)
+	inputBoxContainer := container.NewVSplit(inputBox, sendButton)
+	chat.Add(inputBoxContainer)
+
 	settingsTab := container.NewTabItem("Settings", widget.NewLabel("Settings Tab Content"))
 	//	  <a href="https://docs.google.com/spreadsheets/d/e/2PACX-1vQzV37XPSMjYDi17SoskSvZbp2k3Iu4rAAp6RkU667Hbnd8Z3jO89VywBjYYhkubgMVWxHEmhwtYCS9/pubhtml?gid=0&single=true"><p style="color:#FFF">Link to the Google Sheet</p></a>
 	//
@@ -92,6 +124,7 @@ func main() {
 		cryptoMarketTab,
 		forexMarketTab,
 		newsTab,
+		aiGen,
 		settingsTab,
 	)
 
@@ -108,4 +141,33 @@ func main() {
 
 	//Show the main window and run the application
 	window.ShowAndRun()
+}
+func getMessages() ([]Message, error) {
+	// Open a connection to the database
+	db, err := sql.Open("sqlite3", "./messages.db")
+	if err != nil {
+		return nil, err
+	}
+	defer db.Close()
+
+	// Execute a SQL query to retrieve all messages
+	rows, err := db.Query("SELECT id, sender, content, created_at FROM messages ORDER BY created_at ASC")
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	// Iterate over the result set and create a slice of Message structs
+
+	var messages []Message
+	for rows.Next() {
+		var m Message
+		if err := rows.Scan(&m.ID, &m.Sender, &m.Content, &m.CreatedAt); err != nil {
+			return nil, err
+		}
+		messages = append(messages, m)
+		log.Printf("Message: %v", m)
+
+	}
+	return messages, nil
 }

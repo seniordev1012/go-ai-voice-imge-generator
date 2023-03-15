@@ -1,0 +1,164 @@
+package main
+
+import (
+	"database/sql"
+	"fmt"
+	"fyne.io/fyne/v2"
+	"fyne.io/fyne/v2/canvas"
+	"fyne.io/fyne/v2/container"
+	"fyne.io/fyne/v2/layout"
+	"fyne.io/fyne/v2/theme"
+	"fyne.io/fyne/v2/widget"
+	"log"
+)
+
+// Create a new label with the message and add it to the chat window.
+// The isUser parameter determines if the message is from the user or the bot
+// If the message is from the user, the bubble will be on the right side of the chat window
+// If the message is from the bot, the bubble will be on the left side of the chat window
+// Create a new label with the message and add it to the chat window
+// The isUser parameter determines if the message is from the user or the bot
+// If the message is from the user, the bubble will be on the right side of the chat window
+// If the message is from the bot, the bubble will be on the left side of the chat window
+func addChatBubble(box *fyne.Container, message string, isUser bool) {
+
+	// Create a new label with the message
+	label := widget.NewLabel(message)
+	label.TextStyle = fyne.TextStyle{Bold: false, Italic: false, Monospace: false}
+
+	// Create a new chat bubble with the label
+	bubble := container.NewHBox(label)
+	container.NewScroll(bubble)
+
+	// Create a new image widget with the avatar URL
+	avatarImg := canvas.NewImageFromFile("source/avatar.jpg")
+	avatarImg.SetMinSize(fyne.NewSize(64, 64))
+
+	botAvatarImg := canvas.NewImageFromFile("source/botAvatar.png")
+	botAvatarImg.SetMinSize(fyne.NewSize(64, 64))
+
+	// Add the chat bubble to the card
+	if isUser {
+		// If the message is from the user, add the bubble to the right side of the card
+		box.Add(container.NewHBox(
+			layout.NewSpacer(),
+			widget.NewCard("", "", bubble),
+			botAvatarImg,
+		))
+	} else {
+		// If the message is from someone else, add the bubble to the left side of the card
+		box.Add(container.NewHBox(
+			avatarImg,
+			widget.NewCard("", "", bubble),
+			layout.NewSpacer(),
+		))
+	}
+	container.NewScroll(box)
+}
+
+func sendButton(inputBox *widget.Entry, tab1 *fyne.Container) *widget.Button {
+	// Create a send button for sending messages
+	sendButton := widget.NewButtonWithIcon("", theme.MailSendIcon(), func() {
+		message := inputBox.Text
+		//Increase width of input box
+		fmt.Println(message)
+		//Display Conversation with the bot
+		displayConvo(message, tab1, inputBox)
+	})
+	return sendButton
+}
+
+func displayConvo(message string, tab1 *fyne.Container, inputBox *widget.Entry) {
+	if message != "" {
+
+		userMessages(message, tab1)
+		addMessages := addMessage("YOU", message)
+		if addMessages != nil {
+			log.Printf("Error adding user message: %v", addMessage)
+		}
+
+		// Clear input box
+		inputBox.SetText("")
+
+		messageCall, err := makeApiCall()
+		if err != nil {
+			log.Printf("Error making API call: %v", err)
+		}
+
+		botMessages(messageCall, err, tab1)
+		addMessage := addMessage("Bot", messageCall)
+		if addMessage != nil {
+			log.Printf("Error adding bot message: %v", addMessage)
+
+		}
+
+	}
+}
+
+// botMessages function to display messages from the bot
+// This function is used to split messages into multiple chat bubbles if the message is too long
+// This function is also used to send voice notes if the message is too long
+func botMessages(messageCall string, err error, tab1 *fyne.Container) {
+	if len(messageCall) > 90 {
+		//Send voice note if message is more than 120 characters
+		if len(messageCall) > 90 {
+			voiceNote(messageCall, err)
+		}
+		var messageArray []string
+		for i := 0; i < len(messageCall); i += 90 {
+			end := i + 90
+			if end > len(messageCall) {
+				end = len(messageCall)
+			}
+			messageArray = append(messageArray, messageCall[i:end])
+		}
+		for _, message := range messageArray {
+			addChatBubble(tab1, "Bot: "+message, true)
+		}
+	} else {
+		addChatBubble(tab1, "Bot: "+messageCall, true)
+	}
+}
+
+func userMessages(message string, tab1 *fyne.Container) {
+	if len(message) > 90 {
+		var messageArray []string
+		for i := 0; i < len(message); i += 90 {
+			end := i + 90
+			if end > len(message) {
+				end = len(message)
+			}
+			messageArray = append(messageArray, message[i:end])
+		}
+		for _, message := range messageArray {
+			addChatBubble(tab1, "YOU: "+message, false)
+		}
+	} else {
+		addChatBubble(tab1, "YOU: "+message, false)
+	}
+}
+
+// addMessage adds a message to the database
+func addMessage(sender string, content string) error {
+	// Open a connection to the database
+	db, err := sql.Open("sqlite3", "./messages.db")
+	if err != nil {
+		return err
+	}
+	defer db.Close()
+
+	// Prepare a SQL statement to insert the message into the database
+	stmt, err := db.Prepare("INSERT INTO messages (sender, content) VALUES (?, ?)")
+	if err != nil {
+		return err
+	}
+	defer stmt.Close()
+
+	// Execute the prepared statement with the message as parameters
+	_, err = stmt.Exec(sender, content)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
