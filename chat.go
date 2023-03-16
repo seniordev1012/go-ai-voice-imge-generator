@@ -10,6 +10,8 @@ import (
 	"fyne.io/fyne/v2/theme"
 	"fyne.io/fyne/v2/widget"
 	"log"
+	"os"
+	"time"
 )
 
 // Create a new label with the message and add it to the chat window.
@@ -43,9 +45,11 @@ func addChatBubble(box *fyne.Container, message string, isUser bool) {
 	// Create a new image widget with the avatar URL
 	avatarImg := canvas.NewImageFromFile("source/avatar.jpg")
 	avatarImg.SetMinSize(fyne.NewSize(64, 64))
+	avatarImg.Resize(fyne.NewSize(64, 64))
 
 	botAvatarImg := canvas.NewImageFromFile("source/botAvatar.png")
 	botAvatarImg.SetMinSize(fyne.NewSize(64, 64))
+	botAvatarImg.Move(fyne.NewPos(-5, -5))
 
 	// Add the chat bubble to the card
 	if isUser {
@@ -53,12 +57,12 @@ func addChatBubble(box *fyne.Container, message string, isUser bool) {
 		box.Add(container.NewHBox(
 			layout.NewSpacer(),
 			widget.NewCard("", "", bubble),
-			botAvatarImg,
+			avatarImg,
 		))
 	} else {
 		// If the message is from someone else, add the bubble to the left side of the card
 		box.Add(container.NewHBox(
-			avatarImg,
+			botAvatarImg,
 			widget.NewCard("", "", bubble),
 			layout.NewSpacer(),
 		))
@@ -76,6 +80,42 @@ func sendButton(inputBox *widget.Entry, tab1 *fyne.Container) *widget.Button {
 		displayConvo(message, tab1, inputBox)
 	})
 	return sendButton
+}
+
+func voiceChatButton(inputBox *widget.Entry, tab1 *fyne.Container) *widget.Button {
+	// Create a voice chat button for sending voice messages
+	voiceChatButton := widget.NewButtonWithIcon("", theme.MediaRecordIcon(), func() {
+		// Start recording voice
+		VoiceRecorder()
+
+		// Wait for 15 seconds before stopping the recording
+		go func() {
+			time.Sleep(15 * time.Second)
+			// Stop recording voice
+			//StopVoiceRecorder()
+			os.Exit(0)
+		}()
+	})
+
+	// Set the button to stop recording if held down
+	voiceChatButton.ExtendBaseWidget(voiceChatButton)
+	voiceChatButton.OnTapped = func() {
+		// Start recording voice
+		VoiceRecorder()
+	}
+
+	//voiceChatButton.OnPointerUp = func(event *fyne.PointEvent) {
+	//	// Stop recording voice
+	//	StopVoiceRecorder()
+	//}
+
+	return voiceChatButton
+}
+
+func StopVoiceRecorder() {
+	// Stop recording voice
+	//StopVoiceRecorder()
+	os.Exit(0)
 }
 
 func displayConvo(message string, tab1 *fyne.Container, inputBox *widget.Entry) {

@@ -24,6 +24,12 @@ func mainApp(mapungubwe fyne.App) (*container.AppTabs, *container.Split) {
 	cryptoMarketTab := cTab(mapungubwe)
 	forexMarketTab := marketTab(mapungubwe)
 	newsTab := container.NewTabItem("News", widget.NewLabel("News Tab Content"))
+	//PlayNotificationSound()
+	//	//Whisper()
+	//	pathFinder, _ := VoiceRecorder()
+	//	if pathFinder != "" {
+	//		log.Println(pathFinder)
+	//	}
 	chat, aiGen := ChatTab()
 	settingsTab := genSettings(mapungubwe)
 	//Create the tabs container and add the tabs to it
@@ -35,6 +41,12 @@ func mainApp(mapungubwe fyne.App) (*container.AppTabs, *container.Split) {
 		stockMarketTab,
 		settingsTab,
 	)
+	inputBoxContainer := SignInHandler(chat, tabs, aiGen)
+
+	return tabs, inputBoxContainer
+}
+
+func SignInHandler(chat *fyne.Container, tabs *container.AppTabs, aiGen *container.TabItem) *container.Split {
 	//Create the bottom input box
 	inputBoxContainer := bottomInputBox(chat, tabs, aiGen)
 	loginBtn := widget.NewButton("Login", loginHandler())
@@ -56,8 +68,7 @@ func mainApp(mapungubwe fyne.App) (*container.AppTabs, *container.Split) {
 	loginTab := container.NewTabItem("Login", form)
 	// Add the login tab to the tabs container
 	tabs.Append(loginTab)
-
-	return tabs, inputBoxContainer
+	return inputBoxContainer
 }
 
 func loginHandler() func() {

@@ -9,8 +9,15 @@ import (
 )
 
 func main() {
-	// Stock Market Trader App
 	MigrationAssist()
+	// Stock Market Trader App
+	//PlayNotificationSound()
+	//Whisper()
+	//pathFinder, _ := VoiceRecorder()
+	//if pathFinder != "" {
+	//	log.Println(pathFinder)
+	//}
+
 	mapungubwe := app.New()
 	mapungubwe.Settings().SetTheme(theme.LightTheme())
 	mapungubwe.SendNotification(&fyne.Notification{

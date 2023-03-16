@@ -7,7 +7,7 @@ import (
 	"log"
 )
 
-func voiceNote(messageCall string, err error) {
+func voiceNote(messageCall string, err error) any {
 	speakOut := func(speakOut string) string {
 		return messageCall
 	}
@@ -19,4 +19,5 @@ func voiceNote(messageCall string, err error) {
 		log.Printf("Error speaking: %v", err)
 
 	}
+	return nil
 }
