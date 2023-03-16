@@ -4,11 +4,11 @@ go 1.20
 
 require (
 	fyne.io/fyne/v2 v2.3.1
-	github.com/faiface/beep v1.1.0
 	github.com/go-sql-driver/mysql v1.7.0
 	github.com/gordonklaus/portaudio v0.0.0-20221027163845-7c3b689db3cc
 	github.com/hegedustibor/htgo-tts v0.0.0-20220821045517-04f3cda7a12f
 	github.com/mattn/go-sqlite3 v1.14.16
+	github.com/sashabaranov/go-openai v1.5.2
 	github.com/zenwerk/go-wave v0.0.0-20190102022600-1be84bfef50c
 )
 
@@ -28,17 +28,14 @@ require (
 	github.com/goki/freetype v0.0.0-20220119013949-7a161fd3728c // indirect
 	github.com/gopherjs/gopherjs v1.17.2 // indirect
 	github.com/hajimehoshi/go-mp3 v0.3.3 // indirect
-	github.com/hajimehoshi/oto v0.7.1 // indirect
 	github.com/hajimehoshi/oto/v2 v2.2.0 // indirect
 	github.com/jsummers/gobmp v0.0.0-20151104160322-e2ba15ffa76e // indirect
-	github.com/pkg/errors v0.9.1 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
 	github.com/srwiley/oksvg v0.0.0-20220731023508-a61f04f16b76 // indirect
 	github.com/srwiley/rasterx v0.0.0-20210519020934-456a8d69b780 // indirect
 	github.com/stretchr/testify v1.8.0 // indirect
 	github.com/tevino/abool v1.2.0 // indirect
 	github.com/yuin/goldmark v1.4.0 // indirect
-	golang.org/x/exp v0.0.0-20200224162631-6cc2880d07d6 // indirect
 	golang.org/x/image v0.0.0-20220601225756-64ec528b34cd // indirect
 	golang.org/x/mobile v0.0.0-20211207041440-4e6c2922fdee // indirect
 	golang.org/x/net v0.0.0-20211118161319-6a13c67c3ce4 // indirect

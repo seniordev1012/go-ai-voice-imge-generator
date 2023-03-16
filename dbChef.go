@@ -195,3 +195,38 @@ func createSessionsDatabase() error {
 
 	return nil
 }
+
+// addMessage adds a message to the database
+func addMessage(sender string, content string) error {
+	// Open a connection to the database
+	db, err := sql.Open("sqlite3", "DB/messages.db")
+	if err != nil {
+		return err
+	}
+	defer func(db *sql.DB) {
+		err := db.Close()
+		if err != nil {
+			log.Printf("Error closing database: %v", err)
+		}
+	}(db)
+
+	// Prepare a SQL statement to insert the message into the database
+	stmt, err := db.Prepare("INSERT INTO messages (sender, content) VALUES (?, ?)")
+	if err != nil {
+		return err
+	}
+	defer func(stmt *sql.Stmt) {
+		err := stmt.Close()
+		if err != nil {
+			log.Printf("Error closing statement: %v", err)
+		}
+	}(stmt)
+
+	// Execute the prepared statement with the message as parameters
+	_, err = stmt.Exec(sender, content)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}

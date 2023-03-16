@@ -107,7 +107,6 @@ func VoiceRecorder() (string, error) {
 					//TODO: This needs to be returned to the calling function to be used in the "Whisper" function
 					log.Println("Result: ", <-resultCh)
 					log.Println("Done")
-					os.Exit(0)
 					wg.Wait()
 					wg.Done()
 					return audioFileName, nil

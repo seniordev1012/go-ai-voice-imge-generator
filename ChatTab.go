@@ -24,7 +24,11 @@ func ChatTab() (*fyne.Container, *container.TabItem) {
 	}
 
 	for _, message := range messages1 {
-		addChatBubble(chat, message.Sender+": "+message.Content, message.Sender == "Bot")
+		if message.Sender == "YOU" {
+			addChatBubble(chat, message.Content, true)
+		} else {
+			addChatBubble(chat, message.Content, false)
+		}
 	}
 	startUpCall(chat) //This is a function that is called when the chat tab is opened
 	return chat, aiGen
