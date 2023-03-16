@@ -1,4 +1,5 @@
 
 .idea
 *.iml
-
+.env
+DigiCertGlobalRootCA.crt.pem

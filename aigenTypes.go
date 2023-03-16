@@ -9,3 +9,10 @@ type Message struct {
 	Content   string
 	CreatedAt time.Time
 }
+
+type User struct {
+	ID       int
+	Username string
+	Password string
+	Token    string
+}

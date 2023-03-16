@@ -24,10 +24,13 @@ func addChatBubble(box *fyne.Container, message string, isUser bool) {
 
 	// Create a new label with the message
 	label := widget.NewLabel(message)
+	label.Resize(fyne.NewSize(100, 0))
 	label.TextStyle = fyne.TextStyle{Bold: false, Italic: false, Monospace: false}
 
 	// Create a new chat bubble with the label
 	bubble := container.NewHBox(label)
+	bubble.Layout = layout.NewVBoxLayout()
+
 	container.NewScroll(bubble)
 
 	// Create a new image widget with the avatar URL
@@ -74,7 +77,7 @@ func displayConvo(message string, tab1 *fyne.Container, inputBox *widget.Entry) 
 		userMessages(message, tab1)
 		addMessages := addMessage("YOU", message)
 		if addMessages != nil {
-			log.Printf("Error adding user message: %v", addMessage)
+			log.Printf("Error adding user message: %v", addMessages)
 		}
 
 		// Clear input box
@@ -99,19 +102,25 @@ func displayConvo(message string, tab1 *fyne.Container, inputBox *widget.Entry) 
 // This function is used to split messages into multiple chat bubbles if the message is too long
 // This function is also used to send voice notes if the message is too long
 func botMessages(messageCall string, err error, tab1 *fyne.Container) {
-	if len(messageCall) > 90 {
+	if len(messageCall) > 60 {
 		//Send voice note if message is more than 120 characters
 		if len(messageCall) > 90 {
 			voiceNote(messageCall, err)
 		}
 		var messageArray []string
-		for i := 0; i < len(messageCall); i += 90 {
-			end := i + 90
+		//Split message into multiple chat bubbles
+		for i := 0; i < len(messageCall); i += 60 {
+			end := i + 60
+			//If end is greater than the length of the message,
+			//set end to the length of the message
 			if end > len(messageCall) {
 				end = len(messageCall)
 			}
+			//Append message to messageArray
 			messageArray = append(messageArray, messageCall[i:end])
+
 		}
+		//Add chat bubbles to the chat window
 		for _, message := range messageArray {
 			addChatBubble(tab1, "Bot: "+message, true)
 		}
@@ -121,13 +130,23 @@ func botMessages(messageCall string, err error, tab1 *fyne.Container) {
 }
 
 func userMessages(message string, tab1 *fyne.Container) {
-	if len(message) > 90 {
+
+	if len(message) > 60 {
+
+		if len(message) > 2 {
+			voiceNote(message, nil)
+		}
+
 		var messageArray []string
-		for i := 0; i < len(message); i += 90 {
-			end := i + 90
+		//Split message into multiple chat bubbles
+		for i := 0; i < len(message); i += 60 {
+			end := i + 60
+			//If end is greater than the length of the message,
+			//set end to the length of the message
 			if end > len(message) {
 				end = len(message)
 			}
+			//Append message to messageArray
 			messageArray = append(messageArray, message[i:end])
 		}
 		for _, message := range messageArray {
@@ -141,18 +160,28 @@ func userMessages(message string, tab1 *fyne.Container) {
 // addMessage adds a message to the database
 func addMessage(sender string, content string) error {
 	// Open a connection to the database
-	db, err := sql.Open("sqlite3", "./messages.db")
+	db, err := sql.Open("sqlite3", "DB/messages.db")
 	if err != nil {
 		return err
 	}
-	defer db.Close()
+	defer func(db *sql.DB) {
+		err := db.Close()
+		if err != nil {
+			log.Printf("Error closing database: %v", err)
+		}
+	}(db)
 
 	// Prepare a SQL statement to insert the message into the database
 	stmt, err := db.Prepare("INSERT INTO messages (sender, content) VALUES (?, ?)")
 	if err != nil {
 		return err
 	}
-	defer stmt.Close()
+	defer func(stmt *sql.Stmt) {
+		err := stmt.Close()
+		if err != nil {
+			log.Printf("Error closing statement: %v", err)
+		}
+	}(stmt)
 
 	// Execute the prepared statement with the message as parameters
 	_, err = stmt.Exec(sender, content)
