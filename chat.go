@@ -26,8 +26,15 @@ func addChatBubble(box *fyne.Container, message string, isUser bool) {
 	label := widget.NewLabel(message)
 	label.Resize(fyne.NewSize(100, 0))
 	label.TextStyle = fyne.TextStyle{Bold: false, Italic: false, Monospace: false}
+	//Add image card
+	image := canvas.NewImageFromFile("source/avatar.jpg")
+	image.SetMinSize(fyne.NewSize(100, 100))
+	imageCard := widget.NewCard("", "", image)
+	imageCard.Resize(fyne.NewSize(100, 100))
+	//Add image card
 
 	// Create a new chat bubble with the label
+
 	bubble := container.NewHBox(label)
 	bubble.Layout = layout.NewVBoxLayout()
 
@@ -105,8 +112,14 @@ func botMessages(messageCall string, err error, tab1 *fyne.Container) {
 	if len(messageCall) > 60 {
 		//Send voice note if message is more than 120 characters
 		if len(messageCall) > 90 {
-			voiceNote(messageCall, err)
+			playAiVoice := voiceNote(messageCall, err)
+			if playAiVoice != nil {
+				log.Printf("Error playing voice note: %v", playAiVoice)
+			}
 		}
+
+		log.Printf("Message is too long. Splitting message into multiple chat bubbles")
+
 		var messageArray []string
 		//Split message into multiple chat bubbles
 		for i := 0; i < len(messageCall); i += 60 {
@@ -131,29 +144,48 @@ func botMessages(messageCall string, err error, tab1 *fyne.Container) {
 
 func userMessages(message string, tab1 *fyne.Container) {
 
-	if len(message) > 60 {
+	if len(message) > 2 {
+		voiceNote(message, nil)
+	}
 
-		if len(message) > 2 {
-			voiceNote(message, nil)
+	var messageArray []string
+	//Split message into multiple chat bubbles
+	for i := 0; i < len(message); i += 60 {
+		end := i + 60
+		//If end is greater than the length of the message,
+		//set end to the length of the message
+		if end > len(message) {
+			end = len(message)
 		}
+		//Append message to messageArray
+		messageArray = append(messageArray, message[i:end])
+	}
+	for _, message := range messageArray {
+		if len(message) > 60 {
+			//Send voice note if message is more than 120 characters
 
-		var messageArray []string
-		//Split message into multiple chat bubbles
-		for i := 0; i < len(message); i += 60 {
-			end := i + 60
-			//If end is greater than the length of the message,
-			//set end to the length of the message
-			if end > len(message) {
-				end = len(message)
+			log.Printf("Message is too long. Splitting message into multiple chat bubbles")
+
+			var messageArray []string
+			//Split message into multiple chat bubbles
+			for i := 0; i < len(message); i += 60 {
+				end := i + 60
+				//If end is greater than the length of the message,
+				//set end to the length of the message
+				if end > len(message) {
+					end = len(message)
+				}
+				//Append message to messageArray
+				messageArray = append(messageArray, message[i:end])
+
 			}
-			//Append message to messageArray
-			messageArray = append(messageArray, message[i:end])
+			//Add chat bubbles to the chat window
+			for _, message := range messageArray {
+				addChatBubble(tab1, "Bot: "+message, true)
+			}
+		} else {
+			addChatBubble(tab1, "You: "+message, true)
 		}
-		for _, message := range messageArray {
-			addChatBubble(tab1, "YOU: "+message, false)
-		}
-	} else {
-		addChatBubble(tab1, "YOU: "+message, false)
 	}
 }
 

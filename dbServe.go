@@ -6,9 +6,11 @@ import (
 	"log"
 )
 
+// Message represents a message in the database
+// GetMessages retrieves all messages from the database
 func getMessages() ([]Message, error) {
 	// Open a connection to the database
-	db, err := sql.Open("sqlite3", "./messages.db")
+	db, err := sql.Open("sqlite3", "DB/messages.db")
 	if err != nil {
 		return nil, err
 	}
@@ -32,7 +34,6 @@ func getMessages() ([]Message, error) {
 	}(rows)
 
 	// Iterate over the result set and create a slice of Message structs
-
 	var messages []Message
 	for rows.Next() {
 		var m Message
