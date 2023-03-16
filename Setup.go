@@ -14,19 +14,19 @@ func setup() {
 }
 
 func MigrationAssist() {
-	err := os.Setenv("DB_USER", "ndiGundoSan")
+	err := os.Setenv("DB_USER", "_")
 	if err != nil {
 		log.Printf("Error setting environment variable: %v", err)
 	}
-	err = os.Setenv("DB_PASSWORD", "@Sifhufhi2024")
+	err = os.Setenv("DB_PASSWORD", "_")
 	if err != nil {
 		log.Printf("Error setting environment variable: %v", err)
 	}
-	err = os.Setenv("DB_HOST", "aigen.mysql.database.azure.com")
+	err = os.Setenv("DB_HOST", "_")
 	if err != nil {
 		log.Printf("Error setting environment variable: %v", err)
 	}
-	err = os.Setenv("DB_NAME", "aigen")
+	err = os.Setenv("DB_NAME", "_")
 	if err != nil {
 		log.Printf("Error setting environment variable: %v", err)
 	}
