@@ -32,31 +32,11 @@ type Console struct {
 func addChatBubble(box *fyne.Container, message string, isUser bool) {
 
 	label := widget.NewLabel(separateLines(message))
-	//Add image card
-	//image := canvas.NewImageFromFile("source/avatar.jpg")
-	//image.SetMinSize(fyne.NewSize(100, 100))
-	//imageCard := widget.NewCard("", "", image)
-	//imageCard.Resize(fyne.NewSize(100, 100))
-	//bubble := container.NewHBox(label)
-	// Create a new image widget with the avatar URL
-	//avatarImg := canvas.NewImageFromFile("source/avatar.jpg")
-	//avatarImg.Move(fyne.NewPos(0, 0))
-	//avatarImg.SetMinSize(fyne.NewSize(10, 100))
-	//avatarImg.SetMinSize(fyne.NewSize(64, 64))
-	//avatarImg.Resize(fyne.NewSize(64, 64))
-	//
-	//botAvatarImg := canvas.NewImageFromFile("source/botAvatar.png")
-	//botAvatarImg.SetMinSize(fyne.NewSize(64, 64))
-	//botAvatarImg.Move(fyne.NewPos(-5, -5))
+	//avatarImg, _ := chatAvatars()
 
 	messageCard := widget.NewCard("", "", label)
-	//messageCard.Content = label
-	//		c.card.Image.Resize(fyne.NewSize(size.Width, cardMediaHeight))
-	//		pos.Y += cardMediaHeight
-	//messageCard.Image = avatarImg
-	//messageCard.SetTitle("You")
-	//messageCard.SetSubTitle("Today")
-	// Add the chat bubble to the card
+	//bubbleCardContent(messageCard, avatarImg)
+
 	if isUser {
 		box.Add(container.NewHBox(
 			layout.NewSpacer(),
