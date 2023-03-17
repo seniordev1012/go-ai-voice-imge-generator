@@ -19,9 +19,12 @@ func bottomInputBox(chat *fyne.Container, tabs *container.AppTabs, aiGen *contai
 		log.Printf("Input changed to: %s", s)
 		kitchenLog(s)
 	}
+	//TODO: Edit InputBox Container
 	inputBox.PlaceHolder = "Enter your message here..."
 	sendButton := sendButton(inputBox, chat)
+	voiceNoteButton := voiceChatButton(inputBox, chat)
 	inputBoxContainer := container.NewVSplit(inputBox, sendButton)
+	inputBoxContainer = container.NewHSplit(inputBoxContainer, voiceNoteButton)
 	//Hide the input box container if it is not chat tab
 	//Use `AppTabs.Selected() *TabItem` instead.
 	tabs.OnSelected = func(tab *container.TabItem) {

@@ -14,19 +14,24 @@ func setup() {
 }
 
 func MigrationAssist() {
-	err := os.Setenv("DB_USER", "_")
+	err := os.Setenv("DB_USER", "")
 	if err != nil {
 		log.Printf("Error setting environment variable: %v", err)
 	}
-	err = os.Setenv("DB_PASSWORD", "_")
+	err = os.Setenv("DB_PASSWORD", "")
 	if err != nil {
 		log.Printf("Error setting environment variable: %v", err)
 	}
-	err = os.Setenv("DB_HOST", "_")
+	err = os.Setenv("DB_HOST", "")
 	if err != nil {
 		log.Printf("Error setting environment variable: %v", err)
 	}
-	err = os.Setenv("DB_NAME", "_")
+	err = os.Setenv("DB_NAME", "")
+	if err != nil {
+		log.Printf("Error setting environment variable: %v", err)
+	}
+
+	err = os.Setenv("OPENAI", "")
 	if err != nil {
 		log.Printf("Error setting environment variable: %v", err)
 	}

@@ -3,3 +3,5 @@
 *.iml
 .env
 DigiCertGlobalRootCA.crt.pem
+identifier.sqlite
+Setup.go

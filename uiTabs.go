@@ -12,9 +12,10 @@ func genSettings(mapungubwe fyne.App) *container.TabItem {
 	settingsTab := container.NewTabItem("Settings", widget.NewAccordion(
 
 		widget.NewAccordionItem("Ai Voice Reply", widget.NewCheck("Audio Replies", func(OnandOff bool) {
-
+			//TODO: Add a function to toggle the audio replies
 			if OnandOff {
 				log.Printf("Audio Replies: %v", OnandOff)
+
 			} else {
 				log.Printf("Audio Replies: %v", OnandOff)
 			}
@@ -71,6 +72,9 @@ func StockTab() *container.TabItem {
 
 // CryptoTab is the tab that contains the stock market
 func cTab(mapungubwe fyne.App) *container.TabItem {
+
+	container.NewBorder(nil, nil, nil, nil, widget.NewLabel("Crypto Market Tab Content"))
+
 	cryptoMarketTab := container.NewTabItem("Crypto Market",
 		&widget.Button{OnTapped: func() {
 			//pop up window

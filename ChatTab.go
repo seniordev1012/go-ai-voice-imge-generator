@@ -3,6 +3,7 @@ package main
 import (
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/container"
+	"fyne.io/fyne/v2/layout"
 	"log"
 )
 
@@ -14,7 +15,9 @@ import (
 // If the message is from the bot, the bubble will be on the left side of the chat window
 func ChatTab() (*fyne.Container, *container.TabItem) {
 	//Create the chat tab
-	chat := container.NewVBox()
+	chat := container.NewHBox()
+	container.NewAdaptiveGrid(2, chat)
+	chat.Layout = layout.NewVBoxLayout()
 	aiGen := container.NewTabItem("AiGen-Chat", chat)
 
 	messages1, err := getMessages()
@@ -24,8 +27,12 @@ func ChatTab() (*fyne.Container, *container.TabItem) {
 	}
 
 	for _, message := range messages1 {
-		addChatBubble(chat, message.Sender+": "+message.Content, message.Sender == "Bot")
+		if message.Sender == "YOU" {
+			addChatBubble(chat, message.Content, true)
+		} else {
+			addChatBubble(chat, message.Content, false)
+		}
 	}
-	startUpCall(chat)
+	startUpCall(chat) //This is a function that is called when the chat tab is opened
 	return chat, aiGen
 }
