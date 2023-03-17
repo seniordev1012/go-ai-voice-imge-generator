@@ -7,6 +7,7 @@ require (
 	github.com/go-sql-driver/mysql v1.7.0
 	github.com/gordonklaus/portaudio v0.0.0-20221027163845-7c3b689db3cc
 	github.com/hegedustibor/htgo-tts v0.0.0-20220821045517-04f3cda7a12f
+	github.com/magefile/mage v1.14.0
 	github.com/mattn/go-sqlite3 v1.14.16
 	github.com/sashabaranov/go-openai v1.5.2
 	github.com/zenwerk/go-wave v0.0.0-20190102022600-1be84bfef50c
