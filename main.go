@@ -29,18 +29,14 @@ func main() {
 	tabs, inputBoxContainer := mainApp(mapungubwe)
 
 	//Main Window
-	window := mapungubwe.NewWindow("AiGenie")
+	window := mapungubwe.NewWindow(mainTitle)
 	window.SetIcon(theme.MailAttachmentIcon())
-	window.SetFixedSize(false)
-	window.Resize(fyne.NewSize(800, 600))
+	window.SetFixedSize(true)
+	window.CenterOnScreen()
+	window.Resize(windowSize)
+	window.SetPadded(false)
 	scrollApp := container.NewScroll(tabs)
 	window.SetContent(container.NewBorder(nil, inputBoxContainer, nil, nil, scrollApp))
 	window.ShowAndRun()
-	window.SetOnClosed(func() {
-		mapungubwe.SendNotification(&fyne.Notification{
-			Title:   "AiGenie",
-			Content: "Thank you for using Sage AiGenie",
-		})
-		mapungubwe.Quit()
-	})
+	window.SetOnClosed(goodBye(mapungubwe))
 }
