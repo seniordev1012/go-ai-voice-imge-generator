@@ -1,5 +1,12 @@
 # Go OpenAi Cross Platform
 
+This is a Go-based chatbot interface that uses the fyne framework. The app is designed to allow users to interact with a chatbot through the interface.
+
+The app currently features the following functionalities:
+
+Text to speech
+Speech to text
+Chat
 Still Working On This, Will Get Serious With It Soon.
 
 👨🏽‍💻Not Production Ready
