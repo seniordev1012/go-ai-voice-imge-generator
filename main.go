@@ -19,7 +19,7 @@ func main() {
 	//}
 
 	mapungubwe := app.New()
-	mapungubwe.Settings().SetTheme(theme.LightTheme())
+	//mapungubwe.Settings().SetTheme(theme.LightTheme())
 	mapungubwe.SendNotification(&fyne.Notification{
 		Title:   "AiGenie",
 		Content: "Welcome to Sage AiGenie",
@@ -30,9 +30,17 @@ func main() {
 
 	//Main Window
 	window := mapungubwe.NewWindow("AiGenie")
-	contentSize := fyne.NewSize(600, 400)
-	window.Resize(contentSize)
-	scrollApp := container.NewVScroll(tabs)
+	window.SetIcon(theme.MailAttachmentIcon())
+	window.SetFixedSize(false)
+	window.Resize(fyne.NewSize(800, 600))
+	scrollApp := container.NewScroll(tabs)
 	window.SetContent(container.NewBorder(nil, inputBoxContainer, nil, nil, scrollApp))
 	window.ShowAndRun()
+	window.SetOnClosed(func() {
+		mapungubwe.SendNotification(&fyne.Notification{
+			Title:   "AiGenie",
+			Content: "Thank you for using Sage AiGenie",
+		})
+		mapungubwe.Quit()
+	})
 }

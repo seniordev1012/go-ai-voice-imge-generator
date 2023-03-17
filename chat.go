@@ -25,48 +25,49 @@ func addChatBubble(box *fyne.Container, message string, isUser bool) {
 
 	// Create a new label with the message
 	label := widget.NewLabel(message)
-	label.Resize(fyne.NewSize(100, 0))
-	label.TextStyle = fyne.TextStyle{Bold: false, Italic: false, Monospace: false}
+	label.CreateRenderer().Layout(label.MinSize().SubtractWidthHeight(10, 10).Max(fyne.NewSize(0, 0)))
+
 	//Add image card
-	image := canvas.NewImageFromFile("source/avatar.jpg")
-	image.SetMinSize(fyne.NewSize(100, 100))
-	imageCard := widget.NewCard("", "", image)
-	imageCard.Resize(fyne.NewSize(100, 100))
-	//Add image card
-
-	// Create a new chat bubble with the label
-
-	bubble := container.NewHBox(label)
-	bubble.Layout = layout.NewVBoxLayout()
-
-	container.NewScroll(bubble)
-
+	//image := canvas.NewImageFromFile("source/avatar.jpg")
+	//image.SetMinSize(fyne.NewSize(100, 100))
+	//imageCard := widget.NewCard("", "", image)
+	//imageCard.Resize(fyne.NewSize(100, 100))
+	//bubble := container.NewHBox(label)
 	// Create a new image widget with the avatar URL
 	avatarImg := canvas.NewImageFromFile("source/avatar.jpg")
-	avatarImg.SetMinSize(fyne.NewSize(64, 64))
-	avatarImg.Resize(fyne.NewSize(64, 64))
+	avatarImg.Move(fyne.NewPos(0, 0))
+	avatarImg.SetMinSize(fyne.NewSize(10, 100))
+	//avatarImg.SetMinSize(fyne.NewSize(64, 64))
+	//avatarImg.Resize(fyne.NewSize(64, 64))
+	//
+	//botAvatarImg := canvas.NewImageFromFile("source/botAvatar.png")
+	//botAvatarImg.SetMinSize(fyne.NewSize(64, 64))
+	//botAvatarImg.Move(fyne.NewPos(-5, -5))
 
-	botAvatarImg := canvas.NewImageFromFile("source/botAvatar.png")
-	botAvatarImg.SetMinSize(fyne.NewSize(64, 64))
-	botAvatarImg.Move(fyne.NewPos(-5, -5))
-
+	messageCard := widget.NewCard("Hello", "", label)
+	messageCard.Content = label
+	//		c.card.Image.Resize(fyne.NewSize(size.Width, cardMediaHeight))
+	//		pos.Y += cardMediaHeight
+	messageCard.Image = avatarImg
+	messageCard.SetTitle("You")
+	messageCard.SetSubTitle("Today")
 	// Add the chat bubble to the card
 	if isUser {
 		// If the message is from the user, add the bubble to the right side of the card
 		box.Add(container.NewHBox(
 			layout.NewSpacer(),
-			widget.NewCard("", "", bubble),
-			avatarImg,
+			messageCard,
+			//avatarImg,
 		))
 	} else {
 		// If the message is from someone else, add the bubble to the left side of the card
 		box.Add(container.NewHBox(
-			botAvatarImg,
-			widget.NewCard("", "", bubble),
+			//botAvatarImg,
+			messageCard,
 			layout.NewSpacer(),
 		))
 	}
-	container.NewScroll(box)
+	container.NewScroll(box).SetMinSize(fyne.NewSize(100, 100))
 }
 
 func sendButton(inputBox *widget.Entry, tab1 *fyne.Container) *widget.Button {
