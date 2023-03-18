@@ -137,9 +137,8 @@ func displayConvo(message string, tab1 *fyne.Container, inputBox *widget.Entry) 
 func botMessages(messageCall string, err error, tab1 *fyne.Container) {
 	//Send voice note if message is more than 120 characters
 	if len(messageCall) > 3 {
-		playAiVoice := voiceNote(messageCall, err)
-		if playAiVoice != nil {
-			log.Printf("Error playing voice note: %v", playAiVoice)
+		if pressPlayAudio(messageCall) {
+			return
 		}
 	}
 	addChatBubble(tab1, "Bot: "+messageCall, false)
