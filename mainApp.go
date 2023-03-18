@@ -41,6 +41,7 @@ func mainApp(mapungubwe fyne.App) (*container.AppTabs, *container.Split) {
 		stockMarketTab,
 		settingsTab,
 	)
+
 	inputBoxContainer := SignInHandler(chat, tabs, aiGen)
 
 	return tabs, inputBoxContainer

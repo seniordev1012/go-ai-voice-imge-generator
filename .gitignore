@@ -4,4 +4,5 @@
 .env
 DigiCertGlobalRootCA.crt.pem
 identifier.sqlite
-Setup.go
+!/ci/
+!/Azure/

@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/app"
 	"fyne.io/fyne/v2/container"
 	"fyne.io/fyne/v2/theme"
@@ -20,10 +19,7 @@ func main() {
 
 	mapungubwe := app.New()
 	//mapungubwe.Settings().SetTheme(theme.LightTheme())
-	mapungubwe.SendNotification(&fyne.Notification{
-		Title:   "AiGenie",
-		Content: "Welcome to Sage AiGenie",
-	})
+	switchUp(mapungubwe)
 	mapungubwe.SetIcon(theme.MailAttachmentIcon())
 
 	tabs, inputBoxContainer := mainApp(mapungubwe)
@@ -32,10 +28,13 @@ func main() {
 	window := mapungubwe.NewWindow(mainTitle)
 	window.SetIcon(theme.MailAttachmentIcon())
 	window.SetFixedSize(true)
+
 	window.CenterOnScreen()
 	window.Resize(windowSize)
 	window.SetPadded(false)
 	scrollApp := container.NewScroll(tabs)
+	// Create a background image object
+
 	window.SetContent(container.NewBorder(nil, inputBoxContainer, nil, nil, scrollApp))
 	window.ShowAndRun()
 	window.SetOnClosed(goodBye(mapungubwe))

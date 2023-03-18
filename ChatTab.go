@@ -2,6 +2,7 @@ package main
 
 import (
 	"fyne.io/fyne/v2"
+	"fyne.io/fyne/v2/canvas"
 	"fyne.io/fyne/v2/container"
 	"fyne.io/fyne/v2/layout"
 	"log"
@@ -16,9 +17,15 @@ import (
 func ChatTab() (*fyne.Container, *container.TabItem) {
 	//Create the chat tab
 	chat := container.NewHBox()
+	bgImage := canvas.NewImageFromFile("intro.jpg")
+	bgImage.FillMode = canvas.ImageFillOriginal
+	// Create a container for the background image and other content
+	bgContainer := container.NewMax(bgImage)
+
+	bgContainer.Add(chat)
 	container.NewAdaptiveGrid(2, chat)
 	chat.Layout = layout.NewVBoxLayout()
-	aiGen := container.NewTabItem("AiGen-Chat", chat)
+	aiGen := container.NewTabItem("AI Gen Chat", chat)
 
 	messages1, err := getMessages()
 
