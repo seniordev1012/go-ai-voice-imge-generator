@@ -19,7 +19,7 @@ func speakOut(innerVoice string) (string, error) {
 	var format = ".mp3"
 	var audioPath = "voicenotes/"
 	innerVoiceLang := "en-US"
-	innerVoiceName := "en-US-AriaNeural"
+	innerVoiceName := "en-US-DavisNeural"
 
 	url := fmt.Sprintf("https://%s.tts.speech.microsoft.com/cognitiveservices/v1", os.Getenv("SPEECH_REGION"))
 	method := "POST"

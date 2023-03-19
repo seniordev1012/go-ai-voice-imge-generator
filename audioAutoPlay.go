@@ -2,40 +2,105 @@ package main
 
 import (
 	"fmt"
-	"github.com/faiface/beep"
-	"github.com/faiface/beep/mp3"
-	"github.com/faiface/beep/speaker"
+	"github.com/hajimehoshi/go-mp3"
+	"github.com/youpy/go-wav"
+	"io"
 	"os"
+	"path/filepath"
+	"strings"
 	"time"
+
+	"github.com/gen2brain/malgo"
 )
 
-func playAudio(filename string) error {
-	// Open the audio file
-	f, err := os.Open(filename)
+func playAudioPlayback(filename string) error {
+	file, err := os.Open(filename)
 	if err != nil {
-		return err
+		return fmt.Errorf("failed to open file: %w", err)
 	}
-	defer f.Close()
+	defer func(file *os.File) {
+		err := file.Close()
+		if err != nil {
+			fmt.Printf("failed to close file: %v", err)
+		}
+	}(file)
 
-	// Decode the audio file
-	streamer, format, err := mp3.Decode(f)
+	var reader io.Reader
+	var channels, sampleRate uint32
+	var audioLength int64
+
+	switch strings.ToLower(filepath.Ext(filename)) {
+	case ".wav":
+		w := wav.NewReader(file)
+		f, err := w.Format()
+		if err != nil {
+			return fmt.Errorf("failed to read WAV format: %w", err)
+		}
+
+		reader = w
+		channels = uint32(f.NumChannels)
+		sampleRate = f.SampleRate
+
+	case ".mp3":
+		m, err := mp3.NewDecoder(file)
+		if err != nil {
+			return fmt.Errorf("failed to decode MP3: %w", err)
+		}
+
+		reader = m
+		channels = 2
+		audioLength = m.Length()
+		sampleRate = uint32(m.SampleRate())
+	default:
+		return fmt.Errorf("unsupported audio format")
+	}
+
+	ctx, err := malgo.InitContext(nil, malgo.ContextConfig{}, func(message string) {
+		//fmt.Printf("LOG <%v>\n", message)
+	})
 	if err != nil {
-		return err
+		return fmt.Errorf("failed to init context: %w", err)
 	}
-	defer streamer.Close()
+	defer func() {
+		_ = ctx.Uninit()
+		ctx.Free()
+		return
+	}()
 
-	// Initialize the audio player
-	speaker.Init(format.SampleRate, format.SampleRate.N(time.Second/10))
+	deviceConfig := malgo.DefaultDeviceConfig(malgo.Playback)
+	deviceConfig.Playback.Format = malgo.FormatS16
+	deviceConfig.Playback.Channels = channels
+	deviceConfig.SampleRate = sampleRate
+	deviceConfig.Alsa.NoMMap = 1
 
-	// Play the audio stream
-	done := make(chan bool)
-	speaker.Play(beep.Seq(streamer, beep.Callback(func() {
-		done <- true
-	})))
+	// This is the function that's used for sending more data to the device for playback.
+	onSamples := func(pOutputSample, pInputSamples []byte, framecount uint32) {
+		io.ReadFull(reader, pOutputSample)
+	}
 
-	// Wait for the audio to finish playing
-	<-done
+	deviceCallbacks := malgo.DeviceCallbacks{
+		Data: onSamples,
+	}
+	device, err := malgo.InitDevice(ctx.Context, deviceConfig, deviceCallbacks)
+	if err != nil {
+		return fmt.Errorf("failed to init device: %w", err)
+	}
+	defer device.Uninit()
 
-	fmt.Println("Audio playback complete.")
+	if err = device.Start(); err != nil {
+		return fmt.Errorf("failed to start device: %w", err)
+	}
+
+	durationMillis := audioLength / 50 // Set loop duration to 10 seconds (in milliseconds)
+	for i := durationMillis; i >= 0; i-- {
+		time.Sleep(1 * time.Millisecond)
+		if i == 0 {
+
+			break // Exit the loop if duration has elapsed
+		}
+
+		// Do something here (e.g. print a message)
+		fmt.Printf("%d milliseconds remaining...\n", i)
+	}
 	return nil
 }

@@ -8,8 +8,6 @@ import (
 	"fyne.io/fyne/v2/theme"
 	"fyne.io/fyne/v2/widget"
 	"log"
-	"os"
-	"time"
 )
 
 type Console struct {
@@ -60,7 +58,6 @@ func sendButton(inputBox *widget.Entry, tab1 *fyne.Container) *widget.Button {
 		//Separate each line with new line /n
 		message = separateLines(message)
 		fmt.Println(message)
-		//Display Conversation with the bot
 		displayConvo(message, tab1, inputBox)
 	})
 	return sendButton
@@ -70,22 +67,23 @@ func voiceChatButton(inputBox *widget.Entry, tab1 *fyne.Container) *widget.Butto
 	// Create a voice chat button for sending voice messages
 	voiceChatButton := widget.NewButtonWithIcon("", theme.MediaRecordIcon(), func() {
 		// Start recording voice
-		VoiceRecorder()
-
-		// Wait for 15 seconds before stopping the recording
-		go func() {
-			time.Sleep(15 * time.Second)
-			// Stop recording voice
-			//StopVoiceRecorder()
-			os.Exit(0)
-		}()
+		recorder, err := VoiceRecorder()
+		if recordingError(err) {
+			return
+		}
+		log.Printf("Voice recorder started: %v", recorder)
 	})
 
 	// Set the button to stop recording if held down
 	voiceChatButton.ExtendBaseWidget(voiceChatButton)
 	voiceChatButton.OnTapped = func() {
 		// Start recording voice
-		VoiceRecorder()
+		recorder, err := VoiceRecorder()
+		if recordingError(err) {
+			return
+		}
+		log.Printf("Voice recorder started: %v", recorder)
+		return
 	}
 
 	//voiceChatButton.OnPointerUp = func(event *fyne.PointEvent) {
@@ -96,38 +94,39 @@ func voiceChatButton(inputBox *widget.Entry, tab1 *fyne.Container) *widget.Butto
 	return voiceChatButton
 }
 
-func StopVoiceRecorder() {
-	// Stop recording voice
-	//StopVoiceRecorder()
-	os.Exit(0)
+func recordingError(err error) bool {
+	if err != nil {
+		log.Printf("Error starting voice recorder: %v", err)
+		return true
+	}
+	return false
 }
 
 // Display Conversation with the bot
 // displayConvo function to display messages from the user and the bot
 func displayConvo(message string, tab1 *fyne.Container, inputBox *widget.Entry) {
 	if message != "" {
-
 		userMessages(message, tab1)
 		addMessages := addMessage("YOU", message)
+
 		if addMessages != nil {
 			log.Printf("Error adding user message: %v", addMessages)
 		}
-
 		// Clear input box
 		inputBox.SetText("")
-
-		messageCall, err := makeApiCall(message)
+		//TODO: Make API call to get response from bot
+		//messageCall, err := makeApiCall(message)
+		messageCall, err := ronSwan()
+		log.Printf("Message call: %v", messageCall)
 		if err != nil {
 			log.Printf("Error making API call: %v", err)
 		}
-
 		botMessages(messageCall, err, tab1)
 		addBotMessages := addMessage("Bot", messageCall)
+
 		if addBotMessages != nil {
 			log.Printf("Error adding bot message: %v", addBotMessages)
-
 		}
-
 	}
 }
 
@@ -137,19 +136,15 @@ func displayConvo(message string, tab1 *fyne.Container, inputBox *widget.Entry) 
 func botMessages(messageCall string, err error, tab1 *fyne.Container) {
 	//Send voice note if message is more than 120 characters
 	if len(messageCall) > 3 {
-		if pressPlayAudio(messageCall) {
-			return
+		sendAudio, audioFilePathFinder := pressPlayAudio(messageCall)
+		if sendAudio != true {
+			log.Printf("Error sending audio: %v", sendAudio)
 		}
+		messageCall = "audio: " + audioFilePathFinder + messageCall
+		addChatBubble(tab1, "Bot: "+messageCall, false)
 	}
-	addChatBubble(tab1, "Bot: "+messageCall, false)
-
 }
 
 func userMessages(message string, tab1 *fyne.Container) {
-
-	//if len(message) > 100 {
-	//	voiceNote(message, nil)
-	//}
-
 	addChatBubble(tab1, "YOU: "+message, true)
 }
