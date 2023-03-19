@@ -58,6 +58,7 @@ func sendButton(inputBox *widget.Entry, tab1 *fyne.Container) *widget.Button {
 		//Separate each line with new line /n
 		message = separateLines(message)
 		fmt.Println(message)
+		//DISPLAY MESSAGE
 		displayConvo(message, tab1, inputBox)
 	})
 	return sendButton
@@ -72,20 +73,26 @@ func voiceChatButton(inputBox *widget.Entry, tab1 *fyne.Container) *widget.Butto
 			return
 		}
 		log.Printf("Voice recorder started: %v", recorder)
+
 	})
 
 	// Set the button to stop recording if held down
 	voiceChatButton.ExtendBaseWidget(voiceChatButton)
 	voiceChatButton.OnTapped = func() {
 		// Start recording voice
+		//change color of button
+
 		recorder, err := VoiceRecorder()
 		if recordingError(err) {
 			return
 		}
 		log.Printf("Voice recorder started: %v", recorder)
+		message := Whisper(recorder)
+		message = separateLines(message)
+		fmt.Println(message)
+		displayConvo(message, tab1, inputBox)
 		return
 	}
-
 	//voiceChatButton.OnPointerUp = func(event *fyne.PointEvent) {
 	//	// Stop recording voice
 	//	StopVoiceRecorder()

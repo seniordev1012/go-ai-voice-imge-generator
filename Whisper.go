@@ -18,7 +18,7 @@ type Response struct {
 	// add other fields as needed
 }
 
-func Whisper(pathToFind string, resultCh chan<- string) string {
+func Whisper(pathToFind string) string {
 	url := "https://api.openai.com/v1/audio/transcriptions"
 	method := "POST"
 
@@ -79,7 +79,6 @@ func Whisper(pathToFind string, resultCh chan<- string) string {
 		return ""
 	}
 	fmt.Println(text)
-	resultCh <- text
 	return text
 }
 
