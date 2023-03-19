@@ -115,17 +115,21 @@ func displayConvo(message string, tab1 *fyne.Container, inputBox *widget.Entry) 
 		// Clear input box
 		inputBox.SetText("")
 		//TODO: Make API call to get response from bot
-		//messageCall, err := makeApiCall(message)
-		messageCall, err := ronSwan()
+		messageCall, err := makeApiCall(message)
+		//messageCall, err := ronSwan()
 		log.Printf("Message call: %v", messageCall)
 		if err != nil {
 			log.Printf("Error making API call: %v", err)
 		}
+
 		botMessages(messageCall, err, tab1)
 		addBotMessages := addMessage("Bot", messageCall)
 
 		if addBotMessages != nil {
 			log.Printf("Error adding bot message: %v", addBotMessages)
+		} else {
+
+			log.Printf("Bot message added successfully")
 		}
 	}
 }
@@ -140,11 +144,13 @@ func botMessages(messageCall string, err error, tab1 *fyne.Container) {
 		if sendAudio != true {
 			log.Printf("Error sending audio: %v", sendAudio)
 		}
+
 		messageCall = "audio: " + audioFilePathFinder + messageCall
 		addChatBubble(tab1, "Bot: "+messageCall, false)
 	}
 }
 
 func userMessages(message string, tab1 *fyne.Container) {
+
 	addChatBubble(tab1, "YOU: "+message, true)
 }

@@ -2,8 +2,11 @@ package main
 
 import "log"
 
+var notificationSoundFile = "notification.mp3"
+
 func pressPlayAudio(messageCall string) (bool, string) {
 	//Azure Speech
+
 	soundFileName, checkError := speakOut(messageCall)
 
 	if checkError == nil {
@@ -16,5 +19,13 @@ func pressPlayAudio(messageCall string) (bool, string) {
 	} else {
 		log.Println(checkError)
 	}
+
 	return true, soundFileName
+}
+
+func notificationSound() {
+	err := playAudioPlayback(notificationSoundFile)
+	if err != nil {
+		log.Println(err)
+	}
 }
