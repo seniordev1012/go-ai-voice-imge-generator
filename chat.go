@@ -58,6 +58,7 @@ func sendButton(inputBox *widget.Entry, tab1 *fyne.Container) *widget.Button {
 		//Separate each line with new line /n
 		message = separateLines(message)
 		fmt.Println(message)
+		//DISPLAY MESSAGE
 		displayConvo(message, tab1, inputBox)
 	})
 	return sendButton
@@ -72,20 +73,26 @@ func voiceChatButton(inputBox *widget.Entry, tab1 *fyne.Container) *widget.Butto
 			return
 		}
 		log.Printf("Voice recorder started: %v", recorder)
+
 	})
 
 	// Set the button to stop recording if held down
 	voiceChatButton.ExtendBaseWidget(voiceChatButton)
 	voiceChatButton.OnTapped = func() {
 		// Start recording voice
+		//change color of button
+
 		recorder, err := VoiceRecorder()
 		if recordingError(err) {
 			return
 		}
 		log.Printf("Voice recorder started: %v", recorder)
+		message := Whisper(recorder)
+		message = separateLines(message)
+		fmt.Println(message)
+		displayConvo(message, tab1, inputBox)
 		return
 	}
-
 	//voiceChatButton.OnPointerUp = func(event *fyne.PointEvent) {
 	//	// Stop recording voice
 	//	StopVoiceRecorder()
@@ -115,17 +122,21 @@ func displayConvo(message string, tab1 *fyne.Container, inputBox *widget.Entry) 
 		// Clear input box
 		inputBox.SetText("")
 		//TODO: Make API call to get response from bot
-		//messageCall, err := makeApiCall(message)
-		messageCall, err := ronSwan()
+		messageCall, err := makeApiCall(message)
+		//messageCall, err := ronSwan()
 		log.Printf("Message call: %v", messageCall)
 		if err != nil {
 			log.Printf("Error making API call: %v", err)
 		}
+
 		botMessages(messageCall, err, tab1)
 		addBotMessages := addMessage("Bot", messageCall)
 
 		if addBotMessages != nil {
 			log.Printf("Error adding bot message: %v", addBotMessages)
+		} else {
+
+			log.Printf("Bot message added successfully")
 		}
 	}
 }
@@ -140,11 +151,13 @@ func botMessages(messageCall string, err error, tab1 *fyne.Container) {
 		if sendAudio != true {
 			log.Printf("Error sending audio: %v", sendAudio)
 		}
+
 		messageCall = "audio: " + audioFilePathFinder + messageCall
 		addChatBubble(tab1, "Bot: "+messageCall, false)
 	}
 }
 
 func userMessages(message string, tab1 *fyne.Container) {
+
 	addChatBubble(tab1, "YOU: "+message, true)
 }

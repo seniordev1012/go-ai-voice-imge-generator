@@ -1,138 +1,111 @@
 package main
 
-/*
-  #include <stdio.h>
-  #include <unistd.h>
-  #include <termios.h>
-  char getch(){
-      char ch = 0;
-      struct termios old = {0};
-      fflush(stdout);
-      if( tcgetattr(0, &old) < 0 ) perror("tcsetattr()");
-      old.c_lflag &= ~ICANON;
-      old.c_lflag &= ~ECHO;
-      old.c_cc[VMIN] = 1;
-      old.c_cc[VTIME] = 0;
-      if( tcsetattr(0, TCSANOW, &old) < 0 ) perror("tcsetattr ICANON");
-      if( read(0, &ch,1) < 0 ) perror("read()");
-      old.c_lflag |= ICANON;
-      old.c_lflag |= ECHO;
-      if(tcsetattr(0, TCSADRAIN, &old) < 0) perror("tcsetattr ~ICANON");
-      return ch;
-  }
-*/
-import "C"
 import (
 	"fmt"
-	"github.com/gordonklaus/portaudio"
+	"github.com/gen2brain/malgo"
 	wave "github.com/zenwerk/go-wave"
-	"log"
+	"math/rand"
 	"os"
 	"strings"
-	"sync"
 	"time"
 )
 
-func errCheck(err error) {
+func VoiceRecorder() (string, error) {
+	ctx, err := malgo.InitContext(nil, malgo.ContextConfig{}, func(message string) {
+		//fmt.Printf("LOG <%v>\n", message)
+	})
+	if err != nil {
+		fmt.Println(err)
+		os.Exit(1)
+	}
+	defer func() {
+		_ = ctx.Uninit()
+		ctx.Free()
+	}()
 
+	deviceConfig := malgo.DefaultDeviceConfig(malgo.Capture)
+	deviceConfig.Capture.Format = malgo.FormatS16
+	deviceConfig.Capture.Channels = 1
+	deviceConfig.SampleRate = 44100
+	deviceConfig.Alsa.NoMMap = 1
+
+	var capturedSampleCount uint32
+	pCapturedSamples := make([]byte, 0)
+
+	sizeInBytes := uint32(malgo.SampleSizeInBytes(deviceConfig.Capture.Format))
+	onRecvFrames := func(pSample2, pSample []byte, framecount uint32) {
+		sampleCount := framecount * deviceConfig.Capture.Channels * sizeInBytes
+		newCapturedSampleCount := capturedSampleCount + sampleCount
+		pCapturedSamples = append(pCapturedSamples, pSample...)
+		fmt.Println(capturedSampleCount, "/", newCapturedSampleCount, "samples captured.")
+		capturedSampleCount = newCapturedSampleCount
+	}
+
+	fmt.Println("Recording for 10 seconds...")
+	captureCallbacks := malgo.DeviceCallbacks{
+		Data: onRecvFrames,
+	}
+	device, err := malgo.InitDevice(ctx.Context, deviceConfig, captureCallbacks)
+	if err != nil {
+		fmt.Println(err)
+		os.Exit(1)
+	}
+
+	err = device.Start()
+	if err != nil {
+		fmt.Println(err)
+		os.Exit(1)
+	}
+
+	// Record for 10 seconds
+	time.Sleep(10 * time.Second)
+
+	device.Uninit()
+	filePathName := randomName()
+	f, err := os.Create(filePathName)
+	defer f.Close()
 	if err != nil {
 		panic(err)
 	}
+	param := wave.WriterParam{
+		Out:           f,
+		Channel:       1,
+		SampleRate:    44100,
+		BitsPerSample: 16,
+	}
+	w, err := wave.NewWriter(param)
+
+	_, err = w.Write(pCapturedSamples)
+	if err != nil {
+		fmt.Println(err)
+		os.Exit(1)
+	}
+
+	fmt.Println("Recording saved to", filePathName)
+
+	defer w.Close()
+
+	return filePathName, nil
 }
 
-func VoiceRecorder() (string, error) {
-	var wg sync.WaitGroup
-	wg.Add(2)
-	audioFileName := "cache/audio.wav"
+func randomName() string {
+	timestamp := time.Now().Format("02-01-2006-15-04-05")
+	timestamp = strings.Replace(timestamp, "-", "", -1)
+	timestamp = strings.Replace(timestamp, ":", "", -1)
 
-	fmt.Println("Recording. Press ESC to quit.")
+	letterPool := "abcdefghijklmnopqrstuvwxyzABZDEFGHIJKLMNOPQRSTUVWXYZ"
+	randomLetter := string(letterPool[rand.Intn(len(letterPool))])
 
+	var letters strings.Builder
+	for i := 0; i < 5; i++ {
+		letters.WriteByte(letterPool[rand.Intn(len(letterPool))])
+	}
+
+	randomName := timestamp + randomLetter + letters.String()
+	randomFileName := randomName + ".wav"
+	audioFileName := "cache/voice_" + randomFileName
 	if !strings.HasSuffix(audioFileName, ".wav") {
 		audioFileName += ".wav"
 	}
-	waveFile, err := os.Create(audioFileName)
-	errCheck(err)
-
-	inputChannels := 1
-	outputChannels := 0
-	sampleRate := 44100
-	framesPerBuffer := make([]byte, 64)
-
-	// init PortAudio
-
-	portaudio.Initialize()
-	//defer portaudio.Terminate()
-
-	stream, err := portaudio.OpenDefaultStream(inputChannels, outputChannels, float64(sampleRate), len(framesPerBuffer), framesPerBuffer)
-	errCheck(err)
-	//defer stream.Close()
-
-	// setup Wave file writer
-
-	param := wave.WriterParam{
-		Out:           waveFile,
-		Channel:       inputChannels,
-		SampleRate:    sampleRate,
-		BitsPerSample: 8, // if 16, change to WriteSample16()
-	}
-
-	waveWriter, err := wave.NewWriter(param)
-	errCheck(err)
-
-	//defer waveWriter.Close()
-
-	go func() {
-		_, err := func() (string, error) {
-
-			durationVoice := 5
-			//use countdown timer to record for 15 seconds
-			for i := durationVoice; i >= 0; i-- {
-				time.Sleep(1 * time.Second)
-				if i == 0 {
-
-					//At the end of the countdown, stop recording
-					//This is where you would do whatever you want to do after the countdown
-					log.Printf("Time's up!")
-					waveWriter.Close()
-					stream.Close()
-					portaudio.Terminate()
-					fmt.Println("Play", audioFileName, "with a audio player to hear the result.")
-					//Whisper(audioFileName)
-					//TODO: Below is the code to "Whisper" the audio file ... risky stuff
-					resultCh := make(chan string)
-
-					// Start the Go routine with the channel as an argument
-					go Whisper(audioFileName, resultCh)
-					//go Whisper(audioFileName)
-					//TODO: This needs to be returned to the calling function to be used in the "Whisper" function
-					log.Println("Result: ", <-resultCh)
-					log.Println("Done")
-					wg.Wait()
-					wg.Done()
-					return audioFileName, nil
-
-				}
-			}
-			return "", nil
-
-		}()
-		if err != nil {
-		}
-	}()
-	//
-	// start reading from microphone
-	errCheck(stream.Start())
-	for {
-		errCheck(stream.Read())
-		//fmt.Print(".") // show progress
-
-		fmt.Print(".") // show progress
-		// write to wave file
-		_, err := waveWriter.Write([]byte(framesPerBuffer)) // WriteSample16 for 16 bits
-		errCheck(err)
-	}
-
-	errCheck(stream.Stop())
-
-	return "", nil
+	return audioFileName
 }
