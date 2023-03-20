@@ -6,6 +6,42 @@ import (
 	"log"
 )
 
+// Messsages Database
+func createMessagesDatabase() error {
+	// Open a connection to the database
+	db, err := sql.Open("sqlite3", "DB/messages.db")
+	if err != nil {
+		return err
+	}
+	defer func(db *sql.DB) {
+		err := db.Close()
+		if err != nil {
+			log.Println(err)
+		}
+	}(db)
+
+	if db == nil {
+		log.Println("Database does not exist")
+	}
+	// Execute the SQL command to create the table
+	_, err = db.Exec(`
+		CREATE TABLE messages (
+			id INTEGER PRIMARY KEY AUTOINCREMENT,
+			sender TEXT NOT NULL,
+			content TEXT DEFAULT NULL,
+			audio TEXT DEFAULT NULL,
+			media  TEXT DEFAULT NULL,
+			created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+		)
+	`)
+	if err != nil {
+		return err
+	}
+	log.Printf("Database created successfully")
+
+	return nil
+}
+
 // Create Keylogger Database and Table if it doesn't exist
 func createKeyloggerDatabase() error {
 	// Open a connection to the database
@@ -61,6 +97,7 @@ func createLocalMediaDatabase() error {
 		CREATE TABLE localMedia (
 			id INTEGER PRIMARY KEY AUTOINCREMENT,
 			path TEXT NOT NULL,
+		
 			created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 		)
 	`)
@@ -89,12 +126,17 @@ func createSettingsDatabase() error {
 	if db == nil {
 		log.Println("Database does not exist")
 	}
-	// Execute the SQL command to create the table
 	_, err = db.Exec(`
 		CREATE TABLE settings (
 			id INTEGER PRIMARY KEY AUTOINCREMENT,
-			enabled INTEGER NOT NULL,
-			created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+			platform TEXT DEFAULT NULL,
+			audioOnly INTEGER DEFAULT 1,
+			theme TEXT DEFAULT 'auto',
+			language TEXT DEFAULT NULL,
+			createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+			accessToken TEXT DEFAULT NULL,
+			refreshToken TEXT DEFAULT NULL,
+			tokenExpires TIMESTAMP DEFAULT NULL   
 		)
 	`)
 	if err != nil {
@@ -139,27 +181,6 @@ func createUserDatabase() error {
 	return nil
 }
 
-func kitchenLog(keylogger string) {
-	//Store the keylogger in a file
-	db, err := sql.Open("sqlite3", "DB/keylogger.db")
-	if err != nil {
-		log.Printf("Error opening database: %v", err)
-	}
-	defer func(db *sql.DB) {
-		err := db.Close()
-		if err != nil {
-			log.Println(err)
-		}
-
-	}(db)
-
-	// Insert the keylogger into the database
-	_, err = db.Exec("INSERT INTO keystrokes (textStuff) VALUES (?)", keylogger)
-	if err != nil {
-		log.Printf("Error inserting into database: %v", err)
-	}
-}
-
 // Create Sessions.db if it doesn't exist and create a table for sessions if it doesn't exist
 // Token is the session token
 // ID is the user ID
@@ -196,37 +217,104 @@ func createSessionsDatabase() error {
 	return nil
 }
 
-// addMessage adds a message to the database
-func addMessage(sender string, content string) error {
+// Create token database and table if it doesn't exist
+func createTokenDatabase() error {
 	// Open a connection to the database
-	db, err := sql.Open("sqlite3", "DB/messages.db")
+	db, err := sql.Open("sqlite3", "DB/token.db")
 	if err != nil {
 		return err
 	}
 	defer func(db *sql.DB) {
 		err := db.Close()
 		if err != nil {
-			log.Printf("Error closing database: %v", err)
+			log.Println(err)
 		}
 	}(db)
 
-	// Prepare a SQL statement to insert the message into the database
-	stmt, err := db.Prepare("INSERT INTO messages (sender, content) VALUES (?, ?)")
+	if db == nil {
+		log.Println("Database does not exist")
+	}
+	// Execute the SQL command to create the table
+	_, err = db.Exec(`
+		CREATE TABLE token (
+			id INTEGER PRIMARY KEY AUTOINCREMENT,
+			token TEXT NOT NULL,
+			created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+		)
+	`)
 	if err != nil {
 		return err
 	}
-	defer func(stmt *sql.Stmt) {
-		err := stmt.Close()
-		if err != nil {
-			log.Printf("Error closing statement: %v", err)
-		}
-	}(stmt)
+	log.Printf("Database created successfully")
 
-	// Execute the prepared statement with the message as parameters
-	_, err = stmt.Exec(sender, content)
+	return nil
+}
+
+// Create token database and table if it doesn't exist
+// TODO Productivity database
+func createProductivityDatabase() error {
+	// Open a connection to the database
+	db, err := sql.Open("sqlite3", "DB/productivity.db")
 	if err != nil {
 		return err
 	}
+	defer func(db *sql.DB) {
+		err := db.Close()
+		if err != nil {
+			log.Println(err)
+		}
+	}(db)
+
+	if db == nil {
+		log.Println("Database does not exist")
+	}
+	// Execute the SQL command to create the table
+	_, err = db.Exec(`
+		CREATE TABLE productivity (
+			id INTEGER PRIMARY KEY AUTOINCREMENT,
+			website TEXT NOT NULL,
+			time INTEGER NOT NULL,
+			created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+		)
+	`)
+	if err != nil {
+		return err
+	}
+	log.Printf("Database created successfully")
+
+	return nil
+}
+
+// Gallery Database
+// Create gallery database and table if it doesn't exist
+func createGalleryDatabase() error {
+	// Open a connection to the database
+	db, err := sql.Open("sqlite3", "DB/gallery.db")
+	if err != nil {
+		return err
+	}
+	defer func(db *sql.DB) {
+		err := db.Close()
+		if err != nil {
+			log.Println(err)
+		}
+	}(db)
+
+	if db == nil {
+		log.Println("Database does not exist")
+	}
+	// Execute the SQL command to create the table
+	_, err = db.Exec(`
+		CREATE TABLE gallery (
+			id INTEGER PRIMARY KEY AUTOINCREMENT,
+			path TEXT NOT NULL,
+			created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+		)
+	`)
+	if err != nil {
+		return err
+	}
+	log.Printf("Database created successfully")
 
 	return nil
 }

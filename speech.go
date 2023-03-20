@@ -33,3 +33,18 @@ func notificationSound() {
 		log.Println(err)
 	}
 }
+
+func playVoiceNote(filename string) {
+	err := aigenAudioAutoPlay.PlayAudioPlayback(filename)
+	if err != nil {
+		log.Println(err)
+	}
+}
+
+func getAudioFile(message string) {
+	audioFile, err := getAudio(message)
+	if err != nil {
+		log.Println(err)
+	}
+	playVoiceNote(audioFile)
+}

@@ -1,6 +1,7 @@
 package main
 
 import (
+	"aigen/aigenAudioAutoPlay"
 	"aigen/aigenRecorder"
 	"aigen/aigenRest"
 	"aigen/textHandler"
@@ -34,9 +35,31 @@ func addChatBubble(box *fyne.Container, message string, isUser bool) {
 
 	label := widget.NewLabel(textHandler.SeparateLines(message))
 	//avatarImg, _ := chatAvatars()
+	//Check for message in db
+	//If message is in db, display the message
+	audio, err := getAudio(message)
+	if err != nil {
+		log.Printf("Error: %s", err)
+	}
+	log.Printf("Audio: %s", audio)
+	var messageCard *widget.Card
+	if audio != "" {
+		audioFile := widget.NewButtonWithIcon("Audio", theme.MediaPlayIcon(), func() {
+			//Play audio
+			log.Printf("Playing audio file %s", audio)
+			err := aigenAudioAutoPlay.PlayAudioPlayback("cache/voice_20032023143853YKDYUN.wav")
+			if err != nil {
+				log.Printf("Error: %s", err)
+			}
+			log.Printf("Audio file %s played successfully", audio)
 
-	messageCard := widget.NewCard("", "", label)
-	//bubbleCardContent(messageCard, avatarImg)
+		})
+		messageCard = widget.NewCard("", "", label)
+		messageCard.Content = container.NewHBox(audioFile, messageCard.Content)
+
+	} else {
+		messageCard = widget.NewCard("", "", label)
+	}
 
 	if isUser {
 		box.Add(container.NewHBox(
@@ -62,7 +85,7 @@ func sendButton(inputBox *widget.Entry, tab1 *fyne.Container) *widget.Button {
 		message = textHandler.SeparateLines(message)
 		fmt.Println(message)
 		//DISPLAY MESSAGE
-		displayConvo(message, tab1, inputBox)
+		displayConvo(message, tab1, inputBox, "none")
 	})
 	return sendButton
 }
@@ -82,18 +105,19 @@ func voiceChatButton(inputBox *widget.Entry, tab1 *fyne.Container) *widget.Butto
 	// Set the button to stop recording if held down
 	voiceChatButton.ExtendBaseWidget(voiceChatButton)
 	voiceChatButton.OnTapped = func() {
-		// Start recording voice
-		//change color of button
-
 		recorder, err := aigenRecorder.VoiceRecorder()
 		if recordingError(err) {
 			return
 		}
 		log.Printf("Voice recorder started: %v", recorder)
-		message := Whisper(recorder)
+
+		message := aigenRest.Whisper(recorder)
+
 		message = textHandler.SeparateLines(message)
+
 		fmt.Println(message)
-		displayConvo(message, tab1, inputBox)
+
+		displayConvo(message, tab1, inputBox, recorder)
 		return
 	}
 	//voiceChatButton.OnPointerUp = func(event *fyne.PointEvent) {
@@ -114,33 +138,42 @@ func recordingError(err error) bool {
 
 // Display Conversation with the bot
 // displayConvo function to display messages from the user and the bot
-func displayConvo(message string, tab1 *fyne.Container, inputBox *widget.Entry) {
+func displayConvo(message string, tab1 *fyne.Container, inputBox *widget.Entry, mediaInputPath string) {
 	if message != "" {
 		userMessages(message, tab1)
-		addMessages := addMessage("YOU", message)
+		if mediaInputPath != "none" {
 
-		if addMessages != nil {
-			log.Printf("Error adding user message: %v", addMessages)
+			addMessages := addMessageWithMedia("YOU", message, mediaInputPath, mediaInputPath)
+
+			if addMessages != nil {
+				log.Printf("Error adding user message: %v", addMessages)
+			}
+
+		} else {
+			addMessages := addMessage("YOU", message)
+			if addMessages != nil {
+				log.Printf("Error adding user message: %v", addMessages)
+			}
 		}
+
 		// Clear input box
 		inputBox.SetText("")
-		//TODO: Make API call to get response from bot
+		// Switch API Provider
 		messageCall, err := aigenRest.MakeApiCall(message)
 		//messageCall, err := ronSwan()
+
 		log.Printf("Message call: %v", messageCall)
 		if err != nil {
 			log.Printf("Error making API call: %v", err)
 		}
 
 		botMessages(messageCall, err, tab1)
-		addBotMessages := addMessage("Bot", messageCall)
 
+		addBotMessages := addMessage("Bot", messageCall)
 		if addBotMessages != nil {
 			log.Printf("Error adding bot message: %v", addBotMessages)
-		} else {
-
-			log.Printf("Bot message added successfully")
 		}
+
 	}
 }
 
@@ -150,12 +183,11 @@ func displayConvo(message string, tab1 *fyne.Container, inputBox *widget.Entry) 
 func botMessages(messageCall string, err error, tab1 *fyne.Container) {
 	//Send voice note if message is more than 120 characters
 	if len(messageCall) > 3 {
-		sendAudio, audioFilePathFinder := pressPlayAudio(messageCall)
+		sendAudio, _ := pressPlayAudio(messageCall)
 		if sendAudio != true {
 			log.Printf("Error sending audio: %v", sendAudio)
 		}
 
-		messageCall = "audio: " + audioFilePathFinder + messageCall
 		addChatBubble(tab1, "Bot: "+messageCall, false)
 	}
 }

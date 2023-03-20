@@ -90,7 +90,7 @@ func PlayAudioPlayback(filename string) error {
 	if err = device.Start(); err != nil {
 		return fmt.Errorf("failed to start device: %w", err)
 	}
-
+	fmt.Println("Recording")
 	durationMillis := audioLength / 50 // Set loop duration to 10 seconds (in milliseconds)
 	for i := durationMillis; i >= 0; i-- {
 		time.Sleep(1 * time.Millisecond)
@@ -99,8 +99,8 @@ func PlayAudioPlayback(filename string) error {
 			break // Exit the loop if duration has elapsed
 		}
 
-		// Do something here (e.g. print a message)
-		fmt.Println(i/1000, "seconds remaining")
+		//// Do something here (e.g. print a message)
+		//fmt.Println(i/1000, "seconds remaining")
 
 	}
 	return nil
