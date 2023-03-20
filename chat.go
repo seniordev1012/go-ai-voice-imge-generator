@@ -1,6 +1,9 @@
 package main
 
 import (
+	"aigen/aigenRecorder"
+	"aigen/aigenRest"
+	"aigen/textHandler"
 	"fmt"
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/container"
@@ -29,7 +32,7 @@ type Console struct {
 // If the message is from the user, the bubble will be on the right side of the chat window
 func addChatBubble(box *fyne.Container, message string, isUser bool) {
 
-	label := widget.NewLabel(separateLines(message))
+	label := widget.NewLabel(textHandler.SeparateLines(message))
 	//avatarImg, _ := chatAvatars()
 
 	messageCard := widget.NewCard("", "", label)
@@ -56,7 +59,7 @@ func sendButton(inputBox *widget.Entry, tab1 *fyne.Container) *widget.Button {
 	sendButton := widget.NewButtonWithIcon("", theme.MailSendIcon(), func() {
 		message := inputBox.Text
 		//Separate each line with new line /n
-		message = separateLines(message)
+		message = textHandler.SeparateLines(message)
 		fmt.Println(message)
 		//DISPLAY MESSAGE
 		displayConvo(message, tab1, inputBox)
@@ -68,7 +71,7 @@ func voiceChatButton(inputBox *widget.Entry, tab1 *fyne.Container) *widget.Butto
 	// Create a voice chat button for sending voice messages
 	voiceChatButton := widget.NewButtonWithIcon("", theme.MediaRecordIcon(), func() {
 		// Start recording voice
-		recorder, err := VoiceRecorder()
+		recorder, err := aigenRecorder.VoiceRecorder()
 		if recordingError(err) {
 			return
 		}
@@ -82,13 +85,13 @@ func voiceChatButton(inputBox *widget.Entry, tab1 *fyne.Container) *widget.Butto
 		// Start recording voice
 		//change color of button
 
-		recorder, err := VoiceRecorder()
+		recorder, err := aigenRecorder.VoiceRecorder()
 		if recordingError(err) {
 			return
 		}
 		log.Printf("Voice recorder started: %v", recorder)
 		message := Whisper(recorder)
-		message = separateLines(message)
+		message = textHandler.SeparateLines(message)
 		fmt.Println(message)
 		displayConvo(message, tab1, inputBox)
 		return
@@ -122,7 +125,7 @@ func displayConvo(message string, tab1 *fyne.Container, inputBox *widget.Entry) 
 		// Clear input box
 		inputBox.SetText("")
 		//TODO: Make API call to get response from bot
-		messageCall, err := makeApiCall(message)
+		messageCall, err := aigenRest.MakeApiCall(message)
 		//messageCall, err := ronSwan()
 		log.Printf("Message call: %v", messageCall)
 		if err != nil {

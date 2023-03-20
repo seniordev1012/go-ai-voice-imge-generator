@@ -1,6 +1,7 @@
 package main
 
 import (
+	"aigen/essentialsGen"
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/canvas"
 	"fyne.io/fyne/v2/container"
@@ -40,6 +41,6 @@ func ChatTab() (*fyne.Container, *container.TabItem) {
 			addChatBubble(chat, message.Content, false)
 		}
 	}
-	startUpCall(chat) //This is a function that is called when the chat tab is opened
+	essentialsGen.StartUpCall(chat) //This is a function that is called when the chat tab is opened
 	return chat, aiGen
 }

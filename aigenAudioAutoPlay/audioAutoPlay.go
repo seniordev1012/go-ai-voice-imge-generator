@@ -1,4 +1,4 @@
-package main
+package aigenAudioAutoPlay
 
 import (
 	"fmt"
@@ -13,7 +13,7 @@ import (
 	"github.com/gen2brain/malgo"
 )
 
-func playAudioPlayback(filename string) error {
+func PlayAudioPlayback(filename string) error {
 	file, err := os.Open(filename)
 	if err != nil {
 		return fmt.Errorf("failed to open file: %w", err)
@@ -100,7 +100,8 @@ func playAudioPlayback(filename string) error {
 		}
 
 		// Do something here (e.g. print a message)
-		fmt.Printf("%d milliseconds remaining...\n", i)
+		fmt.Println(i/1000, "seconds remaining")
+
 	}
 	return nil
 }

@@ -1,17 +1,21 @@
 package main
 
-import "log"
+import (
+	"aigen/aigenAudioAutoPlay"
+	"aigen/aigenRest"
+	"log"
+)
 
 var notificationSoundFile = "notification.mp3"
 
 func pressPlayAudio(messageCall string) (bool, string) {
 	//Azure Speech
 
-	soundFileName, checkError := speakOut(messageCall)
+	soundFileName, checkError := aigenRest.SpeakOut(messageCall)
 
 	if checkError == nil {
 		log.Println(soundFileName)
-		playSound := playAudioPlayback(soundFileName)
+		playSound := aigenAudioAutoPlay.PlayAudioPlayback(soundFileName)
 		if playSound != nil {
 			return true, soundFileName
 		}
@@ -24,7 +28,7 @@ func pressPlayAudio(messageCall string) (bool, string) {
 }
 
 func notificationSound() {
-	err := playAudioPlayback(notificationSoundFile)
+	err := aigenAudioAutoPlay.PlayAudioPlayback(notificationSoundFile)
 	if err != nil {
 		log.Println(err)
 	}

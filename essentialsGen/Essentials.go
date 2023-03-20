@@ -1,10 +1,10 @@
-package main
+package essentialsGen
 
 import (
 	"fyne.io/fyne/v2"
 )
 
-func startUpCall(chat *fyne.Container) {
+func StartUpCall(chat *fyne.Container) {
 	//messageCall, checkError := makeApiCall()
 	//
 	//addChatBubble(chat, "YOU: I am looking for a quote", false)
