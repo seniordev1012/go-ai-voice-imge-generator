@@ -1,4 +1,4 @@
-package main
+package aigenUi
 
 import (
 	"fyne.io/fyne/v2/canvas"

@@ -1,4 +1,4 @@
-package main
+package aigenRest
 
 import (
 	"fmt"
@@ -11,11 +11,7 @@ import (
 	"time"
 )
 
-var outerVoice = "Let me tell you about the Kingdom of Mapungubwe. It was a kingdom in the 13th century." +
-	" It was located in the Limpopo River Valley in South Africa and was the first kingdom in Southern Africa." +
-	" It was a kingdom of gold and ivory. It was a kingdom of gold and ivory. It was a kingdom of gold and ivory."
-
-func speakOut(innerVoice string) (string, error) {
+func SpeakOut(innerVoice string) (string, error) {
 	var format = ".mp3"
 	var audioPath = "voicenotes/"
 	innerVoiceLang := "en-US"

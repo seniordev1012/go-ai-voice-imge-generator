@@ -1,11 +1,11 @@
-package main
+package textHandler
 
 import "strings"
 
-// Make Line Breaks on Submissions
+// SeparateLines Make Line Breaks on Submissions
 // This function will make line breaks in a string after a certain number of characters.
-// separateLines will take a string and return a string with line breaks after 60 characters.
-func separateLines(message string) string {
+// SeparateLines will take a string and return a string with line breaks after 60 characters.
+func SeparateLines(message string) string {
 	var lines []string
 	line := ""
 	paragraph := ""
