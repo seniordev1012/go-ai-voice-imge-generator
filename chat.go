@@ -47,13 +47,26 @@ func addChatBubble(box *fyne.Container, message string, isUser bool) {
 		audioFile := widget.NewButtonWithIcon("Audio", theme.MediaPlayIcon(), func() {
 			//Play audio
 			log.Printf("Playing audio file %s", audio)
-			err := aigenAudioAutoPlay.PlayAudioPlayback("cache/voice_20032023143853YKDYUN.wav")
-			if err != nil {
-				log.Printf("Error: %s", err)
-			}
-			log.Printf("Audio file %s played successfully", audio)
 
 		})
+		audioFile.OnTapped = func() {
+			//change icon to stop
+			audioFile.SetIcon(nil)
+
+			audioFile.Refresh()
+			//Play audio
+			defer func(filename string) {
+				err := aigenAudioAutoPlay.PlayAudioPlayback(filename)
+				if err != nil {
+					log.Printf("Error: %s", err)
+				}
+				log.Printf("Audio file %s played successfully", filename)
+				audioFile.SetIcon(theme.MediaPlayIcon())
+			}(audio)
+
+			log.Printf("Playing audio file %s", audio)
+			return
+		}
 		messageCard = widget.NewCard("", "", label)
 		messageCard.Content = container.NewHBox(audioFile, messageCard.Content)
 
@@ -109,7 +122,8 @@ func voiceChatButton(inputBox *widget.Entry, tab1 *fyne.Container) *widget.Butto
 		if recordingError(err) {
 			return
 		}
-		log.Printf("Voice recorder started: %v", recorder)
+
+		log.Printf("Voice recorder __ started: %v", recorder)
 
 		message := aigenRest.Whisper(recorder)
 
