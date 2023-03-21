@@ -7,6 +7,7 @@ import (
 	"aigen/textHandler"
 	"fmt"
 	"fyne.io/fyne/v2"
+	"fyne.io/fyne/v2/canvas"
 	"fyne.io/fyne/v2/container"
 	"fyne.io/fyne/v2/layout"
 	"fyne.io/fyne/v2/theme"
@@ -47,17 +48,42 @@ func addChatBubble(box *fyne.Container, message string, isUser bool) {
 		audioFile := widget.NewButtonWithIcon("Audio", theme.MediaPlayIcon(), func() {
 			//Play audio
 			log.Printf("Playing audio file %s", audio)
-			err := aigenAudioAutoPlay.PlayAudioPlayback("cache/voice_20032023143853YKDYUN.wav")
-			if err != nil {
-				log.Printf("Error: %s", err)
-			}
-			log.Printf("Audio file %s played successfully", audio)
 
 		})
+		audioFile.BaseWidget.ExtendBaseWidget(audioFile)
+
+		audioFile.OnTapped = func() {
+			//change icon to stop
+			audioFile.SetIcon(nil)
+			audioFile.SetText("Playing")
+
+			audioFile.Refresh()
+			//Play audio
+			defer func(filename string) {
+				err := aigenAudioAutoPlay.PlayAudioPlayback(filename)
+				if err != nil {
+					log.Printf("Error: %s", err)
+				}
+				log.Printf("Audio file %s played successfully", filename)
+				audioFile.SetIcon(theme.MediaPlayIcon())
+
+			}(audio)
+
+			log.Printf("Playing audio file %s", audio)
+			return
+		}
+
+		//container.NewHBox(photoView)
+
+		image := canvas.NewImageFromFile("source/avatar.jpg")
+		image.FillMode = canvas.ImageFillStretch
+
 		messageCard = widget.NewCard("", "", label)
+		messageCard.Image = image
 		messageCard.Content = container.NewHBox(audioFile, messageCard.Content)
 
 	} else {
+		//Photo
 		messageCard = widget.NewCard("", "", label)
 	}
 
@@ -87,6 +113,8 @@ func sendButton(inputBox *widget.Entry, tab1 *fyne.Container) *widget.Button {
 		//DISPLAY MESSAGE
 		displayConvo(message, tab1, inputBox, "none")
 	})
+	sendButton.BaseWidget.ExtendBaseWidget(sendButton)
+
 	return sendButton
 }
 
@@ -109,7 +137,8 @@ func voiceChatButton(inputBox *widget.Entry, tab1 *fyne.Container) *widget.Butto
 		if recordingError(err) {
 			return
 		}
-		log.Printf("Voice recorder started: %v", recorder)
+
+		log.Printf("Voice recorder __ started: %v", recorder)
 
 		message := aigenRest.Whisper(recorder)
 
