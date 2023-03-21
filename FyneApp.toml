@@ -5,4 +5,4 @@ Website = "https://aigen.azurewebsites.net"
   Name = "AiGen"
   ID = "com.aigen.net"
   Version = "1.0.0"
-  Build = 3
+  Build = 9

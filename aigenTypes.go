@@ -1,11 +1,14 @@
 package main
 
-import "time"
+import (
+	"time"
+)
 
 // Message represents a message in the chat
 type Message struct {
 	ID        int
 	Sender    string
+	Media     string
 	Content   string
 	CreatedAt time.Time
 }

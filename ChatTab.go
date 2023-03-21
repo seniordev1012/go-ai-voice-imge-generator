@@ -6,6 +6,7 @@ import (
 	"fyne.io/fyne/v2/canvas"
 	"fyne.io/fyne/v2/container"
 	"fyne.io/fyne/v2/layout"
+	"fyne.io/fyne/v2/theme"
 	"log"
 )
 
@@ -18,7 +19,8 @@ import (
 func ChatTab() (*fyne.Container, *container.TabItem) {
 	//Create the chat tab
 	chat := container.NewHBox()
-	bgImage := canvas.NewImageFromFile("intro.jpg")
+
+	bgImage := canvas.NewImageFromFile("icon.png")
 	bgImage.FillMode = canvas.ImageFillOriginal
 	// Create a container for the background image and other content
 	bgContainer := container.NewMax(bgImage)
@@ -27,6 +29,7 @@ func ChatTab() (*fyne.Container, *container.TabItem) {
 	container.NewAdaptiveGrid(2, chat)
 	chat.Layout = layout.NewVBoxLayout()
 	aiGen := container.NewTabItem("AI Gen Chat", chat)
+	aiGen.Icon = theme.MailForwardIcon()
 
 	messages1, err := getMessages()
 
@@ -38,7 +41,12 @@ func ChatTab() (*fyne.Container, *container.TabItem) {
 		if message.Sender == "YOU" {
 			addChatBubble(chat, message.Content, true)
 		} else {
-			addChatBubble(chat, message.Content, false)
+
+			if message.Media != "NULL" {
+				addMediaChatBubble(chat, message.Media, false)
+			} else {
+				addChatBubble(chat, message.Content, false)
+			}
 		}
 	}
 	essentialsGen.StartUpCall(chat) //This is a function that is called when the chat tab is opened

@@ -22,7 +22,7 @@ func getMessages() ([]Message, error) {
 	}(db)
 
 	// Execute a SQL query to retrieve all messages
-	rows, err := db.Query("SELECT id, sender, content, created_at FROM messages ORDER BY created_at")
+	rows, err := db.Query("SELECT id, sender, content, media, created_at FROM messages ORDER BY created_at")
 	if err != nil {
 		return nil, err
 	}
@@ -37,7 +37,7 @@ func getMessages() ([]Message, error) {
 	var messages []Message
 	for rows.Next() {
 		var m Message
-		if err := rows.Scan(&m.ID, &m.Sender, &m.Content, &m.CreatedAt); err != nil {
+		if err := rows.Scan(&m.ID, &m.Sender, &m.Content, &m.Media, &m.CreatedAt); err != nil {
 			return nil, err
 		}
 		messages = append(messages, m)
@@ -64,6 +64,41 @@ func getAudio(content string) (string, error) {
 
 	// Execute a SQL query to retrieve all messages
 	rows, err := db.Query("SELECT audio FROM messages WHERE content = ?", content)
+	if err != nil {
+		return "", err
+	}
+	defer func(rows *sql.Rows) {
+		err := rows.Close()
+		if err != nil {
+			log.Printf("Error closing rows: %v", err)
+		}
+	}(rows)
+
+	// Iterate over the result set and create a slice of Message structs
+	var audio string
+	for rows.Next() {
+		if err := rows.Scan(&audio); err != nil {
+			return "", err
+		}
+	}
+	return audio, nil
+}
+func getImageDB(content string) (string, error) {
+	// Open a connection to the database
+	dataSourceName := "DB/messages.db"
+	db, err := sql.Open("sqlite3", dataSourceName)
+	if err != nil {
+		return "", err
+	}
+	defer func(db *sql.DB) {
+		err := db.Close()
+		if err != nil {
+			log.Printf("Error closing database: %v", err)
+		}
+	}(db)
+
+	// Execute a SQL query to retrieve all messages
+	rows, err := db.Query("SELECT content FROM messages WHERE content = ?", content)
 	if err != nil {
 		return "", err
 	}
