@@ -13,6 +13,10 @@ The app currently features the following functionalities:
 
 ## Chat
 <img width="991" alt="Screenshot 2023-03-20 at 02 02 33" src="https://user-images.githubusercontent.com/13138647/226220764-a49bc6d7-2c53-4c77-bfef-0a5dc27ad4d9.png">
+
+## Image Generation (Voice/Text)
+<img width="1171" alt="Screenshot 2023-03-21 at 19 50 13" src="https://user-images.githubusercontent.com/13138647/226735226-1a5e122d-6809-4169-a55f-7d4520e7b590.png">
+
 Still Working On This, Will Get Serious With It Soon.
 
 👨🏽‍💻Not Production Ready: Cross Platform
