@@ -88,7 +88,7 @@ func addChatBubble(box *fyne.Container, message string, isUser bool) {
 }
 
 func addMediaChatBubble(box *fyne.Container, message string, isUser bool) {
-	label := widget.NewLabel("AiGen: Ai Generated Image......From Prompt")
+	label := widget.NewLabel("Sage: Generated Image......From Prompt")
 	//avatarImg, _ := chatAvatars()
 	//Check for message in db
 	//If message is in db, display the message
@@ -135,7 +135,7 @@ func sendButton(inputBox *widget.Entry, tab1 *fyne.Container) *widget.Button {
 	})
 
 	sendButton.OnTapped = func() {
-		sendNotificationNow("Message sent")
+		aigenRest.SendNotificationNow("Message sent")
 		sendButton.Importance = widget.HighImportance
 		sendButton.Refresh()
 		message := inputBox.Text
@@ -158,7 +158,7 @@ func voiceChatButton(inputBox *widget.Entry, tab1 *fyne.Container) *widget.Butto
 	voiceChatButton.Importance = widget.HighImportance
 
 	voiceChatButton.OnTapped = func() {
-		sendNotificationNow("Voice chat started")
+		aigenRest.SendNotificationNow("Voice chat started")
 		voiceChatButton.Importance = widget.DangerImportance
 		voiceChatButton.SetText("Recording...")
 		voiceChatButton.SetIcon(theme.MediaStopIcon())
@@ -229,7 +229,7 @@ func displayConvo(message string, tab1 *fyne.Container, inputBox *widget.Entry, 
 				notificationMessage = notificationMessage[:limit]
 			}
 
-			sendNotificationNow("Image Generated Successfully For:" + notificationMessage)
+			aigenRest.SendNotificationNow("Image Generated Successfully For:" + notificationMessage)
 
 			log.Printf("Message call: %v", messageCall)
 			if err != nil {
@@ -252,7 +252,7 @@ func displayConvo(message string, tab1 *fyne.Container, inputBox *widget.Entry, 
 			if len(notificationMessage) > limit {
 				notificationMessage = notificationMessage[:limit]
 			}
-			sendNotificationNow(notificationMessage)
+			aigenRest.SendNotificationNow(notificationMessage)
 
 			log.Printf("Message call: %v", messageCall)
 			if err != nil {

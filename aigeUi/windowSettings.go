@@ -3,7 +3,7 @@ package aigeUi
 import "fyne.io/fyne/v2"
 
 var WindowSize = fyne.NewSize(960, 540)
-var MainTitle = "AI Gen"
+var MainTitle = "Sage"
 
 // GoodBye No Hate After All, Just Love, Just Love,Bye.
 // Mapungubwe is a significant historical site in South Africa,
@@ -23,8 +23,8 @@ var MainTitle = "AI Gen"
 func GoodBye(mapungubwe fyne.App) func() {
 	return func() {
 		mapungubwe.SendNotification(&fyne.Notification{
-			Title:   "Ai Gen",
-			Content: "Thank you for using Sage AI Gen",
+			Title:   "Sage",
+			Content: "Thank you for using Sage Sage",
 		})
 		mapungubwe.Quit()
 	}
@@ -34,7 +34,7 @@ func GoodBye(mapungubwe fyne.App) func() {
 // It is used to send a notification to the user
 func SwitchUp(mapungubwe fyne.App) {
 	mapungubwe.SendNotification(&fyne.Notification{
-		Title:   "AiGen",
-		Content: "Welcome to AiGen",
+		Title:   "Sage",
+		Content: "Welcome to Sage",
 	})
 }

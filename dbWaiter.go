@@ -9,6 +9,7 @@ import (
 	"fmt"
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/container"
+	"fyne.io/fyne/v2/theme"
 	"fyne.io/fyne/v2/widget"
 	"github.com/go-sql-driver/mysql"
 	"io/ioutil"
@@ -59,6 +60,7 @@ func SignInHandler(chat *fyne.Container, tabs *container.AppTabs, aiGen *contain
 	}
 
 	loginTab := container.NewTabItem("Login", form)
+	loginTab.Icon = theme.LoginIcon()
 	// Add the login tab to the tabs container
 	tabs.Append(loginTab)
 	return inputBoxContainer

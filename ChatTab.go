@@ -28,8 +28,8 @@ func ChatTab() (*fyne.Container, *container.TabItem) {
 	bgContainer.Add(chat)
 	container.NewAdaptiveGrid(2, chat)
 	chat.Layout = layout.NewVBoxLayout()
-	aiGen := container.NewTabItem("AI Gen Chat", chat)
-	aiGen.Icon = theme.MailForwardIcon()
+	aiGen := container.NewTabItem("Sage Chat", chat)
+	aiGen.Icon = theme.HomeIcon()
 
 	messages1, err := getMessages()
 

@@ -3,7 +3,7 @@ package main
 import "fyne.io/fyne/v2"
 
 var windowSize = fyne.NewSize(960, 540)
-var mainTitle = "AI Gen"
+var mainTitle = "Sage"
 
 // No Hate After All, Just Love, Just Love,Bye.
 // Mapungubwe is a significant historical site in South Africa,
@@ -23,8 +23,8 @@ var mainTitle = "AI Gen"
 func goodBye(mapungubwe fyne.App) func() {
 	return func() {
 		mapungubwe.SendNotification(&fyne.Notification{
-			Title:   "Ai Gen",
-			Content: "Thank you for using Sage AI Gen",
+			Title:   "Sage",
+			Content: "Thank you for using Sage Sage",
 		})
 		mapungubwe.Quit()
 	}
@@ -35,7 +35,7 @@ func goodBye(mapungubwe fyne.App) func() {
 // known for its rich history as a kingdom of early African civilization.
 func switchUp(mapungubwe fyne.App) {
 	mapungubwe.SendNotification(&fyne.Notification{
-		Title:   "AI Gen",
-		Content: "Welcome to Sage AI Gen",
+		Title:   "Sage",
+		Content: "Welcome to Sage Sage",
 	})
 }

@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/container"
+	"fyne.io/fyne/v2/theme"
 	"fyne.io/fyne/v2/widget"
 	"log"
 )
@@ -61,5 +62,6 @@ func GenSettings(mapungubwe fyne.App) *container.TabItem {
 		widget.NewAccordionItem("Add Watchlist", widget.NewLabel("Add a new stock to the watchlist")),
 	),
 	)
+	settingsTab.Icon = theme.SettingsIcon()
 	return settingsTab
 }
