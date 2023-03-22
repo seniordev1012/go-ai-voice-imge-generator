@@ -8,7 +8,6 @@ require (
 	github.com/go-sql-driver/mysql v1.7.0
 	github.com/hajimehoshi/go-mp3 v0.3.3
 	github.com/hegedustibor/htgo-tts v0.0.0-20220821045517-04f3cda7a12f
-	github.com/magefile/mage v1.14.0
 	github.com/mattn/go-sqlite3 v1.14.16
 	github.com/sashabaranov/go-openai v1.5.2
 	github.com/youpy/go-wav v0.3.2
