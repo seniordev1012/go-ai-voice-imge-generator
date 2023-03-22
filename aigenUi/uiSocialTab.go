@@ -20,6 +20,17 @@ type Tweet struct {
 type TweetResponse struct {
 	Data []Tweet `json:"data"`
 }
+type facebookFeed struct {
+	Data []struct {
+		CreatedTime string `json:"created_time"`
+		Id          string `json:"id"`
+		Message     string `json:"message,omitempty"`
+	} `json:"data"`
+	Paging struct {
+		Previous string `json:"previous"`
+		Next     string `json:"next"`
+	} `json:"paging"`
+}
 
 // SocialTab is the tab that contains social apps
 func SocialTab() *container.TabItem {
@@ -66,12 +77,53 @@ func SocialTab() *container.TabItem {
 	// Post To Twitter Card
 	postToTwitterCard := widget.NewCard("Post To Twitter", "", inputBox)
 	page := container.NewVBox(postToTwitterCard, postToTwitterButton, tweetCards[0])
+
+	//Facebook REST API Response
+	var facebookResponse facebookFeed
+	getFacebookFeed := aigenRest.FacebookPosts()
+	err = json.Unmarshal(getFacebookFeed, &facebookResponse)
+	if err != nil {
+		panic(err)
+	}
+
+	// Loop through facebook posts and create a card for each post
+	var facebookCards []*widget.Card
+
+	for _, facebookPost := range facebookResponse.Data {
+		cardContent := widget.NewCard("", "", widget.NewLabel(facebookPost.Message))
+		facebookCard := widget.NewCard("", "", cardContent)
+		facebookCard.Content = cardContent
+		facebookCard.SetTitle(facebookPost.Id)
+		fyne.CurrentApp().Settings().SetTheme(theme.LightTheme())
+		cardContent.ExtendBaseWidget(cardContent)
+		facebookCards = append(facebookCards, facebookCard)
+		facebookCards = append(facebookCards, widget.NewCard("", "", widget.NewLabel("")))
+		facebookCard = fyne.CanvasObject(facebookCard).(*widget.Card)
+		facebookCard.MinSize()
+		facebookCard.Resize(fyne.NewSize(100, 200))
+	}
+
+	//Button to post to facebook
+	postToFacebookButton := widget.NewButton("Post To Facebook", func() {
+		//aigenRest.SendFacebookPost(inputBox.Text)
+		inputBox.SetText("")
+		aigenRest.SendNotificationNow("Facebook Post Sent Successfully")
+
+	})
+	postToFacebookButton.MinSize()
+	postToFacebookButton.Resize(fyne.NewSize(100, 200))
+	postToFacebookButton.ExtendBaseWidget(postToFacebookButton)
+
+	// Post To Facebook Card
+	postToFacebookCard := widget.NewCard("Post To Facebook", "", inputBox)
+	facebookPages := container.NewVBox(postToFacebookCard, postToFacebookButton, facebookCards[0])
+
 	socialTabCon := container.NewTabItem("Social", container.NewAppTabs(
 		container.NewTabItem("Twitter", page),
-		container.NewTabItem("Facebook", widget.NewAccordion()),
-		container.NewTabItem("Discord", widget.NewAccordion()),
-		container.NewTabItem("Telegram", widget.NewAccordion()),
-		container.NewTabItem("WhatsApp", widget.NewAccordion()),
+		container.NewTabItem("Facebook", facebookPages),
+		//container.NewTabItem("Discord", widget.NewAccordion()),
+		//container.NewTabItem("Telegram", widget.NewAccordion()),
+		//container.NewTabItem("WhatsApp", widget.NewAccordion()),
 	))
 	socialTabCon.Icon = theme.GridIcon()
 

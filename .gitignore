@@ -6,3 +6,4 @@ DigiCertGlobalRootCA.crt.pem
 identifier.sqlite
 !/ci/
 !/Azure/
+
