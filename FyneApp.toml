@@ -2,7 +2,7 @@ Website = "https://aigen.azurewebsites.net"
 
 [Details]
   Icon = "Icon.png"
-  Name = "AiGen"
+  Name = "Sage"
   ID = "com.aigen.net"
-  Version = "1.0.0"
-  Build = 9
+  Version = "1.0.1"
+  Build = 5
