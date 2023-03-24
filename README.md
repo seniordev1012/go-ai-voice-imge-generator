@@ -4,9 +4,11 @@ This is a Go-based chatbot interface that uses the fyne framework. The app is de
 
 The app currently features the following functionalities:
 
+
 ## Text to speech
 ![image](https://user-images.githubusercontent.com/13138647/226470554-a434ebf2-a52b-4861-a5f6-a96285b420b8.png)
  Replay Chat/GPT Audio Replied Completions
+ 
  
 ## Speech to text
 ![image](https://user-images.githubusercontent.com/13138647/226220962-bc58258c-4b81-4149-a2ca-16f09486f03a.png)
