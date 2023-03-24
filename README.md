@@ -23,8 +23,6 @@ Still Working On This, Will Get Serious With It Soon.
 
 👨🏽‍💻Not Production Ready: Cross Platform
 
-
-
 ### Getting Started
 To run the app, follow the steps below:
 
@@ -34,8 +32,12 @@ To run the app, follow the steps below:
 
 - Open your terminal and navigate to the root of the cloned repository
 
--Run `go run main.go` to start the app
+- Run `go run main.go` or just `go .` to start the app
+
+- You Will To Edit Tokens Or Just Comment out the tabs to disable social tabs
+
 ### Features
+
 - Text to Speech
 - The app features a text-to-speech functionality that allows users to convert text into speech. To use this feature, simply type the text into the chatbox and - click the 'Speak' button.
 
