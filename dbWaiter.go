@@ -68,11 +68,6 @@ func SignInHandler(chat *fyne.Container, tabs *container.AppTabs, aiGen *contain
 
 func loginHandler() func() {
 	return func() {
-		email := "sifhufisg@gmail.com"
-		password := "123456"
-
-		log.Printf("Email: %s", email)
-		log.Println("Password: ", password)
 		db, err := dbPass()
 		if err != nil {
 			log.Println("Error in Connecting to the Database")
