@@ -1,6 +1,6 @@
 # Go OpenAi Cross Platform
 
-Downlaod Android App: https://sageai.azurewebsites.net/platform
+Downlaod Android App: <a href="https://sageai.azurewebsites.net/platform">Download App</a>
 
 This is a Go-based chatbot interface that uses the fyne framework. The app is designed to allow users to interact with a chatbot through the interface.
 
