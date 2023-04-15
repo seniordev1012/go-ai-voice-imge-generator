@@ -22,6 +22,7 @@ func dbPass() (*sql.DB, error) {
 	dbPassword := os.Getenv("DB_PASSWORD")
 	dbHost := os.Getenv("DB_HOST")
 	dbName := os.Getenv("DB_NAME")
+	CaCertPath := ""
 	CE := CaCertPath
 
 	rootCertPool := x509.NewCertPool()
@@ -76,6 +77,7 @@ func loginHandler() func() {
 		}
 
 		//Check if the User Exists
+		email := ""
 		userData, err := db.Query(
 			"SELECT id, email, password FROM storecustomers WHERE email = ?",
 			email,

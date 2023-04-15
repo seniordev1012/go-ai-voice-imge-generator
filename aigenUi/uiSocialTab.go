@@ -38,7 +38,7 @@ func SocialTab() *container.TabItem {
 	getTweets := aigenRest.TwitterHome()
 	err := json.Unmarshal(getTweets, &tweetResponse)
 	if err != nil {
-		panic(err)
+		log.Println(err)
 	}
 
 	// Loop through tweets and create a card for each tweet
@@ -75,15 +75,15 @@ func SocialTab() *container.TabItem {
 	postToTwitterButton.ExtendBaseWidget(postToTwitterButton)
 
 	// Post To Twitter Card
-	postToTwitterCard := widget.NewCard("Post To Twitter", "", inputBox)
-	page := container.NewVBox(postToTwitterCard, postToTwitterButton, tweetCards[0])
+	//postToTwitterCard := widget.NewCard("Post To Twitter", "", inputBox)
+	//page := container.NewVBox(postToTwitterCard, postToTwitterButton, tweetCards[0])
 
 	//Facebook REST API Response
 	var facebookResponse facebookFeed
 	getFacebookFeed := aigenRest.FacebookPosts()
 	err = json.Unmarshal(getFacebookFeed, &facebookResponse)
 	if err != nil {
-		panic(err)
+		log.Println(err)
 	}
 
 	// Loop through facebook posts and create a card for each post
@@ -115,15 +115,12 @@ func SocialTab() *container.TabItem {
 	postToFacebookButton.ExtendBaseWidget(postToFacebookButton)
 
 	// Post To Facebook Card
-	postToFacebookCard := widget.NewCard("Post To Facebook", "", inputBox)
-	facebookPages := container.NewVBox(postToFacebookCard, postToFacebookButton, facebookCards[0])
-
 	socialTabCon := container.NewTabItem("Social", container.NewAppTabs(
-		container.NewTabItem("Twitter", page),
-		container.NewTabItem("Facebook", facebookPages),
-		//container.NewTabItem("Discord", widget.NewAccordion()),
-		//container.NewTabItem("Telegram", widget.NewAccordion()),
-		//container.NewTabItem("WhatsApp", widget.NewAccordion()),
+	//container.NewTabItem("Twitter", page),
+	//container.NewTabItem("Facebook", facebookPages),
+	//container.NewTabItem("Discord", widget.NewAccordion()),
+	//container.NewTabItem("Telegram", widget.NewAccordion()),
+	//container.NewTabItem("WhatsApp", widget.NewAccordion()),
 	))
 	socialTabCon.Icon = theme.GridIcon()
 

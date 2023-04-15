@@ -3,7 +3,7 @@
 *.iml
 .env
 DigiCertGlobalRootCA.crt.pem
-identifier.sqlite
+DB/identifier.sqlite
 !/ci/
 !/Azure/
 

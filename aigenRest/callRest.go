@@ -18,7 +18,7 @@ func SpeakOut(innerVoice string) (string, error) {
 	innerVoiceLang := "en-US"
 	innerVoiceName := "en-US-DavisNeural"
 
-	url := fmt.Sprintf("https://%s.tts.speech.microsoft.com/cognitiveservices/v1", os.Getenv("SPEECH_REGION"))
+	url := "https://eastus.api.cognitive.microsoft.com/sts/v1.0/issuetoken"
 	method := "POST"
 	payload := strings.NewReader(fmt.Sprintf("<speak version='1.0' xmlns='http://www.w3.org/2001/10/synthesis'"+
 		" xml:lang='%s'><voice name='%s'>%s</voice></speak>", innerVoiceLang, innerVoiceName, innerVoice))

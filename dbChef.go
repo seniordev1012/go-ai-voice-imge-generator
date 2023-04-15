@@ -266,7 +266,7 @@ func createProductivityDatabase() error {
 	}(db)
 
 	if db == nil {
-		log.Println("Database does not exist")
+		log.Println("Activity DB does not exist")
 	}
 	// Execute the SQL command to create the table
 	_, err = db.Exec(`
@@ -280,7 +280,7 @@ func createProductivityDatabase() error {
 	if err != nil {
 		return err
 	}
-	log.Printf("Database created successfully")
+	log.Printf("Activity DB created successfully")
 
 	return nil
 }
@@ -301,7 +301,7 @@ func createGalleryDatabase() error {
 	}(db)
 
 	if db == nil {
-		log.Println("Database does not exist")
+		log.Println("Gallery DB does not exist")
 	}
 	// Execute the SQL command to create the table
 	_, err = db.Exec(`
@@ -314,7 +314,80 @@ func createGalleryDatabase() error {
 	if err != nil {
 		return err
 	}
-	log.Printf("Database created successfully")
+	log.Printf("Gallery DB created successfully")
+
+	return nil
+}
+
+// Mas
+func createMasterMessages() error {
+	// Open a connection to the database
+	db, err := sql.Open("sqlite3", "DB/gallery.db")
+	if err != nil {
+		return err
+	}
+	defer func(db *sql.DB) {
+		err := db.Close()
+		if err != nil {
+			log.Println(err)
+		}
+	}(db)
+
+	if db == nil {
+		log.Println("Messages DB does not exist")
+	}
+	// Execute the SQL command to create the table
+	_, err = db.Exec(`
+				CREATE TABLE messages (
+			id INTEGER PRIMARY KEY AUTOINCREMENT,
+			sender TEXT NOT NULL,
+			content TEXT DEFAULT NULL,
+			audio TEXT DEFAULT NULL,
+			media  VARCHAR(255) DEFAULT 'NULL',
+			created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+		)
+	`)
+	if err != nil {
+		return err
+	}
+	log.Printf("Message DB created successfully")
+
+	return nil
+}
+
+func extensionsSource() error {
+	// Open a connection to the database
+	db, err := sql.Open("sqlite3", "DB/extensions.db")
+	if err != nil {
+		return err
+	}
+	defer func(db *sql.DB) {
+		err := db.Close()
+		if err != nil {
+			log.Println(err)
+		}
+	}(db)
+
+	if db == nil {
+		log.Println("Extensions DB does not exist")
+	}
+	// Execute the SQL command to create the table
+	_, err = db.Exec(`
+				CREATE TABLE extension (
+			id INTEGER PRIMARY KEY AUTOINCREMENT,
+			name TEXT DEFAULT NULL,
+			vendor TEXT DEFAULT NULL,
+			consumer_key TEXT DEFAULT NULL,
+			consumer_secret TEXT DEFAULT NULL,
+			access_token TEXT DEFAULT NULL,
+			access_key TEXT DEFAULT NULL,
+			created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+		)
+	`)
+	if err != nil {
+		return err
+	}
+	log.Printf("Extensions Database created successfully")
 
 	return nil
 }

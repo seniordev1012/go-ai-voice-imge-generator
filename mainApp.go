@@ -16,12 +16,13 @@ type Users struct {
 // The tabs are the main content of the app
 // This is where All the fun happens :)
 func mainApp(mapungubwe fyne.App) (*container.AppTabs, *container.Split) {
-	socialTabCon := aigenUi.SocialTab()
+	//socialTabCon := aigenUi.SocialTab()
 	//financeTab := aigenUi.FinancialTab(mapungubwe)
 	//planPage := aigenUi.PersonalTab(mapungubwe)
 	//newsTab := aigenUi.NewsTab()
 	chat, aiGen := ChatTab()
 	settingsTab := aigenUi.GenSettings(mapungubwe)
+	extendAI := aigenUi.Extensions(mapungubwe)
 
 	//Create the tabs container and add the tabs to it
 	tabs := container.NewAppTabs(
@@ -29,7 +30,8 @@ func mainApp(mapungubwe fyne.App) (*container.AppTabs, *container.Split) {
 		//financeTab,
 		//planPage,
 		//newsTab,
-		socialTabCon,
+		//socialTabCon,
+		extendAI,
 		settingsTab,
 	)
 
