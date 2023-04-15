@@ -14,6 +14,7 @@ func setup() {
 }
 
 func MigrationAssist() {
+	LockSmith()
 	dbUser := os.Setenv("DB_USER", "")
 	if dbUser != nil {
 		log.Printf("Error setting environment variable: %v", dbUser)
