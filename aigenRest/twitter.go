@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
-	"strings"
 )
 
 func TwitterHome() []byte {
@@ -36,36 +35,4 @@ func TwitterHome() []byte {
 	}
 	fmt.Println(string(body))
 	return body
-}
-
-func SendTweet(tweet string) {
-
-	url := "https://api.twitter.com/2/tweets"
-	method := "POST"
-
-	payload := strings.NewReader(fmt.Sprintf(`{
-    "text": "%s"
-}`, tweet))
-
-	client := &http.Client{}
-	req, err := http.NewRequest(method, url, payload)
-
-	if err != nil {
-		fmt.Println(err)
-		return
-	}
-
-	res, err := client.Do(req)
-	if err != nil {
-		fmt.Println(err)
-		return
-	}
-	defer res.Body.Close()
-
-	body, err := ioutil.ReadAll(res.Body)
-	if err != nil {
-		fmt.Println(err)
-		return
-	}
-	fmt.Println(string(body))
 }

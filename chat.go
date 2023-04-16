@@ -220,53 +220,25 @@ func displayConvo(message string, tab1 *fyne.Container, inputBox *widget.Entry, 
 		// Message Input Box
 		inputBox.SetText("")
 		//check if message contains words: Image, Generate or Generate Image, or each word separately and then call the function to generate an image
+		//TODO:Make AI Smarter
+		//APIS!
+		//TODO::Calendar
+		//TODO::Email
+		//TODO::Web Search
+		//TODO:: Documents (PDF, CSV, TXT)
+		//TODO:: Weather
+		//TODO:: Top News.
+		//TODO:: Online Purchase
+		//TODO:: Long Term Memory
+		if strings.Contains(message, "Send Tweet") || strings.Contains(message, "Tweet") || strings.Contains(message, "Twitter") || strings.Contains(message, "send tweet") || strings.Contains(message, "Send tweet") {
 
-		if strings.Contains(message, "Image") || strings.Contains(message, "image") || strings.Contains(message, "photo") || strings.Contains(message, "Photo") || strings.Contains(message, "Generate") || strings.Contains(message, "Generate Image") {
-			//generate image
-			messageCall, err := aigenRest.ImageGenerationCall(message)
-			limit := 120
-			notificationMessage := message
+			twitterPushLogic(message, tab1)
 
-			if len(notificationMessage) > limit {
-				notificationMessage = notificationMessage[:limit]
-			}
-
-			aigenRest.SendNotificationNow("Image Generated Successfully For:" + notificationMessage)
-
-			log.Printf("Message call: %v", messageCall)
-			if err != nil {
-				log.Printf("Error making API call: %v", err)
-			}
-			botMessages(messageCall, err, tab1, "image")
-
-			//TODO: Add image to database properly
-
-			addBotMessages := addMessageWithMedia("Bot", message, "none", messageCall)
-			if addBotMessages != nil {
-				log.Printf("Error adding bot message: %v", addBotMessages)
-			}
+		} else if strings.Contains(message, "Image") || strings.Contains(message, "image") || strings.Contains(message, "photo") || strings.Contains(message, "Photo") || strings.Contains(message, "Generate") || strings.Contains(message, "Generate Image") {
+			imageGenerationLogic(message, tab1)
 
 		} else {
-			messageCall, err := aigenRest.MakeApiCall(message)
-			limit := 120
-			notificationMessage := messageCall
-
-			if len(notificationMessage) > limit {
-				notificationMessage = notificationMessage[:limit]
-			}
-			aigenRest.SendNotificationNow(notificationMessage)
-
-			log.Printf("Message call: %v", messageCall)
-			if err != nil {
-				log.Printf("Error making API call: %v", err)
-			}
-
-			botMessages(messageCall, err, tab1, "text")
-
-			addBotMessages := addMessage("Bot", messageCall)
-			if addBotMessages != nil {
-				log.Printf("Error adding bot message: %v", addBotMessages)
-			}
+			defaultCallConverseLogic(message, tab1)
 		}
 		// Switch API Provider
 
@@ -281,11 +253,15 @@ func displayConvo(message string, tab1 *fyne.Container, inputBox *widget.Entry, 
 func botMessages(messageCall string, err error, tab1 *fyne.Container, contentType string) {
 	//Send voice note if message is more than 120 characters
 	if contentType == "text" {
+
 		if len(messageCall) > 0 {
+
 			sendAudio, _ := pressPlayAudio(messageCall)
+
 			if sendAudio != true {
 				log.Printf("Error sending audio: %v", sendAudio)
 			}
+
 			addChatBubble(tab1, "Bot: "+messageCall, false)
 		}
 	}

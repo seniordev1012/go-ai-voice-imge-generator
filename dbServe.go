@@ -46,6 +46,44 @@ func getMessages() ([]Message, error) {
 	}
 	return messages, nil
 }
+func getLastMessages() ([]Message, error) {
+	// Open a connection to the database
+	db, err := sql.Open("sqlite3", "DB/messages.db")
+	if err != nil {
+		return nil, err
+	}
+	defer func(db *sql.DB) {
+		err := db.Close()
+		if err != nil {
+			log.Printf("Error closing database: %v", err)
+		}
+	}(db)
+
+	// Execute a SQL query to retrieve all messages
+	rows, getLastMessageDB := db.Query("SELECT id, sender, content, media, created_at FROM messages WHERE media='Null' ORDER BY created_at LIMIT 5 ")
+	if getLastMessageDB != nil {
+		return nil, getLastMessageDB
+	}
+	defer func(rows *sql.Rows) {
+		err := rows.Close()
+		if err != nil {
+			log.Printf("Error closing rows: %v", err)
+		}
+	}(rows)
+
+	// Iterate over the result set and create a slice of Message structs
+	var messages []Message
+	for rows.Next() {
+		var m Message
+		if err := rows.Scan(&m.ID, &m.Sender, &m.Content, &m.Media, &m.CreatedAt); err != nil {
+			return nil, err
+		}
+		messages = append(messages, m)
+		log.Printf("Message: %v", m)
+
+	}
+	return messages, nil
+}
 
 // Get audio from database based on text content
 func getAudio(content string) (string, error) {

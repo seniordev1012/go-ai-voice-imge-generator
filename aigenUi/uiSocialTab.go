@@ -3,6 +3,7 @@ package aigenUi
 import (
 	_ "aigen/aigeUi"
 	"aigen/aigenRest"
+	"aigen/socialFeed"
 	"encoding/json"
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/container"
@@ -65,14 +66,14 @@ func SocialTab() *container.TabItem {
 	}
 
 	//Button to post to twitter
-	postToTwitterButton := widget.NewButton("Post To Twitter", func() {
-		aigenRest.SendTweet(inputBox.Text)
-		inputBox.SetText("")
-		aigenRest.SendNotificationNow("Tweet Sent Successfully")
-	})
-	postToTwitterButton.MinSize()
-	postToTwitterButton.Resize(fyne.NewSize(100, 200))
-	postToTwitterButton.ExtendBaseWidget(postToTwitterButton)
+	//postToTwitterButton := widget.NewButton("Post To Twitter", func() {
+	//	main.SendTweet(inputBox.Text)
+	//	inputBox.SetText("")
+	//	aigenRest.SendNotificationNow("Tweet Sent Successfully")
+	//})
+	//postToTwitterButton.MinSize()
+	//postToTwitterButton.Resize(fyne.NewSize(100, 200))
+	//postToTwitterButton.ExtendBaseWidget(postToTwitterButton)
 
 	// Post To Twitter Card
 	//postToTwitterCard := widget.NewCard("Post To Twitter", "", inputBox)
@@ -80,7 +81,7 @@ func SocialTab() *container.TabItem {
 
 	//Facebook REST API Response
 	var facebookResponse facebookFeed
-	getFacebookFeed := aigenRest.FacebookPosts()
+	getFacebookFeed := socialFeed.FacebookPosts()
 	err = json.Unmarshal(getFacebookFeed, &facebookResponse)
 	if err != nil {
 		log.Println(err)

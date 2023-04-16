@@ -4,12 +4,15 @@ import (
 	"fmt"
 	"github.com/gen2brain/malgo"
 	wave "github.com/zenwerk/go-wave"
-	"math/rand"
 	"os"
-	"strings"
 	"time"
 )
 
+// VoiceRecorder takes voice/speech as input and uses OpenAI Whisper
+// To Listen To Words Said In Captured Speech
+// Not Sure If This Can Scale But It as Good as it is supposed to be
+// For PERSONAL USAGE
+// PLEASE DO NOT TOUCH THIS! I HAD TO PERFORM MIRACLES TO MAKE THIS WORK.
 func VoiceRecorder() (string, error) {
 	ctx, err := malgo.InitContext(nil, malgo.ContextConfig{}, func(message string) {
 		//fmt.Printf("LOG <%v>\n", message)
@@ -86,26 +89,4 @@ func VoiceRecorder() (string, error) {
 	defer w.Close()
 
 	return filePathName, nil
-}
-
-func randomName() string {
-	timestamp := time.Now().Format("02-01-2006-15-04-05")
-	timestamp = strings.Replace(timestamp, "-", "", -1)
-	timestamp = strings.Replace(timestamp, ":", "", -1)
-
-	letterPool := "abcdefghijklmnopqrstuvwxyzABZDEFGHIJKLMNOPQRSTUVWXYZ"
-	randomLetter := string(letterPool[rand.Intn(len(letterPool))])
-
-	var letters strings.Builder
-	for i := 0; i < 5; i++ {
-		letters.WriteByte(letterPool[rand.Intn(len(letterPool))])
-	}
-
-	randomName := timestamp + randomLetter + letters.String()
-	randomFileName := randomName + ".wav"
-	audioFileName := "cache/voice_" + randomFileName
-	if !strings.HasSuffix(audioFileName, ".wav") {
-		audioFileName += ".wav"
-	}
-	return audioFileName
 }

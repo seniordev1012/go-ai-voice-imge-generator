@@ -1,6 +1,7 @@
 package aigenUi
 
 import (
+	"fmt"
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/container"
 	"fyne.io/fyne/v2/theme"
@@ -33,13 +34,21 @@ func Extensions(mapungubwe fyne.App) *container.TabItem {
 	// Add the login tab to the tabs container
 	cardin := widget.NewCard("", "", tokensForm)
 	extensionsTab := container.NewTabItem("Extensions", widget.NewAccordion(
-		widget.NewAccordionItem("Web Search", widget.NewCheck("Web Search", func(OnandOff bool) {
+		widget.NewAccordionItem("Sage", widget.NewCheck("Web Search", func(OnandOff bool) {
 
 		})),
 
-		widget.NewAccordionItem("Twitter", cardin),
-		widget.NewAccordionItem("MeCart", widget.NewEntry()),
-		widget.NewAccordionItem("AiGen", widget.NewEntry()),
+		widget.NewAccordionItem("Calendar", cardin),
+		widget.NewAccordionItem("EmotionalAI", widget.NewRichTextFromMarkdown("Enable Emotions")),
+		widget.NewAccordionItem("Whatsapp", &widget.Button{
+			OnTapped: func() {
+				fmt.Print("Hello")
+			},
+		}),
+		widget.NewAccordionItem("Twitter", widget.NewEntry()),
+		widget.NewAccordionItem("OpenAI", widget.NewEntry()),
+		widget.NewAccordionItem("Humor", widget.NewEntry()),
+		widget.NewAccordionItem("Web Search", widget.NewEntry()),
 	),
 	)
 	extensionsTab.Icon = theme.ListIcon()

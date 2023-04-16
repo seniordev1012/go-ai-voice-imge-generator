@@ -36,7 +36,7 @@ func ChatTab() (*fyne.Container, *container.TabItem) {
 	if err != nil {
 		log.Printf("Error getting messages: %v", err)
 	}
-
+	//Loop Through Messages From DB and Display
 	for _, message := range messages1 {
 		if message.Sender == "YOU" {
 			addChatBubble(chat, message.Content, true)
