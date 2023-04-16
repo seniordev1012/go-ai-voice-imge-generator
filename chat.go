@@ -87,6 +87,8 @@ func addChatBubble(box *fyne.Container, message string, isUser bool) {
 	container.NewScroll(box).SetMinSize(fyne.NewSize(100, 100))
 }
 
+// displayConvo displays the conversation in the chat box
+// The message is the text to be displayed
 func addMediaChatBubble(box *fyne.Container, message string, isUser bool) {
 	label := widget.NewLabel("Sage: Generated Image......From Prompt")
 	//avatarImg, _ := chatAvatars()

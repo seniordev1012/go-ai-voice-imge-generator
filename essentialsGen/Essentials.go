@@ -4,6 +4,7 @@ import (
 	"fyne.io/fyne/v2"
 )
 
+// StartUpCall This is a function that is called when the chat tab is opened
 func StartUpCall(chat *fyne.Container) {
 	//messageCall, checkError := makeApiCall()
 	//

@@ -49,6 +49,8 @@ func ChatTab() (*fyne.Container, *container.TabItem) {
 			}
 		}
 	}
-	essentialsGen.StartUpCall(chat) //This is a function that is called when the chat tab is opened
+
+	essentialsGen.StartUpCall(chat)
+
 	return chat, aiGen
 }

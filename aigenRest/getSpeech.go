@@ -19,6 +19,37 @@ func SpeakOut(innerVoice string) (string, error) {
 	innerVoiceName := "en-US-DavisNeural"
 	format := ".mp3"
 	audioPath := "voicenotes/"
+	// TODO: Support msspeech voices other than en-US-DavisNeural (e.g. en-US-JessaNeural) to match the inner voice sentinment (e.g. cheerful, sad, etc.)
+	//nDefault\nChat\nAngry\nCheerful\nExcited\nFriendly\nHopeful\nSad\nShouting\nTerrified\nUnfriendly\nWhispering\
+	//mood, _ := emotionalAI(innerVoice)
+	//fmt.Println("mood: ", mood)
+	//
+	//speechStyle := "Default"
+	//if mood == "Default" {
+	//	speechStyle = "Default"
+	//} else if mood == "Chat" {
+	//	speechStyle = "Chat"
+	//} else if mood == "Angry" {
+	//	speechStyle = "Angry"
+	//} else if mood == "Cheerful" {
+	//	speechStyle = "Cheerful"
+	//} else if mood == "Excited" {
+	//	speechStyle = "Excited"
+	//} else if mood == "Friendly" {
+	//	speechStyle = "Friendly"
+	//} else if mood == "Hopeful" {
+	//	speechStyle = "Hopeful"
+	//} else if mood == "Sad" {
+	//	speechStyle = "Sad"
+	//} else if mood == "Shouting" {
+	//	speechStyle = "Shouting"
+	//} else if mood == "Terrified" {
+	//	speechStyle = "Terrified"
+	//} else if mood == "Unfriendly" {
+	//	speechStyle = "Unfriendly"
+	//} else if mood == "Whispering" {
+	//	speechStyle = "Whispering"
+	//}
 
 	// Send a request to get an authentication token
 	tokenUrl := "https://eastus.api.cognitive.microsoft.com/sts/v1.0/issuetoken"
@@ -89,10 +120,14 @@ func SpeakOut(innerVoice string) (string, error) {
 	return joinedFileName, nil
 }
 
+// joinFileName joins the audio path, random string, and format
+// to create the file name
 func joinFileName(audioPath string, randomString string, format string) string {
 	return audioPath + randomString + format
 }
 
+// updateBotChatAudioPath updates the audio path in the messages table
+// for the last row in the table
 func updateBotChatAudioPath(audioPath string) (string, error) {
 	// SQL update audio for the last row in the messages table
 	dataSourceName := "DB/messages.db"

@@ -18,6 +18,7 @@ func updateTime(clock *widget.Label) {
 func main() {
 	MigrationAssist()
 	setup()
+
 	// Stock Market Trader App
 	//PlayNotificationSound()
 	//Whisper()

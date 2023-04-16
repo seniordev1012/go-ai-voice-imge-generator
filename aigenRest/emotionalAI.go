@@ -3,11 +3,14 @@ package aigenRest
 import (
 	"bytes"
 	"encoding/json"
+	"io"
+	"log"
 	"net/http"
 	"os"
 )
 
 func emotionalAI(text string) (string, error) {
+
 	data := struct {
 		Model            string  `json:"model"`
 		Prompt           string  `json:"prompt"`
@@ -45,7 +48,12 @@ func emotionalAI(text string) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	defer resp.Body.Close()
+	defer func(Body io.ReadCloser) {
+		err := Body.Close()
+		if err != nil {
+			log.Println(err)
+		}
+	}(resp.Body)
 
 	var result struct {
 		Choices []struct {
