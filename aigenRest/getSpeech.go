@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"database/sql"
 	"fmt"
+	"io"
 	"io/ioutil"
 	"log"
 	"math/rand"
@@ -19,25 +20,61 @@ func SpeakOut(innerVoice string) (string, error) {
 	innerVoiceName := "en-US-DavisNeural"
 	format := ".mp3"
 	audioPath := "voicenotes/"
+	// TODO: Support msspeech voices other than en-US-DavisNeural (e.g. en-US-JessaNeural) to match the inner voice sentinment (e.g. cheerful, sad, etc.)
+	//nDefault\nChat\nAngry\nCheerful\nExcited\nFriendly\nHopeful\nSad\nShouting\nTerrified\nUnfriendly\nWhispering\
+	//mood, _ := emotionalAI(innerVoice)
+	//fmt.Println("mood: ", mood)
+	//
+	//speechStyle := "Default"
+	//if mood == "Default" {
+	//	speechStyle = "Default"
+	//} else if mood == "Chat" {
+	//	speechStyle = "Chat"
+	//} else if mood == "Angry" {
+	//	speechStyle = "Angry"
+	//} else if mood == "Cheerful" {
+	//	speechStyle = "Cheerful"
+	//} else if mood == "Excited" {
+	//	speechStyle = "Excited"
+	//} else if mood == "Friendly" {
+	//	speechStyle = "Friendly"
+	//} else if mood == "Hopeful" {
+	//	speechStyle = "Hopeful"
+	//} else if mood == "Sad" {
+	//	speechStyle = "Sad"
+	//} else if mood == "Shouting" {
+	//	speechStyle = "Shouting"
+	//} else if mood == "Terrified" {
+	//	speechStyle = "Terrified"
+	//} else if mood == "Unfriendly" {
+	//	speechStyle = "Unfriendly"
+	//} else if mood == "Whispering" {
+	//	speechStyle = "Whispering"
+	//}
 
 	// Send a request to get an authentication token
 	tokenUrl := "https://eastus.api.cognitive.microsoft.com/sts/v1.0/issuetoken"
-	tokenReq, err := http.NewRequest("POST", tokenUrl, nil)
-	if err != nil {
-		return "", err
+	tokenReq, issueTokenSuccess := http.NewRequest("POST", tokenUrl, nil)
+	if issueTokenSuccess != nil {
+		return "", issueTokenSuccess
 	}
 	tokenReq.Header.Set("Ocp-Apim-Subscription-Key", os.Getenv("SPEECH_KEY"))
 	tokenResp, err := http.DefaultClient.Do(tokenReq)
 	if err != nil {
 		return "", err
 	}
-	defer tokenResp.Body.Close()
+	defer func(Body io.ReadCloser) {
+		receiveSpeech := Body.Close()
+		if receiveSpeech != nil {
+			log.Printf("Could not use Subscription Token Or Something with error: %s", receiveSpeech)
+		}
+	}(tokenResp.Body)
 	if tokenResp.StatusCode != http.StatusOK {
 		return "", fmt.Errorf("SpeakOut: unexpected status code %d", tokenResp.StatusCode)
 	}
-	tokenBody, err := ioutil.ReadAll(tokenResp.Body)
-	if err != nil {
-		return "", err
+	tokenBody, tokenSuccess := ioutil.ReadAll(tokenResp.Body)
+	if tokenSuccess != nil {
+		return "", tokenSuccess
 	}
 	token := string(tokenBody)
 
@@ -52,17 +89,22 @@ func SpeakOut(innerVoice string) (string, error) {
 	req.Header.Set("Content-Type", "application/ssml+xml")
 	req.Header.Set("Authorization", fmt.Sprintf("Bearer %s", token))
 	req.Header.Set("User-Agent", "AiGen")
-	resp, err := http.DefaultClient.Do(req)
-	if err != nil {
-		return "", err
+	resp, restSuccess := http.DefaultClient.Do(req)
+	if restSuccess != nil {
+		return "", restSuccess
 	}
-	defer resp.Body.Close()
+	defer func(Body io.ReadCloser) {
+		speechOut := Body.Close()
+		if speechOut != nil {
+			log.Printf("Could not execute speech functionality %s", speechOut)
+		}
+	}(resp.Body)
 	if resp.StatusCode != http.StatusOK {
 		return "", fmt.Errorf("SpeakOut: unexpected status code %d", resp.StatusCode)
 	}
-	body, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		return "", err
+	body, audioSuccess := ioutil.ReadAll(resp.Body)
+	if audioSuccess != nil {
+		return "", audioSuccess
 	}
 
 	// Save the audio file to disk
@@ -89,10 +131,14 @@ func SpeakOut(innerVoice string) (string, error) {
 	return joinedFileName, nil
 }
 
+// joinFileName joins the audio path, random string, and format
+// to create the file name
 func joinFileName(audioPath string, randomString string, format string) string {
 	return audioPath + randomString + format
 }
 
+// updateBotChatAudioPath updates the audio path in the messages table
+// for the last row in the table
 func updateBotChatAudioPath(audioPath string) (string, error) {
 	// SQL update audio for the last row in the messages table
 	dataSourceName := "DB/messages.db"

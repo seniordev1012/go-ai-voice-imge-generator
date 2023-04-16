@@ -23,6 +23,7 @@ func mainApp(mapungubwe fyne.App) (*container.AppTabs, *container.Split) {
 	chat, aiGen := ChatTab()
 	settingsTab := aigenUi.GenSettings(mapungubwe)
 	extendAI := aigenUi.Extensions(mapungubwe)
+	chatMediaTab := aigenUi.UserMedia()
 
 	//Create the tabs container and add the tabs to it
 	tabs := container.NewAppTabs(
@@ -32,6 +33,7 @@ func mainApp(mapungubwe fyne.App) (*container.AppTabs, *container.Split) {
 		//newsTab,
 		//socialTabCon,
 		extendAI,
+		chatMediaTab,
 		settingsTab,
 	)
 

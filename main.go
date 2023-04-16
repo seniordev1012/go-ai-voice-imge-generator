@@ -5,19 +5,18 @@ import (
 	"fyne.io/fyne/v2/app"
 	"fyne.io/fyne/v2/container"
 	"fyne.io/fyne/v2/theme"
-	"fyne.io/fyne/v2/widget"
 	_ "github.com/mattn/go-sqlite3"
-	"time"
 )
 
-func updateTime(clock *widget.Label) {
-	formatted := time.Now().Format("Time: 03:04:05")
-	clock.SetText(formatted)
-}
+//func updateTime(clock *widget.Label) {
+//	formatted := time.Now().Format("Time: 03:04:05")
+//	clock.SetText(formatted)
+//}
 
 func main() {
 	MigrationAssist()
 	setup()
+
 	// Stock Market Trader App
 	//PlayNotificationSound()
 	//Whisper()

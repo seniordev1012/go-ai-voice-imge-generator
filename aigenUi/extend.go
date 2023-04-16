@@ -1,7 +1,7 @@
 package aigenUi
 
 import (
-	"database/sql"
+	"fmt"
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/container"
 	"fyne.io/fyne/v2/theme"
@@ -10,58 +10,45 @@ import (
 )
 
 func Extensions(mapungubwe fyne.App) *container.TabItem {
+	//content := container.NewAdaptiveGrid(4, container.NewVScroll(container.NewAppTabs()))
+	tokensForm := container.NewAdaptiveGrid(4, container.NewVBox(widget.NewTextGridFromString("Enter Tokens")))
+	loginBtn := widget.NewButton("Login", func() {
+		log.Println("Login")
+	})
+	// Create the login form
+	usernameField := widget.NewEntry()
+	passwordField := widget.NewPasswordEntry()
+
+	form := &widget.Form{
+		Items: []*widget.FormItem{
+			{Text: "Email", Widget: usernameField},
+			{Text: "Password", Widget: passwordField},
+		},
+		OnSubmit: loginBtn.OnTapped,
+		OnCancel: func() {
+			log.Println("Cancelled")
+		},
+	}
+	loginTab := container.NewTabItem("Login", form)
+	loginTab.Icon = theme.LoginIcon()
+	// Add the login tab to the tabs container
+	cardin := widget.NewCard("", "", tokensForm)
 	extensionsTab := container.NewTabItem("Extensions", widget.NewAccordion(
-
-		widget.NewAccordionItem("Ai Voice Reply", widget.NewCheck("Audio Replies", func(OnandOff bool) {
-			//TODO: Add a function to toggle the audio replies
-			log.Printf("Audio Replies: %v", OnandOff)
-
-			var soundIsOn = 1
-			var soundIsOff = 0
-
-			if OnandOff {
-				db, err := sql.Open("sqlite3", "DB/settings.db")
-				if err != nil {
-					log.Printf("Error opening database: %v", err)
-				}
-				defer func(db *sql.DB) {
-					err := db.Close()
-					if err != nil {
-						log.Println(err)
-					}
-
-				}(db)
-
-				// Insert the keylogger into the database
-				_, err = db.Exec("INSERT INTO settings (audioOnly) VALUES (?)", soundIsOn)
-				if err != nil {
-					log.Printf("Error inserting into database: %v", err)
-				}
-
-			} else {
-				//Store the keylogger in a file
-				db, err := sql.Open("sqlite3", "DB/settings.db")
-				if err != nil {
-					log.Printf("Error opening database: %v", err)
-				}
-				defer func(db *sql.DB) {
-					err := db.Close()
-					if err != nil {
-						log.Println(err)
-					}
-
-				}(db)
-
-				// Insert the keylogger into the database
-				_, err = db.Exec("INSERT INTO settings (audioOnly) VALUES (?)", soundIsOff)
-				if err != nil {
-					log.Printf("Error inserting into database: %v", err)
-				}
-
-			}
+		widget.NewAccordionItem("Sage", widget.NewCheck("Web Search", func(OnandOff bool) {
 
 		})),
-		widget.NewAccordionItem("Add Watchlist", widget.NewLabel("Add a new stock to the watchlist")),
+
+		widget.NewAccordionItem("Calendar", cardin),
+		widget.NewAccordionItem("EmotionalAI", widget.NewRichTextFromMarkdown("Enable Emotions")),
+		widget.NewAccordionItem("Whatsapp", &widget.Button{
+			OnTapped: func() {
+				fmt.Print("Hello")
+			},
+		}),
+		widget.NewAccordionItem("Twitter", widget.NewEntry()),
+		widget.NewAccordionItem("OpenAI", widget.NewEntry()),
+		widget.NewAccordionItem("Humor", widget.NewEntry()),
+		widget.NewAccordionItem("Web Search", widget.NewEntry()),
 	),
 	)
 	extensionsTab.Icon = theme.ListIcon()

@@ -6,6 +6,7 @@ import (
 )
 
 // TODO: Use this as a template for creating new tabs
-func NewsTab() *container.TabItem {
-	return container.NewTabItem("Sage Tab", widget.NewLabel("News Tab Content"))
+func UserMedia() *container.TabItem {
+
+	return container.NewTabItem("Media", widget.NewLabel("News Tab Content"))
 }
