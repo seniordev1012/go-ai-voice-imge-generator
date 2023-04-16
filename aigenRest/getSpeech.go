@@ -1,0 +1,116 @@
+package aigenRest
+
+import (
+	"bytes"
+	"database/sql"
+	"fmt"
+	"io/ioutil"
+	"log"
+	"math/rand"
+	"net/http"
+	"os"
+	"strings"
+	"time"
+)
+
+func SpeakOut(innerVoice string) (string, error) {
+	// Set the input parameters
+	innerVoiceLang := "en-US"
+	innerVoiceName := "en-US-DavisNeural"
+	format := ".mp3"
+	audioPath := "voicenotes/"
+
+	// Send a request to get an authentication token
+	tokenUrl := "https://eastus.api.cognitive.microsoft.com/sts/v1.0/issuetoken"
+	tokenReq, err := http.NewRequest("POST", tokenUrl, nil)
+	if err != nil {
+		return "", err
+	}
+	tokenReq.Header.Set("Ocp-Apim-Subscription-Key", os.Getenv("SPEECH_KEY"))
+	tokenResp, err := http.DefaultClient.Do(tokenReq)
+	if err != nil {
+		return "", err
+	}
+	defer tokenResp.Body.Close()
+	if tokenResp.StatusCode != http.StatusOK {
+		return "", fmt.Errorf("SpeakOut: unexpected status code %d", tokenResp.StatusCode)
+	}
+	tokenBody, err := ioutil.ReadAll(tokenResp.Body)
+	if err != nil {
+		return "", err
+	}
+	token := string(tokenBody)
+
+	// Send a request to generate the audio file
+	url := "https://westus.tts.speech.microsoft.com/cognitiveservices/v1"
+	xml := fmt.Sprintf("<speak version='1.0' xml:lang='%s'><voice xml:lang='%s' xml:gender='Male' name='%s'>%s</voice></speak>", innerVoiceLang, innerVoiceLang, innerVoiceName, innerVoice)
+	req, err := http.NewRequest("POST", url, bytes.NewBufferString(xml))
+	if err != nil {
+		return "", err
+	}
+	req.Header.Set("X-Microsoft-OutputFormat", audio16khz128kbitratemonomp3)
+	req.Header.Set("Content-Type", "application/ssml+xml")
+	req.Header.Set("Authorization", fmt.Sprintf("Bearer %s", token))
+	req.Header.Set("User-Agent", "AiGen")
+	resp, err := http.DefaultClient.Do(req)
+	if err != nil {
+		return "", err
+	}
+	defer resp.Body.Close()
+	if resp.StatusCode != http.StatusOK {
+		return "", fmt.Errorf("SpeakOut: unexpected status code %d", resp.StatusCode)
+	}
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return "", err
+	}
+
+	// Save the audio file to disk
+	generateLetters := "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
+	randomString := ""
+	for i := 0; i < 10; i++ {
+		randomString += string(generateLetters[rand.Intn(len(generateLetters))])
+	}
+	timestamp := time.Now().Format("2006-01-02-15-04-05")
+	timestamp = strings.ReplaceAll(timestamp, "-", "")
+	randomString += timestamp
+	err = ioutil.WriteFile(audioPath+randomString+format, body, 0644)
+	if err != nil {
+		return "", err
+	}
+
+	joinedFileName := joinFileName(audioPath, randomString, format)
+	log.Printf("File saved to %s", joinedFileName)
+	_, out := updateBotChatAudioPath(joinedFileName)
+	if out != nil {
+		log.Printf("Error updating bot chat audio path: %v", err)
+	}
+
+	return joinedFileName, nil
+}
+
+func joinFileName(audioPath string, randomString string, format string) string {
+	return audioPath + randomString + format
+}
+
+func updateBotChatAudioPath(audioPath string) (string, error) {
+	// SQL update audio for the last row in the messages table
+	dataSourceName := "DB/messages.db"
+	db, err := sql.Open("sqlite3", dataSourceName)
+	if err != nil {
+		log.Printf("Error opening database: %v", err)
+		return "", err
+	}
+	defer func(db *sql.DB) {
+		err := db.Close()
+		if err != nil {
+			log.Printf("Error closing database: %v", err)
+		}
+	}(db)
+
+	_, err = db.Exec("UPDATE messages SET audio = ? WHERE id = (SELECT id FROM messages ORDER BY id DESC LIMIT 1)", audioPath)
+	if err != nil {
+		return "", err
+	}
+	return audioPath, nil
+}

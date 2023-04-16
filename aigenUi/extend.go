@@ -15,8 +15,10 @@ func Extensions(mapungubwe fyne.App) *container.TabItem {
 		widget.NewAccordionItem("Ai Voice Reply", widget.NewCheck("Audio Replies", func(OnandOff bool) {
 			//TODO: Add a function to toggle the audio replies
 			log.Printf("Audio Replies: %v", OnandOff)
+
 			var soundIsOn = 1
 			var soundIsOff = 0
+
 			if OnandOff {
 				db, err := sql.Open("sqlite3", "DB/settings.db")
 				if err != nil {
