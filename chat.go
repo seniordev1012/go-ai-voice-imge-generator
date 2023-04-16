@@ -230,7 +230,7 @@ func displayConvo(message string, tab1 *fyne.Container, inputBox *widget.Entry, 
 		//TODO:: Top News.
 		//TODO:: Online Purchase
 		//TODO:: Long Term Memory
-		if strings.Contains(message, "Send Tweet") || strings.Contains(message, "Tweet") || strings.Contains(message, "Twitter") || strings.Contains(message, "send tweet") || strings.Contains(message, "Send tweet") {
+		if strings.Contains(message, "Send Tweet") || strings.Contains(message, "Tweet") || strings.Contains(message, "Twitter") || strings.Contains(message, "send tweet") || strings.Contains(message, "Send tweet") || strings.Contains(message, "Create a tweet") || strings.Contains(message, "Post content") {
 
 			twitterPushLogic(message, tab1)
 
