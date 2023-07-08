@@ -86,11 +86,11 @@ func imageGenerationLogic(message string, tab1 *fyne.Container) {
 func twitterPushLogic(message string, tab1 *fyne.Container) {
 	messageCall, err := aigenRest.MakeApiCall(message)
 	limit := 280
-	sendToTwitter, sentSuccess := aigenRest.SendTweet(messageCall)
-	if sentSuccess != nil {
-		log.Println(sentSuccess)
-		log.Println(sendToTwitter)
-	}
+	// sendToTwitter, sentSuccess := aigenRest.SendTweet(messageCall)
+	// if sentSuccess != nil {
+	// 	log.Println(sentSuccess)
+	// 	log.Println(sendToTwitter)
+	// }
 
 	notificationMessage := "Sent Tweet:" + messageCall
 
