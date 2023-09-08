@@ -58,10 +58,38 @@ func GenSettings(mapungubwe fyne.App) *container.TabItem {
 
 			}
 
-		})),
-		widget.NewAccordionItem("Add Watchlist", widget.NewLabel("Add a new stock to the watchlist")),
-	),
-	)
+		})), addToWatchList(), addOpenAiKeys()))
 	settingsTab.Icon = theme.SettingsIcon()
 	return settingsTab
+}
+
+func addToWatchList() *widget.AccordionItem {
+	return widget.NewAccordionItem("Add Watchlist", widget.NewLabel("Add a new stock to the watchlist"))
+}
+
+func addOpenAiKeys() *widget.AccordionItem {
+
+	keysEntry := widget.NewEntry()
+	apiTokens := widget.NewButton("Save Tokens", saveTokens(keysEntry.Text))
+	form := &widget.Form{
+		Items: []*widget.FormItem{
+			{Text: "Enter Your OpenAI Keys", Widget: keysEntry},
+		},
+		OnSubmit: apiTokens.OnTapped,
+		OnCancel: func() {
+			log.Println("Cancelled")
+		},
+	}
+	keysEntry.OnChanged = func(s string) {
+		log.Printf(s)
+	}
+	keysEntry.FocusGained()
+
+	return widget.NewAccordionItem("Add OpenAI Keys", form)
+}
+
+func saveTokens(Keys string) func() {
+	return func() {
+		log.Print("saved test" + Keys)
+	}
 }

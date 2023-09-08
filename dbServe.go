@@ -60,7 +60,8 @@ func getLastMessages() ([]Message, error) {
 	}(db)
 
 	// Execute a SQL query to retrieve all messages
-	rows, getLastMessageDB := db.Query("SELECT id, sender, content, media, created_at FROM messages WHERE media='Null' ORDER BY created_at LIMIT 5 ")
+	rows, getLastMessageDB := db.Query("SELECT id, sender, content, media, created_at FROM messages " +
+		"WHERE media='Null' ORDER BY created_at LIMIT 5 ")
 	if getLastMessageDB != nil {
 		return nil, getLastMessageDB
 	}

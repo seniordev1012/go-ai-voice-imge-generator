@@ -33,24 +33,21 @@ func Extensions(mapungubwe fyne.App) *container.TabItem {
 	loginTab.Icon = theme.LoginIcon()
 	// Add the login tab to the tabs container
 	cardin := widget.NewCard("", "", tokensForm)
-	extensionsTab := container.NewTabItem("Extensions", widget.NewAccordion(
-		widget.NewAccordionItem("Sage", widget.NewCheck("Web Search", func(OnandOff bool) {
+	extensionsTab := container.NewTabItem("Extensions", widget.NewAccordion(widget.NewAccordionItem("Sage",
+		widget.NewCheck("Web Search", func(OnandOff bool) {
 
 		})),
 
-		widget.NewAccordionItem("Calendar", cardin),
-		widget.NewAccordionItem("EmotionalAI", widget.NewRichTextFromMarkdown("Enable Emotions")),
-		widget.NewAccordionItem("Whatsapp", &widget.Button{
-			OnTapped: func() {
-				fmt.Print("Hello")
-			},
-		}),
-		widget.NewAccordionItem("Twitter", widget.NewEntry()),
-		widget.NewAccordionItem("OpenAI", widget.NewEntry()),
-		widget.NewAccordionItem("Humor", widget.NewEntry()),
-		widget.NewAccordionItem("Web Search", widget.NewEntry()),
-	),
-	)
+		widget.NewAccordionItem("Calendar", cardin), widget.NewAccordionItem("EmotionalAI",
+			widget.NewRichTextFromMarkdown("Enable Emotions")), widget.NewAccordionItem("Whatsapp",
+			&widget.Button{
+				OnTapped: func() {
+					//Testing :)
+					fmt.Print("Hello")
+				},
+			}), widget.NewAccordionItem("Twitter", widget.NewEntry()), widget.NewAccordionItem("OpenAI",
+			widget.NewEntry()), widget.NewAccordionItem("Humor", widget.NewEntry()), widget.NewAccordionItem(
+			"Web Search", widget.NewEntry())))
 	extensionsTab.Icon = theme.ListIcon()
 	return extensionsTab
 }

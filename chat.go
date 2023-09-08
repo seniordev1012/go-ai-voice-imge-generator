@@ -90,7 +90,7 @@ func addChatBubble(box *fyne.Container, message string, isUser bool) {
 // displayConvo displays the conversation in the chat box
 // The message is the text to be displayed
 func addMediaChatBubble(box *fyne.Container, message string, isUser bool) {
-	label := widget.NewLabel("Sage: Generated Image......From Prompt")
+	label := widget.NewLabel("Sage: AI Generated Image......From Prompt")
 	//avatarImg, _ := chatAvatars()
 	//Check for message in db
 	//If message is in db, display the message
@@ -137,7 +137,7 @@ func sendButton(inputBox *widget.Entry, tab1 *fyne.Container) *widget.Button {
 	})
 
 	sendButton.OnTapped = func() {
-		aigenRest.SendNotificationNow("Message sent")
+		messageNotificationSent()
 		sendButton.Importance = widget.HighImportance
 		sendButton.Refresh()
 		message := inputBox.Text
@@ -150,6 +150,10 @@ func sendButton(inputBox *widget.Entry, tab1 *fyne.Container) *widget.Button {
 	}
 
 	return sendButton
+}
+
+func messageNotificationSent() {
+	aigenRest.SendNotificationNow("Message sent")
 }
 
 func voiceChatButton(inputBox *widget.Entry, tab1 *fyne.Container) *widget.Button {
@@ -173,7 +177,7 @@ func voiceChatButton(inputBox *widget.Entry, tab1 *fyne.Container) *widget.Butto
 		//show count for seconds of recording
 
 		log.Printf("Voice recorder __ started: %v", recorder)
-
+		//Catch Words Spoken Through Whisper
 		message := aigenRest.Whisper(recorder)
 
 		message = textHandler.SeparateLines(message)

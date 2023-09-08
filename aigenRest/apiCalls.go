@@ -29,7 +29,7 @@ func chatGPT3() (string, error) {
 		resp, err := client.CreateChatCompletion(
 			context.Background(),
 			openai.ChatCompletionRequest{
-				Model:    openai.GPT3Dot5Turbo,
+				Model:    openai.GPT3Dot5Turbo0301,
 				Messages: messages,
 			},
 		)

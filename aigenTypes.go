@@ -19,3 +19,21 @@ type User struct {
 	Password string
 	Token    string
 }
+
+type twitterContent struct {
+	Data []struct {
+		EditHistoryTweetIds []string `json:"edit_history_tweet_ids"`
+		Id                  string   `json:"id"`
+		Text                string   `json:"text"`
+		Withheld            struct {
+			Copyright    bool     `json:"copyright"`
+			CountryCodes []string `json:"country_codes"`
+		} `json:"withheld,omitempty"`
+	} `json:"data"`
+	Meta struct {
+		NextToken   string `json:"next_token"`
+		ResultCount int    `json:"result_count"`
+		NewestId    string `json:"newest_id"`
+		OldestId    string `json:"oldest_id"`
+	} `json:"meta"`
+}

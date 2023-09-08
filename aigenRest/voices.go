@@ -1,5 +1,6 @@
 package aigenRest
 
+// Speech File Quality Options
 const (
 	amrwb16000hz                  = "amr-wb-16000hz"
 	audio16khz16bit32kbpsmonoopus = "audio-16khz-16bit-32kbps-mono-opus"

@@ -24,6 +24,7 @@ func bottomInputBox(chat *fyne.Container, tabs *container.AppTabs, aiGen *contai
 	inputBoxContainer = container.NewVSplit(inputBoxContainer, voiceNoteButton)
 	tabs.OnSelected = func(tab *container.TabItem) {
 		if tab == aiGen {
+			//Show if tab is home
 			inputBoxContainer.Show()
 		} else {
 			inputBoxContainer.Hide()
