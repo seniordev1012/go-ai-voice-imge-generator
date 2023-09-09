@@ -6,4 +6,11 @@ DigiCertGlobalRootCA.crt.pem
 DB/identifier.sqlite
 !/ci/
 !/Azure/
-
+voicenotes
+source
+DB
+dalleAssets
+cache
+vendor
+fyne-cross
+Variables.go
