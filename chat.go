@@ -95,11 +95,9 @@ func addMediaChatBubble(box *fyne.Container, message string, isUser bool) {
 	//Check for message in db
 	//If message is in db, display the message
 	var messageCard *widget.Card
-	log.Println("loading image from " + message)
 	image := canvas.NewImageFromFile(message)
 	image.FillMode = canvas.ImageFillStretch
 	image.Move(fyne.NewPos(0, 0))
-	//image.SetMinSize(fyne.NewSize(100, 100))
 	image.Resize(fyne.NewSize(512, 512))
 	image.Refresh()
 
@@ -164,9 +162,10 @@ func voiceChatButton(inputBox *widget.Entry, tab1 *fyne.Container) *widget.Butto
 	voiceChatButton.Importance = widget.HighImportance
 
 	voiceChatButton.OnTapped = func() {
-		aigenRest.SendNotificationNow("Voice chat started")
+		aigenRest.SendNotificationNow("Voice chat started, 20 seconds for message")
 		voiceChatButton.Importance = widget.DangerImportance
-		voiceChatButton.SetText("Recording...")
+
+		voiceChatButton.SetText("Recording...Message")
 		voiceChatButton.SetIcon(theme.MediaStopIcon())
 
 		recorder, err := aigenRecorder.VoiceRecorder()
@@ -235,7 +234,7 @@ func displayConvo(message string, tab1 *fyne.Container, inputBox *widget.Entry, 
 		//TODO:: Online Purchase
 		//TODO:: Long Term Memory
 		if strings.Contains(message, "Send Tweet") || strings.Contains(message, "Tweet") || strings.Contains(message, "Twitter") || strings.Contains(message, "send tweet") || strings.Contains(message, "Send tweet") || strings.Contains(message, "Create a tweet") || strings.Contains(message, "Post content") {
-
+			log.Printf("Trying to send tweet to twitter")
 			twitterPushLogic(message, tab1)
 
 		} else if strings.Contains(message, "Image") || strings.Contains(message, "image") || strings.Contains(message, "photo") || strings.Contains(message, "Photo") || strings.Contains(message, "Generate") || strings.Contains(message, "Generate Image") {
