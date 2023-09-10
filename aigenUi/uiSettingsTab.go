@@ -25,7 +25,7 @@ func GenSettings(mapungubwe fyne.App) *container.TabItem {
 			var soundIsOn = 1
 			var soundIsOff = 0
 			if OnandOff {
-				db, err := sql.Open("sqlite3", "DB/settings.db")
+				db, err := sql.Open("sqlite3", SettingsDB)
 				if err != nil {
 					log.Printf("Error opening database: %v", err)
 				}
@@ -45,7 +45,7 @@ func GenSettings(mapungubwe fyne.App) *container.TabItem {
 
 			} else {
 				//Store the keylogger in a file
-				db, err := sql.Open("sqlite3", "DB/settings.db")
+				db, err := sql.Open("sqlite3", SettingsDB)
 				if err != nil {
 					log.Printf("Error opening database: %v", err)
 				}

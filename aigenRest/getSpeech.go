@@ -149,7 +149,7 @@ func joinFileName(audioPath string, randomString string, format string) string {
 // for the last row in the table
 func updateBotChatAudioPath(audioPath string) (string, error) {
 	// SQL update audio for the last row in the messages table
-	dataSourceName := "DB/messages.db"
+	dataSourceName := MessagesDB
 	db, err := sql.Open("sqlite3", dataSourceName)
 	if err != nil {
 		log.Printf("Error opening database: %v", err)

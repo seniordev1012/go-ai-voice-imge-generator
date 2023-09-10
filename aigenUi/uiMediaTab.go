@@ -5,8 +5,8 @@ import (
 	"fyne.io/fyne/v2/widget"
 )
 
-// TODO: Use this as a template for creating new tabs
+// UserMedia TODO: Use this as a template for creating new tabs
 func UserMedia() *container.TabItem {
 
-	return container.NewTabItem("Media", widget.NewLabel("News Tab Content"))
+	return container.NewTabItem("Media", widget.NewLabel("News Tab Content yr"))
 }
