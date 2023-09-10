@@ -36,6 +36,6 @@ func goodBye(mapungubwe fyne.App) func() {
 func switchUp(mapungubwe fyne.App) {
 	mapungubwe.SendNotification(&fyne.Notification{
 		Title:   "Sage",
-		Content: "Welcome to Sage Sage",
+		Content: "Welcome to Sage",
 	})
 }

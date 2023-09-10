@@ -7,7 +7,8 @@ import (
 
 // LockSmith is used to set up the environment variables for the program to use
 // By Running the azure.sh and slize.sh scripts
-// See: https://learn.microsoft.com/en-us/azure/cognitive-services/speech-service/get-started-text-to-speech?tabs=linux%2Cterminal&pivots=programming-language-go#set-up-the-environment
+// See: https://learn.microsoft.com/en-us/azure/cognitive-services/speech-service/get-started-text-to-speech
+// ?tabs=linux%2Cterminal&pivots=programming-language-go#set-up-the-environment
 func LockSmith() {
 	// Run the first script
 	cmd1 := exec.Command("bash", "azure.sh")

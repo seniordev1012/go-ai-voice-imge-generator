@@ -20,7 +20,7 @@ func ChatTab() (*fyne.Container, *container.TabItem) {
 	//Create the chat tab
 	chat := container.NewHBox()
 
-	bgImage := canvas.NewImageFromFile("icon.png")
+	bgImage := canvas.NewImageFromFile("Icon.png")
 	bgImage.FillMode = canvas.ImageFillOriginal
 	// Create a container for the background image and other content
 	bgContainer := container.NewMax(bgImage)
