@@ -26,7 +26,7 @@ func defaultCallConverseLogic(message string, tab1 *fyne.Container) {
 		log.Printf("Error making API call: %v", err)
 	}
 
-	botMessages(messageCall, err, tab1, "text")
+	botMessages(messageCall, tab1, "text")
 
 	addBotMessages := addMessage("Bot", messageCall)
 	if addBotMessages != nil {
@@ -72,7 +72,7 @@ func imageGenerationLogic(message string, tab1 *fyne.Container) {
 	if err != nil {
 		log.Printf("Error making API call: %v", err)
 	}
-	botMessages(messageCall, err, tab1, "image")
+	botMessages(messageCall, tab1, "image")
 
 	//TODO: Add image to database properly
 
@@ -103,7 +103,7 @@ func twitterPushLogic(message string, tab1 *fyne.Container) {
 		log.Printf("Error making API call: %v", err)
 	}
 
-	botMessages("Tweet Sent:"+messageCall, err, tab1, "text")
+	botMessages("Tweet Sent:"+messageCall, tab1, "text")
 
 	addBotMessages := addMessage("Bot", messageCall)
 	if addBotMessages != nil {

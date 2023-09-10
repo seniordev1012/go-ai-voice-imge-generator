@@ -1,6 +1,6 @@
 #!/bin/bash
-
-# check the env is Android, Mac, Linux or Windows Then install sound library according to the env
+#
+## check the env is Android, Mac, Linux or Windows Then install sound library according to the env
 #if [ "$OSTYPE" == "linux-android" ]; then
 #    echo "Android"
 #    # install sound library

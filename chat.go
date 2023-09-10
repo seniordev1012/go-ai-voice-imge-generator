@@ -224,7 +224,7 @@ func displayConvo(message string, tab1 *fyne.Container, inputBox *widget.Entry, 
 		inputBox.SetText("")
 		//check if message contains words: Image, Generate or Generate Image, or each word separately and then call the function to generate an image
 		//TODO:Make AI Smarter
-		//APIS!
+		//TODO::APIS!
 		//TODO::Calendar
 		//TODO::Email
 		//TODO::Web Search
@@ -253,7 +253,7 @@ func displayConvo(message string, tab1 *fyne.Container, inputBox *widget.Entry, 
 // botMessages function to display messages from the bot
 // This function is used to split messages into multiple chat bubbles if the message is too long
 // This function is also used to send voice notes if the message is too long
-func botMessages(messageCall string, err error, tab1 *fyne.Container, contentType string) {
+func botMessages(messageCall string, tab1 *fyne.Container, contentType string) {
 	//Send voice note if message is more than 120 characters
 	if contentType == "text" {
 
@@ -278,6 +278,5 @@ func botMessages(messageCall string, err error, tab1 *fyne.Container, contentTyp
 }
 
 func userMessages(message string, tab1 *fyne.Container) {
-
 	addChatBubble(tab1, "YOU: "+message, true)
 }
