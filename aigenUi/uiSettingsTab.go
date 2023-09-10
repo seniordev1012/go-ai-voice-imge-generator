@@ -2,7 +2,6 @@ package aigenUi
 
 import (
 	"aigen/aigenRest"
-	"database/sql"
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/container"
 	"fyne.io/fyne/v2/theme"
@@ -25,49 +24,21 @@ func GenSettings(mapungubwe fyne.App) *container.TabItem {
 			var soundIsOn = 1
 			var soundIsOff = 0
 			if OnandOff {
-				db, err := sql.Open("sqlite3", SettingsDB)
-				if err != nil {
-					log.Printf("Error opening database: %v", err)
-				}
-				defer func(db *sql.DB) {
-					err := db.Close()
-					if err != nil {
-						log.Println(err)
-					}
-
-				}(db)
-
-				// Insert the keylogger into the database
-				_, err = db.Exec("INSERT INTO settings (audioOnly) VALUES (?)", soundIsOn)
-				if err != nil {
-					log.Printf("Error inserting into database: %v", err)
-				}
+				AudioSettings(soundIsOn)
 
 			} else {
 				//Store the keylogger in a file
-				db, err := sql.Open("sqlite3", SettingsDB)
-				if err != nil {
-					log.Printf("Error opening database: %v", err)
-				}
-				defer func(db *sql.DB) {
-					err := db.Close()
-					if err != nil {
-						log.Println(err)
-					}
-
-				}(db)
-
-				// Insert the keylogger into the database
-				_, err = db.Exec("INSERT INTO settings (audioOnly) VALUES (?)", soundIsOff)
-				if err != nil {
-					log.Printf("Error inserting into database: %v", err)
-				}
+				SoundIsOffON(soundIsOff)
 
 			}
 
 		})), addToWatchList(), addOpenAiKeys(), azureSpeechKeys()))
 	settingsTab.Icon = theme.SettingsIcon()
 	return settingsTab
+}
+
+func AudioSettings(soundIsOn int) {
+	ChangeSetting(soundIsOn)
 }
 
 func azureSpeechKeys() *widget.AccordionItem {

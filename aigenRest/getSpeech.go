@@ -1,8 +1,8 @@
 package aigenRest
 
 import (
+	"aigen/aigenAudioAutoPlay"
 	"bytes"
-	"database/sql"
 	"fmt"
 	"io"
 	"io/ioutil"
@@ -131,7 +131,7 @@ func SpeakOut(innerVoice string) (string, error) {
 
 	joinedFileName := joinFileName(audioPath, randomString, format)
 	log.Printf("File saved to %s", joinedFileName)
-	_, out := updateBotChatAudioPath(joinedFileName)
+	_, out := aigenAudioAutoPlay.UpdateBotChatAudioPath(joinedFileName)
 	if out != nil {
 		log.Printf("Error updating bot chat audio path: %v", err)
 	}
@@ -143,28 +143,4 @@ func SpeakOut(innerVoice string) (string, error) {
 // to create the file name
 func joinFileName(audioPath string, randomString string, format string) string {
 	return audioPath + randomString + format
-}
-
-// updateBotChatAudioPath updates the audio path in the messages table
-// for the last row in the table
-func updateBotChatAudioPath(audioPath string) (string, error) {
-	// SQL update audio for the last row in the messages table
-	dataSourceName := MessagesDB
-	db, err := sql.Open("sqlite3", dataSourceName)
-	if err != nil {
-		log.Printf("Error opening database: %v", err)
-		return "", err
-	}
-	defer func(db *sql.DB) {
-		err := db.Close()
-		if err != nil {
-			log.Printf("Error closing database: %v", err)
-		}
-	}(db)
-
-	_, err = db.Exec("UPDATE messages SET audio = ? WHERE id = (SELECT id FROM messages ORDER BY id DESC LIMIT 1)", audioPath)
-	if err != nil {
-		return "", err
-	}
-	return audioPath, nil
 }

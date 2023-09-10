@@ -6,11 +6,17 @@ import (
 	"log"
 )
 
+const (
+	MessagesDB = "DB/messages.db"
+	SettingsDB = "DB/settings.db"
+	KeyboardDB = "DB/keylogger.db"
+)
+
 // Message represents a message in the database
 // GetMessages retrieves all messages from the database
 func getMessages() ([]Message, error) {
 	// Open a connection to the database
-	db, err := sql.Open("sqlite3", "DB/messages.db")
+	db, err := sql.Open("sqlite3", MessagesDB)
 	if err != nil {
 		return nil, err
 	}
@@ -48,7 +54,7 @@ func getMessages() ([]Message, error) {
 }
 func getLastMessages() ([]Message, error) {
 	// Open a connection to the database
-	db, err := sql.Open("sqlite3", "DB/messages.db")
+	db, err := sql.Open("sqlite3", MessagesDB)
 	if err != nil {
 		return nil, err
 	}
@@ -89,8 +95,7 @@ func getLastMessages() ([]Message, error) {
 // Get audio from database based on text content
 func getAudio(content string) (string, error) {
 	// Open a connection to the database
-	dataSourceName := "DB/messages.db"
-	db, err := sql.Open("sqlite3", dataSourceName)
+	db, err := sql.Open("sqlite3", MessagesDB)
 	if err != nil {
 		return "", err
 	}
@@ -123,9 +128,7 @@ func getAudio(content string) (string, error) {
 	return audio, nil
 }
 func getImageDB(content string) (string, error) {
-	// Open a connection to the database
-	dataSourceName := "DB/messages.db"
-	db, err := sql.Open("sqlite3", dataSourceName)
+	db, err := sql.Open("sqlite3", MessagesDB)
 	if err != nil {
 		return "", err
 	}
@@ -160,7 +163,7 @@ func getImageDB(content string) (string, error) {
 
 func kitchenLog(keylogger string) {
 	//Store the keylogger in a file
-	db, err := sql.Open("sqlite3", "DB/keylogger.db")
+	db, err := sql.Open("sqlite3", KeyboardDB)
 	if err != nil {
 		log.Printf("Error opening database: %v", err)
 	}
@@ -182,7 +185,7 @@ func kitchenLog(keylogger string) {
 // addMessage adds a message to the database
 func addMessage(sender string, content string) error {
 	// Open a connection to the database
-	db, err := sql.Open("sqlite3", "DB/messages.db")
+	db, err := sql.Open("sqlite3", MessagesDB)
 	if err != nil {
 		return err
 	}
@@ -214,9 +217,10 @@ func addMessage(sender string, content string) error {
 	return nil
 }
 
+// Add Messages With Media
 func addMessageWithMedia(sender string, content string, audio string, media string) error {
 	// Open a connection to the database
-	db, err := sql.Open("sqlite3", "DB/messages.db")
+	db, err := sql.Open("sqlite3", MessagesDB)
 	if err != nil {
 		return err
 	}
@@ -252,7 +256,7 @@ func addMessageWithMedia(sender string, content string, audio string, media stri
 // True = enable
 // False = disable
 func enableAudio(key bool) {
-	db, err := sql.Open("sqlite3", "DB/settings.db")
+	db, err := sql.Open("sqlite3", SettingsDB)
 	if err != nil {
 		log.Printf("Error opening database: %v", err)
 	}
@@ -275,7 +279,7 @@ func enableAudio(key bool) {
 // Select last setting from database and return it for audioOnly
 func getAudioSettings() bool {
 	// Open a connection to the database
-	db, err := sql.Open("sqlite3", "DB/settings.db")
+	db, err := sql.Open("sqlite3", SettingsDB)
 	if err != nil {
 		log.Printf("Error opening database: %v", err)
 		return true
@@ -311,7 +315,7 @@ func getAudioSettings() bool {
 
 func removeMessage(sender string, content string) error {
 	// Open a connection to the database
-	db, err := sql.Open("sqlite3", "DB/messages.db")
+	db, err := sql.Open("sqlite3", MessagesDB)
 	if err != nil {
 		return err
 	}
