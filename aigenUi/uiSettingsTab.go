@@ -1,12 +1,18 @@
 package aigenUi
 
 import (
-	"database/sql"
+	"aigen/aigenRest"
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/container"
 	"fyne.io/fyne/v2/theme"
 	"fyne.io/fyne/v2/widget"
 	"log"
+	"os"
+)
+
+const (
+	setEnvironment = "setenv"
+	saveToDB       = "savedb"
 )
 
 func GenSettings(mapungubwe fyne.App) *container.TabItem {
@@ -18,49 +24,29 @@ func GenSettings(mapungubwe fyne.App) *container.TabItem {
 			var soundIsOn = 1
 			var soundIsOff = 0
 			if OnandOff {
-				db, err := sql.Open("sqlite3", "DB/settings.db")
-				if err != nil {
-					log.Printf("Error opening database: %v", err)
-				}
-				defer func(db *sql.DB) {
-					err := db.Close()
-					if err != nil {
-						log.Println(err)
-					}
-
-				}(db)
-
-				// Insert the keylogger into the database
-				_, err = db.Exec("INSERT INTO settings (audioOnly) VALUES (?)", soundIsOn)
-				if err != nil {
-					log.Printf("Error inserting into database: %v", err)
-				}
+				AudioSettings(soundIsOn)
 
 			} else {
 				//Store the keylogger in a file
-				db, err := sql.Open("sqlite3", "DB/settings.db")
-				if err != nil {
-					log.Printf("Error opening database: %v", err)
-				}
-				defer func(db *sql.DB) {
-					err := db.Close()
-					if err != nil {
-						log.Println(err)
-					}
-
-				}(db)
-
-				// Insert the keylogger into the database
-				_, err = db.Exec("INSERT INTO settings (audioOnly) VALUES (?)", soundIsOff)
-				if err != nil {
-					log.Printf("Error inserting into database: %v", err)
-				}
+				SoundIsOffON(soundIsOff)
 
 			}
 
-		})), addToWatchList(), addOpenAiKeys()))
+		})), addToWatchList(), addOpenAiKeys(), azureSpeechKeys()))
 	settingsTab.Icon = theme.SettingsIcon()
 	return settingsTab
+}
+
+func AudioSettings(soundIsOn int) {
+	ChangeSetting(soundIsOn)
+}
+
+func azureSpeechKeys() *widget.AccordionItem {
+	return uiFormTemplate("Azure Speech Keys",
+		setEnvironment,
+		"Azure Speech",
+		"Enter Your Azure Speech Keys",
+		"SPEECH_KEY")
 }
 
 func addToWatchList() *widget.AccordionItem {
@@ -69,27 +55,66 @@ func addToWatchList() *widget.AccordionItem {
 
 func addOpenAiKeys() *widget.AccordionItem {
 
+	return uiFormTemplate("OpenAI Keys",
+		setEnvironment,
+		"OpenAI Keys",
+		"Enter Your OpenAI Keys",
+		"OPENAI")
+
+}
+
+func uiFormTemplate(buttonText string, trigger string, formAction string, placeHolder string, valueKey string) *widget.AccordionItem {
+
+	var formValue string
 	keysEntry := widget.NewEntry()
-	apiTokens := widget.NewButton("Save Tokens", saveTokens(keysEntry.Text))
+	apiTokens := formButton(buttonText, trigger, formValue, keysEntry, valueKey)
+
+	form := formFields(placeHolder, keysEntry, apiTokens)
+	keysEntry.OnChanged = func(s string) {
+		log.Printf(s)
+	}
+	keysEntry.FocusGained()
+
+	return widget.NewAccordionItem(formAction, form)
+}
+
+func formButton(buttonText string, trigger string, formValue string, keysEntry *widget.Entry, valueKey string) *widget.Button {
+	apiTokens := widget.NewButton(buttonText, func() {
+		formValue = keysEntry.Text
+		//Insert Actions to different function : setenv or savedb
+		switch trigger {
+		case setEnvironment:
+			setValueToEnv(formValue, valueKey)
+		case saveToDB:
+			saveValueToDB(formValue, valueKey)
+		}
+
+	})
+	return apiTokens
+}
+
+func formFields(placeHolder string, keysEntry *widget.Entry, apiTokens *widget.Button) *widget.Form {
 	form := &widget.Form{
 		Items: []*widget.FormItem{
-			{Text: "Enter Your OpenAI Keys", Widget: keysEntry},
+			{Text: placeHolder, Widget: keysEntry},
 		},
 		OnSubmit: apiTokens.OnTapped,
 		OnCancel: func() {
 			log.Println("Cancelled")
 		},
 	}
-	keysEntry.OnChanged = func(s string) {
-		log.Printf(s)
-	}
-	keysEntry.FocusGained()
-
-	return widget.NewAccordionItem("Add OpenAI Keys", form)
+	return form
 }
 
-func saveTokens(Keys string) func() {
-	return func() {
-		log.Print("saved test" + Keys)
+func saveValueToDB(value string, key string) {
+
+}
+
+func setValueToEnv(value string, key string) {
+	setValue := os.Setenv(key, value)
+	if setValue != nil {
+		log.Printf("Error setting environment variable: %v", setValue)
 	}
+	aigenRest.SendNotificationNow(key + "Saved")
+	log.Printf("Environment setup: %v", key)
 }

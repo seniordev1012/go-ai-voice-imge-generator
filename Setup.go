@@ -5,6 +5,7 @@ import (
 	"os"
 )
 
+// setup runs scripts to setup environment variables
 func setup() {
 	err := dbInit()
 	if err != nil {
@@ -13,6 +14,7 @@ func setup() {
 	MigrationAssist()
 }
 
+// MigrationAssist Injects All required platform environment variables to environment in use for easy retrieval
 func MigrationAssist() {
 	LockSmith()
 	dbUser := os.Setenv("DB_USER", "")
@@ -43,6 +45,7 @@ func MigrationAssist() {
 
 }
 
+// dbInit Creates Required SQLite DBs for platform to function
 func dbInit() any {
 	extendBase := extensionsSource()
 	if extendBase != nil {

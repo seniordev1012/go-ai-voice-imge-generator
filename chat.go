@@ -141,6 +141,7 @@ func sendButton(inputBox *widget.Entry, tab1 *fyne.Container) *widget.Button {
 		message := inputBox.Text
 		//Separate each line with new line /n
 		message = textHandler.SeparateLines(message)
+		//TODO::Remove Logger
 		fmt.Println(message)
 		//DISPLAY MESSAGE
 		displayConvo(message, tab1, inputBox, "none")
@@ -257,6 +258,7 @@ func botMessages(messageCall string, err error, tab1 *fyne.Container, contentTyp
 	//Send voice note if message is more than 120 characters
 	if contentType == "text" {
 
+		//Check if message length is "platform" playable
 		if len(messageCall) > 0 {
 
 			sendAudio, _ := pressPlayAudio(messageCall)
@@ -264,7 +266,6 @@ func botMessages(messageCall string, err error, tab1 *fyne.Container, contentTyp
 			if sendAudio != true {
 				log.Printf("Error sending audio: %v", sendAudio)
 			}
-
 			addChatBubble(tab1, "Bot: "+messageCall, false)
 		}
 	}

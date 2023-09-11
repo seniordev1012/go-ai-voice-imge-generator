@@ -1,7 +1,6 @@
 package aigenUi
 
 import (
-	_ "aigen/aigeUi"
 	"aigen/aigenRest"
 	"aigen/socialFeed"
 	"encoding/json"

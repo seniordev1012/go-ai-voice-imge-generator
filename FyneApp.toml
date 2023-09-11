@@ -5,4 +5,4 @@ Website = "https://aigen.azurewebsites.net"
   Name = "Sage"
   ID = "com.sage.net"
   Version = "1.0.1"
-  Build = 6
+  Build = 7

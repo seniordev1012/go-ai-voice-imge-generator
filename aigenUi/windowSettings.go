@@ -1,4 +1,4 @@
-package aigeUi
+package aigenUi
 
 import "fyne.io/fyne/v2"
 

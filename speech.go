@@ -6,7 +6,7 @@ import (
 	"log"
 )
 
-var notificationSoundFile = "notification.mp3"
+const notificationSoundFile = "notification.mp3"
 
 func pressPlayAudio(messageCall string) (bool, string) {
 	//Azure Speech
