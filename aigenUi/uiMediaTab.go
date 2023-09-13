@@ -54,13 +54,13 @@ func UserMedia() *container.TabItem {
 	}
 
 	// Create a scrollable container to hold the images
-	scrollable := container.NewVScroll(container.New(layout.NewGridLayout(3), sortedImageList...))
+	scrollable := container.NewVScroll(container.New(layout.NewGridLayout(2), sortedImageList...))
 	scrollable.CreateRenderer()
 	scrollable.OnScrolled = func(position fyne.Position) {
 		log.Print(position)
 		log.Println("Scroll Position")
+		scrollable.Refresh()
 	}
-	scrollable.Refresh()
 
 	return container.NewTabItem("Media", scrollable)
 }
