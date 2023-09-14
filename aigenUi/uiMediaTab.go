@@ -13,11 +13,6 @@ import (
 	"strings"
 )
 
-type ImageData struct {
-	Path  string
-	Image *canvas.Image
-}
-
 // UserMedia TODO: Use this as a template for creating new tabs
 func UserMedia() *container.TabItem {
 	imageDir := "dalleAssets"
