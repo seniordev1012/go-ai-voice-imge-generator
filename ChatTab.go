@@ -31,13 +31,13 @@ func ChatTab() (*fyne.Container, *container.TabItem) {
 	aiGen := container.NewTabItem("Sage Chat", chat)
 	aiGen.Icon = theme.HomeIcon()
 
-	messages1, err := getMessages()
+	messagesFromDB, err := getMessages()
 
 	if err != nil {
 		log.Printf("Error getting messages: %v", err)
 	}
 	//Loop Through Messages From DB and Display
-	for _, message := range messages1 {
+	for _, message := range messagesFromDB {
 		if message.Sender == "YOU" {
 			addChatBubble(chat, message.Content, true)
 		} else {
