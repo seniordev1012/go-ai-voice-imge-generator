@@ -65,24 +65,23 @@ func imageGenerationLogic(message string, tab1 *fyne.Container) {
 	if len(notificationMessage) > limit {
 		notificationMessage = notificationMessage[:limit]
 	}
-
+	//Send notifications after operation
 	aigenRest.SendNotificationNow("Image Generated Successfully For:" + notificationMessage)
 
 	log.Printf("Message call: %v", messageCall)
 	if err != nil {
 		log.Printf("Error making API call: %v", err)
 	}
+
 	botMessages(messageCall, err, tab1, "image")
-
-	//TODO: Add image to database properly
-
 	addBotMessages := addMessageWithMedia("Bot", message, "none", messageCall)
 	if addBotMessages != nil {
 		log.Printf("Error adding bot message: %v", addBotMessages)
 	}
 }
 
-// Handle Twitter Push Logic
+// Handles Text Detected As Tweet Generation
+// twitterPushLogic pushes post to X after processing
 func twitterPushLogic(message string, tab1 *fyne.Container) {
 	messageCall, err := aigenRest.MakeApiCall(message)
 	limit := 280

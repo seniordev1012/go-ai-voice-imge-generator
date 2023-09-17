@@ -14,25 +14,17 @@ import (
 //}
 
 func main() {
+	//Run Setup Scripts
 	MigrationAssist()
 	setup()
-
-	// Stock Market Trader App
-	//PlayNotificationSound()
-	//Whisper()
-	//pathFinder, _ := VoiceRecorder()
-	//if pathFinder != "" {
-	//	log.Println(pathFinder)
-	//}
-
+	//Start Application
 	mapungubwe := app.New()
 	//mapungubwe.Settings().SetTheme(theme.LightTheme())
+	mapungubwe.Settings().SetTheme(theme.DarkTheme())
 	aigenUi.SwitchUp(mapungubwe)
 	mapungubwe.SetIcon(theme.MailAttachmentIcon())
 
 	tabs, inputBoxContainer := mainApp(mapungubwe)
-
-	//Main Window
 	window := mapungubwe.NewWindow(aigenUi.MainTitle)
 	window.SetIcon(theme.MailAttachmentIcon())
 	window.SetFixedSize(true)
@@ -41,7 +33,6 @@ func main() {
 	window.Resize(aigenUi.WindowSize)
 	window.SetPadded(false)
 	scrollApp := container.NewScroll(tabs)
-	// Create a background image object
 
 	window.SetContent(container.NewBorder(nil, inputBoxContainer, nil, nil, scrollApp))
 	window.ShowAndRun()

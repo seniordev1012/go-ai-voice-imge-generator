@@ -43,6 +43,10 @@ func MigrationAssist() {
 		log.Printf("Error setting environment variable: %v", openAiApiKey)
 	}
 
+	openWeatherKey := os.Setenv("OPENWEATHER", openWeatherKeys)
+	if openWeatherKey != nil {
+		log.Printf("Error setting environment variable: %v", openWeatherKey)
+	}
 }
 
 // dbInit Creates Required SQLite DBs for platform to function
