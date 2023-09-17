@@ -16,6 +16,20 @@ import (
 	"strings"
 )
 
+const WeatherReport = "\nHere's a detailed weather breakdown for '  \"Location name\": \"\",':\n" +
+	"- Temperature: 'use Degree Celsius'\n" +
+	"- Feels Like: Degree\n" +
+	"- Description: \n" +
+	"- Humidity: %\n" +
+	"- Wind Speed:  km/h\n" +
+	"- Cloud Coverage: %\n\n" +
+	"Based on this weather data, here are some recommendations:\n\n" +
+	". **What to Wear**: , \n\n" +
+	". **Things You Can Do**:\n\n" +
+	"**How to Stay Productive**: \n\n" +
+	"**Amount of Water to Stay Hydrated**:" +
+	"**Funny Joke about current Weather**: \" \"\n\n"
+
 // addChatBubble adds a chat bubble to the chat box
 // The message is the text to be displayed
 // The isUser parameter determines if the message is from the user or the bot
@@ -72,17 +86,12 @@ func addChatBubble(box *fyne.Container, message string, isUser bool) {
 	}
 
 	if isUser {
-		box.Add(container.NewHBox(
-			layout.NewSpacer(),
-			messageCard,
-			//avatarImg,
-		))
+		box.Add(container.NewHBox(layout.NewSpacer(), messageCard)) //avatarImg,
+
 	} else {
 		box.Add(container.NewHBox(
 			//botAvatarImg,
-			messageCard,
-			layout.NewSpacer(),
-		))
+			messageCard, layout.NewSpacer()))
 	}
 	container.NewScroll(box).SetMinSize(fyne.NewSize(100, 100))
 }
@@ -109,19 +118,13 @@ func addMediaChatBubble(box *fyne.Container, message string, isUser bool) {
 
 	if isUser {
 
-		box.Add(container.NewHBox(
-			layout.NewSpacer(),
-			messageCard,
-			//avatarImg,
-		))
+		box.Add(container.NewHBox(layout.NewSpacer(), messageCard)) //avatarImg,
 
 	} else {
 
 		box.Add(container.NewHBox(
 			//botAvatarImg,
-			messageCard,
-			layout.NewSpacer(),
-		))
+			messageCard, layout.NewSpacer()))
 
 	}
 	container.NewScroll(box).SetMinSize(fyne.NewSize(100, 100))
@@ -230,24 +233,20 @@ func displayConvo(message string, tab1 *fyne.Container, inputBox *widget.Entry, 
 		//TODO::Email
 		//TODO::Web Search
 		//TODO:: Documents (PDF, CSV, TXT)
-		//TODO:: Weather
 		//TODO:: Top News.
 		//TODO:: Online Purchase
 		//TODO:: Long Term Memory
-		if strings.Contains(message, "Send Tweet") || strings.Contains(message, "Tweet") || strings.Contains(message, "Twitter") || strings.Contains(message, "send tweet") || strings.Contains(message, "Send tweet") || strings.Contains(message, "Create a tweet") || strings.Contains(message, "Post content") {
+		if triggerPublishToX(message) {
 			log.Printf("Trying to send tweet to twitter")
 			twitterPushLogic(message, tab1)
-
-		} else if strings.Contains(message, "Image") || strings.Contains(message, "image") || strings.Contains(message, "photo") || strings.Contains(message, "Photo") || strings.Contains(message, "Generate") || strings.Contains(message, "Generate Image") {
+		} else if triggerImageGeneration(message) {
 			imageGenerationLogic(message, tab1)
-
+		} else if triggerWeatherInfo(message) {
+			weatherDetailsFineTune := fineTuneWeather()
+			defaultCallConverseLogic(weatherDetailsFineTune, tab1)
 		} else {
 			defaultCallConverseLogic(message, tab1)
 		}
-		// Switch API Provider
-
-		//messageCall, err := ronSwan()
-
 	}
 }
 
@@ -281,4 +280,37 @@ func botMessages(messageCall string, err error, tab1 *fyne.Container, contentTyp
 func userMessages(message string, tab1 *fyne.Container) {
 
 	addChatBubble(tab1, "YOU: "+message, true)
+}
+
+func fineTuneWeather() string {
+	var weatherInfo string
+	weatherInfo = aigenRest.GetCurrentWeather()
+	weatherDetailsFineTune := WeatherReport + weatherInfo
+	return weatherDetailsFineTune
+}
+
+func triggerWeatherInfo(message string) bool {
+	return strings.Contains(message, "What is the weather") || strings.Contains(message, "check weather") ||
+		strings.Contains(message, "Hey Sage, what is the weather") ||
+		strings.Contains(message, "What is the weather") ||
+		strings.Contains(message, "What is the weather like") ||
+		strings.Contains(message, "What do you think about today's weather") ||
+		strings.Contains(message, "What is the weather like today") ||
+		strings.Contains(message, "Weather tips") ||
+		strings.Contains(message, "Tell me about the weather today") ||
+		strings.Contains(message, "Today weather") ||
+		strings.Contains(message, "Today's weather conditions")
+}
+
+func triggerPublishToX(message string) bool {
+	return strings.Contains(message, "Send Tweet") || strings.Contains(message, "Tweet") ||
+		strings.Contains(message, "Twitter") || strings.Contains(message, "send tweet") ||
+		strings.Contains(message, "Send tweet") || strings.Contains(message, "Create a tweet") ||
+		strings.Contains(message, "Post content")
+}
+
+func triggerImageGeneration(message string) bool {
+	return strings.Contains(message, "Image") || strings.Contains(message, "image") ||
+		strings.Contains(message, "photo") || strings.Contains(message, "Photo") ||
+		strings.Contains(message, "Generate") || strings.Contains(message, "Generate Image")
 }
