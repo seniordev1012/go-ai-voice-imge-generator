@@ -15,11 +15,9 @@ import (
 
 func main() {
 	//Run Setup Scripts
-	MigrationAssist()
 	setup()
 	//Start Application
 	mapungubwe := app.New()
-	//mapungubwe.Settings().SetTheme(theme.LightTheme())
 	mapungubwe.Settings().SetTheme(theme.DarkTheme())
 	aigenUi.SwitchUp(mapungubwe)
 	mapungubwe.SetIcon(theme.MailAttachmentIcon())
