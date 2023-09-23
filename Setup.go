@@ -16,37 +16,9 @@ func setup() {
 
 // MigrationAssist Injects All required platform environment variables to environment in use for easy retrieval
 func MigrationAssist() {
-	LockSmith()
-	dbUser := os.Setenv("DB_USER", "")
-	if dbUser != nil {
-		log.Printf("Error setting environment variable: %v", dbUser)
-	}
-	dbPassed := os.Setenv("DB_PASSWORD", "")
-	if dbPassed != nil {
-		log.Printf("Error setting environment variable: %v", dbPassed)
-	}
-	dbHost := os.Setenv("DB_HOST", "")
-	if dbHost != nil {
-		log.Printf("Error setting environment variable: %v", dbHost)
-	}
-	dbName := os.Setenv("DB_NAME", "")
-	if dbName != nil {
-		log.Printf("Error setting environment variable: %v", dbName)
-	}
-	azureSpeechKey := os.Setenv("SPEECH_KEY", speechKeys)
-	if azureSpeechKey != nil {
-		log.Printf("Error setting environment variable: %v", azureSpeechKey)
-	}
-
-	openAiApiKey := os.Setenv("OPENAI", openKeys)
-	if openAiApiKey != nil {
-		log.Printf("Error setting environment variable: %v", openAiApiKey)
-	}
-
-	openWeatherKey := os.Setenv("OPENWEATHER", openWeatherKeys)
-	if openWeatherKey != nil {
-		log.Printf("Error setting environment variable: %v", openWeatherKey)
-	}
+	//Execute Shell Script
+	SetupScripts()
+	setUpPlatformEnvVars()
 }
 
 // dbInit Creates Required SQLite DBs for platform to function
@@ -88,4 +60,11 @@ func dbInit() any {
 		log.Printf("Error creating database: %v", majorKeys)
 	}
 	return nil
+}
+
+func SetEnvironmentVariable(key string, tokenValue string) {
+	valueToStore := os.Setenv(key, tokenValue)
+	if valueToStore != nil {
+		log.Printf("Error setting environment variable: %v", valueToStore)
+	}
 }

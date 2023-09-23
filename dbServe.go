@@ -52,6 +52,7 @@ func getMessages() ([]Message, error) {
 	}
 	return messages, nil
 }
+
 func getLastMessages() ([]Message, error) {
 	// Open a connection to the database
 	db, err := sql.Open("sqlite3", MessagesDB)
