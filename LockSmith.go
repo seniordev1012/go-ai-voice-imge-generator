@@ -17,7 +17,7 @@ const (
 func SetupScripts() {
 	RunBashScript(ExportAzureSpeechValues)
 	RunBashScript(SetupPlatform)
-
+	//Record if the setup scripts have finished running and don't run them again
 	fmt.Println("Setup scripts have finished running.")
 }
 
