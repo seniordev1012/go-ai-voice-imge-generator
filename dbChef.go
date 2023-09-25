@@ -6,7 +6,7 @@ import (
 	"log"
 )
 
-// Messsages Database
+// Messages Database
 func createMessagesDatabase() error {
 	// Open a connection to the database
 	db, err := sql.Open("sqlite3", MessagesDB)
@@ -24,6 +24,7 @@ func createMessagesDatabase() error {
 		log.Println("Database does not exist")
 	}
 	// Execute the SQL command to create the table
+	//TODO: Add all queries to a file and read from that file
 	_, err = db.Exec(`
 		CREATE TABLE messages (
 			id INTEGER PRIMARY KEY AUTOINCREMENT,
