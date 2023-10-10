@@ -14,11 +14,11 @@ func mainApp(mapungubwe fyne.App) (*container.AppTabs, *container.Split) {
 	settingsTab := aigenUi.GenSettings(mapungubwe)
 	extendAI := aigenUi.Extensions(mapungubwe)
 	chatMediaTab := aigenUi.UserMedia()
-	developerMode := aigenUi.Developer()
+	//developerMode := aigenUi.Developer()
 	audioSettingsTab := aigenUi.AudioSettingsTab()
 	//Create the tabs container and add the tabs to it
 	tabs := container.NewAppTabs(aiGen, //financeTab,
-		extendAI, chatMediaTab, settingsTab, audioSettingsTab, developerMode)
+		extendAI, chatMediaTab, settingsTab, audioSettingsTab)
 
 	inputBoxContainer := SignInHandler(chat, tabs, aiGen)
 
