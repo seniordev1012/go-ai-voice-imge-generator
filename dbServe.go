@@ -255,8 +255,6 @@ func addMessageWithMedia(sender string, content string, audio string, media stri
 }
 
 // enable/disable audio
-// True = enable
-// False = disable
 func enableAudio(key bool) {
 	db, err := sql.Open("sqlite3", SettingsDB)
 	if err != nil {
@@ -278,7 +276,7 @@ func enableAudio(key bool) {
 
 }
 
-// Select last setting from database and return it for audioOnly
+// TODO:: (USE THIS SETTING) Select last setting from database and return it for audioOnly
 func getAudioSettings() bool {
 	// Open a connection to the database
 	db, err := sql.Open("sqlite3", SettingsDB)
@@ -312,9 +310,9 @@ func getAudioSettings() bool {
 		}
 	}
 	return audio
-
 }
 
+// TODO:: Function to delete messages from database or just change the content to "Message Deleted"
 func removeMessage(sender string, content string) error {
 	// Open a connection to the database
 	db, err := sql.Open("sqlite3", MessagesDB)

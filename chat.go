@@ -176,9 +176,7 @@ func voiceChatButton(inputBox *widget.Entry, tab1 *fyne.Container) *widget.Butto
 		if recordingError(err) {
 			return
 		}
-
 		//show count for seconds of recording
-
 		log.Printf("Voice recorder __ started: %v", recorder)
 		//Catch Words Spoken Through Whisper
 		message := aigenRest.Whisper(recorder)

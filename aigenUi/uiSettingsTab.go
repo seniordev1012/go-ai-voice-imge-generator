@@ -16,8 +16,17 @@ const (
 )
 
 func GenSettings(mapungubwe fyne.App) *container.TabItem {
-	settingsTab := container.NewTabItem("Settings", widget.NewAccordion(
+	settingsTab := container.NewTabItem("Settings", widget.NewAccordion(addToWatchList(), addOpenAiKeys(),
+		azureSpeechKeys()))
+	settingsTab.Icon = theme.SettingsIcon()
+	//use mapungubwe.Settings().SetTheme(theme.LightTheme())
+	mapungubwe.Settings().SetTheme(theme.DarkTheme())
+	mapungubwe.Storage()
+	return settingsTab
+}
 
+func AudioSettingsTab() *container.TabItem {
+	audioSettingsTab := container.NewTabItem("Audio Settings", widget.NewAccordion(
 		widget.NewAccordionItem("Ai Voice Reply", widget.NewCheck("Audio Replies", func(OnandOff bool) {
 			//TODO: Add a function to toggle the audio replies
 			log.Printf("Audio Replies: %v", OnandOff)
@@ -25,16 +34,13 @@ func GenSettings(mapungubwe fyne.App) *container.TabItem {
 			var soundIsOff = 0
 			if OnandOff {
 				AudioSettings(soundIsOn)
-
 			} else {
 				//Store the keylogger in a file
 				SoundIsOffON(soundIsOff)
-
 			}
-
-		})), addToWatchList(), addOpenAiKeys(), azureSpeechKeys()))
-	settingsTab.Icon = theme.SettingsIcon()
-	return settingsTab
+		}))))
+	audioSettingsTab.Icon = theme.VolumeUpIcon()
+	return audioSettingsTab
 }
 
 func AudioSettings(soundIsOn int) {
@@ -106,6 +112,7 @@ func formFields(placeHolder string, keysEntry *widget.Entry, apiTokens *widget.B
 	return form
 }
 
+// TODO:: COMPLETE THIS FUNCTION!!!
 func saveValueToDB(value string, key string) {
 
 }

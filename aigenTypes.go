@@ -37,3 +37,9 @@ type twitterContent struct {
 		OldestId    string `json:"oldest_id"`
 	} `json:"meta"`
 }
+
+type Users struct {
+	Id       int
+	Email    string
+	Password string
+}
