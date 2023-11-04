@@ -2,6 +2,7 @@ package main
 
 import (
 	"aigen/aigenRest"
+	"database/sql"
 	"fmt"
 	"log"
 	"os"
@@ -37,7 +38,30 @@ func RunBashScript(shellScript string) bool {
 
 // RunProgram
 func RunProgram(command string) bool {
+	const PROGRAMSDB = "DB/installed_programs.db"
+	db, err := sql.Open("sqlite3", PROGRAMSDB)
+	if err != nil {
+		fmt.Printf("Error opening the database: %v\n", err)
+		return false
+	}
+	defer func(db *sql.DB) {
+		err := db.Close()
+		if err != nil {
+			log.Println(err)
+		}
+	}(db)
+
 	log.Println(command, "Passed command")
+	var exists bool
+	err = db.QueryRow("SELECT EXISTS(SELECT 1 FROM programs WHERE name = ?)", command).Scan(&exists)
+	if err != nil {
+		fmt.Printf("Error checking if the program exists: %v\n", err)
+		return false
+	}
+	if !exists {
+		fmt.Printf("Program '%s' is not installed.\n", command)
+		return false
+	}
 	aigenRest.SendNotificationNow(fmt.Sprintf("Opening %s", command))
 	// Execute the program
 	cmd := exec.Command(command)

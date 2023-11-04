@@ -12,6 +12,7 @@ import (
 	"fyne.io/fyne/v2/layout"
 	"fyne.io/fyne/v2/theme"
 	"fyne.io/fyne/v2/widget"
+	"github.com/atotto/clipboard"
 	"log"
 	"strings"
 )
@@ -35,8 +36,14 @@ const WeatherReport = "\nHere's a detailed weather breakdown for '  \"Location n
 // The isUser parameter determines if the message is from the user or the bot
 // If the message is from the user, the bubble will be on the right side of the chat window
 func addChatBubble(box *fyne.Container, message string, isUser bool) {
-
-	label := widget.NewLabel(textHandler.SeparateLines(message))
+	label := widget.NewButton(textHandler.SeparateLines(message), func() {
+		log.Printf("content to copy to clipboard is %s", message)
+		err := clipboard.WriteAll(message)
+		if err != nil {
+			log.Println(err)
+		}
+		aigenRest.SendNotificationNow("Content Copied To Clipboard")
+	})
 	//avatarImg, _ := chatAvatars()
 	//Check for message in db
 	//If message is in db, display the message
@@ -83,6 +90,7 @@ func addChatBubble(box *fyne.Container, message string, isUser bool) {
 
 	} else {
 		messageCard = widget.NewCard("", "", label)
+
 	}
 
 	if isUser {
@@ -161,7 +169,7 @@ func messageNotificationSent() {
 func voiceChatButton(inputBox *widget.Entry, tab1 *fyne.Container) *widget.Button {
 	// Create a voice chat button for sending voice messages
 	voiceChatButton := widget.NewButtonWithIcon("PRESS TO TALK ", theme.MediaRecordIcon(), func() {
-
+		//Fill in body for this part right here
 	})
 	voiceChatButton.Importance = widget.HighImportance
 
@@ -194,6 +202,29 @@ func voiceChatButton(inputBox *widget.Entry, tab1 *fyne.Container) *widget.Butto
 	return voiceChatButton
 }
 
+/*
+Upload image to platform , this is an attempt to have the ability
+to send images to a model and have data brought back to the chat ui and have user interact with it
+*/
+func imageUploadInput(inputBox *widget.Entry, tab1 *fyne.Container) *widget.Button {
+	// Create a voice chat button for sending voice messages
+	voiceChatButton := widget.NewButtonWithIcon("Upload image", theme.MailAttachmentIcon(), func() {
+		//Fill in body for this part right here
+	})
+	voiceChatButton.Importance = widget.WarningImportance
+	voiceChatButton.Alignment = widget.ButtonAlignCenter
+
+	voiceChatButton.Refresh()
+	voiceChatButton.Visible()
+	voiceChatButton.OnTapped = func() {
+
+		inputBox.Keyboard()
+		log.Println("Media upload button was pressed let us check was is happening")
+	}
+	inputBox.Show()
+
+	return voiceChatButton
+}
 func recordingError(err error) bool {
 	if err != nil {
 		log.Printf("Error starting voice recorder: %v", err)
@@ -242,9 +273,9 @@ func displayConvo(message string, tab1 *fyne.Container, inputBox *widget.Entry, 
 		} else if triggerWeatherInfo(message) {
 			weatherDetailsFineTune := fineTuneWeather()
 			defaultCallConverseLogic(weatherDetailsFineTune, tab1)
-		} else if triggerProgramRun(message) {
-			message = strings.Replace(message, "run program", "", -1)
-			RunProgram(message)
+			//} else if triggerProgramRun(message) {
+			//	message = strings.Replace(message, "run program", "", -1)
+			//	RunProgram(message)
 		} else {
 			defaultCallConverseLogic(message, tab1)
 		}
@@ -275,7 +306,6 @@ func botMessages(messageCall string, err error, tab1 *fyne.Container, contentTyp
 			addMediaChatBubble(tab1, messageCall, false)
 		}
 	}
-
 }
 
 func userMessages(message string, tab1 *fyne.Container) {

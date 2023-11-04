@@ -18,6 +18,7 @@ func main() {
 	setup()
 	//Start Application
 	mapungubwe := app.New()
+
 	mapungubwe.Settings().SetTheme(theme.DarkTheme())
 	aigenUi.SwitchUp(mapungubwe)
 

@@ -19,9 +19,11 @@ func bottomInputBox(chat *fyne.Container, tabs *container.AppTabs, aiGen *contai
 	inputBox.PlaceHolder = "Enter your message here..."
 	sendButton := sendButton(inputBox, chat)
 	voiceNoteButton := voiceChatButton(inputBox, chat)
+	mediaUploadButton := imageUploadInput(inputBox, chat)
 	voiceNoteButton.Resize(fyne.NewSize(50, 100))
 	inputBoxContainer := container.NewHSplit(inputBox, sendButton)
 	inputBoxContainer = container.NewVSplit(inputBoxContainer, voiceNoteButton)
+	inputBoxContainer = container.NewVSplit(inputBoxContainer, mediaUploadButton)
 	tabs.OnSelected = func(tab *container.TabItem) {
 		if tab == aiGen {
 			//Show if tab is home

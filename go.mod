@@ -4,6 +4,7 @@ go 1.20
 
 require (
 	fyne.io/fyne/v2 v2.3.0
+	github.com/atotto/clipboard v0.1.4
 	github.com/gen2brain/malgo v0.11.10
 	github.com/go-sql-driver/mysql v1.7.0
 	github.com/hajimehoshi/go-mp3 v0.3.4

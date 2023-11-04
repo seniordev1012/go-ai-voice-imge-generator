@@ -19,6 +19,7 @@ import (
 func ChatTab() (*fyne.Container, *container.TabItem) {
 	//Create the chat tab
 	chat := container.NewHBox()
+	chat.Refresh()
 
 	bgImage := canvas.NewImageFromFile("Icon.png")
 	bgImage.FillMode = canvas.ImageFillOriginal
