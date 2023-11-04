@@ -20,7 +20,6 @@ func main() {
 	mapungubwe := app.New()
 	mapungubwe.Settings().SetTheme(theme.DarkTheme())
 	aigenUi.SwitchUp(mapungubwe)
-	mapungubwe.SetIcon(theme.MailAttachmentIcon())
 
 	tabs, inputBoxContainer := mainApp(mapungubwe)
 	window := mapungubwe.NewWindow(aigenUi.MainTitle)
