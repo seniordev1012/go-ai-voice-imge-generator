@@ -242,6 +242,9 @@ func displayConvo(message string, tab1 *fyne.Container, inputBox *widget.Entry, 
 		} else if triggerWeatherInfo(message) {
 			weatherDetailsFineTune := fineTuneWeather()
 			defaultCallConverseLogic(weatherDetailsFineTune, tab1)
+		} else if triggerProgramRun(message) {
+			message = strings.Replace(message, "run program", "", -1)
+			RunProgram(message)
 		} else {
 			defaultCallConverseLogic(message, tab1)
 		}
@@ -290,7 +293,8 @@ func fineTuneWeather() string {
 func triggerWeatherInfo(message string) bool {
 	return strings.Contains(message, "What is the weather") || strings.Contains(message, "check weather") ||
 		strings.Contains(message, "Hey Sage, what is the weather") ||
-		strings.Contains(message, "What is the weather") ||
+		strings.Contains(message, "what's the weather") ||
+		strings.Contains(message, "what is the weather") ||
 		strings.Contains(message, "What is the weather like") ||
 		strings.Contains(message, "What do you think about today's weather") ||
 		strings.Contains(message, "What is the weather like today") ||
@@ -311,4 +315,9 @@ func triggerImageGeneration(message string) bool {
 	return strings.Contains(message, "Image") || strings.Contains(message, "image") ||
 		strings.Contains(message, "photo") || strings.Contains(message, "Photo") ||
 		strings.Contains(message, "Generate") || strings.Contains(message, "Generate Image")
+}
+
+func triggerProgramRun(message string) bool {
+	return strings.Contains(message, "run program") ||
+		strings.Contains(message, "open program")
 }

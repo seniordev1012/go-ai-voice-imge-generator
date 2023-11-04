@@ -1,7 +1,10 @@
 package main
 
 import (
+	"aigen/aigenRest"
 	"fmt"
+	"log"
+	"os"
 	"os/exec"
 )
 
@@ -26,6 +29,22 @@ func SetupScripts() {
 func RunBashScript(shellScript string) bool {
 	cmd2 := exec.Command("bash", shellScript)
 	if err := cmd2.Run(); err != nil {
+		fmt.Println("Error running Bash Script:", err)
+		return true
+	}
+	return false
+}
+
+// RunProgram
+func RunProgram(command string) bool {
+	log.Println(command, "Passed command")
+	aigenRest.SendNotificationNow(fmt.Sprintf("Opening %s", command))
+	// Execute the program
+	cmd := exec.Command(command)
+	cmd.Stdout = os.Stdout
+	cmd.Stderr = os.Stderr
+
+	if err := cmd.Run(); err != nil {
 		fmt.Println("Error running Bash Script:", err)
 		return true
 	}
