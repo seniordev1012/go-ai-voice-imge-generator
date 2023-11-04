@@ -36,14 +36,7 @@ const WeatherReport = "\nHere's a detailed weather breakdown for '  \"Location n
 // The isUser parameter determines if the message is from the user or the bot
 // If the message is from the user, the bubble will be on the right side of the chat window
 func addChatBubble(box *fyne.Container, message string, isUser bool) {
-	label := widget.NewButton(textHandler.SeparateLines(message), func() {
-		log.Printf("content to copy to clipboard is %s", message)
-		err := clipboard.WriteAll(message)
-		if err != nil {
-			log.Println(err)
-		}
-		aigenRest.SendNotificationNow("Content Copied To Clipboard")
-	})
+	label := widget.NewButton(textHandler.SeparateLines(message), saveForLater(message))
 	//avatarImg, _ := chatAvatars()
 	//Check for message in db
 	//If message is in db, display the message
@@ -104,13 +97,46 @@ func addChatBubble(box *fyne.Container, message string, isUser bool) {
 	container.NewScroll(box).SetMinSize(fyne.NewSize(100, 100))
 }
 
+func saveForLater(message string) func() {
+	return func() {
+		log.Printf("content to copy to clipboard is %s", message)
+		err := clipboard.WriteAll(message)
+		if err != nil {
+			log.Println(err)
+		}
+		aigenRest.SendNotificationNow("Content Copied To Clipboard")
+	}
+}
+
 // displayConvo displays the conversation in the chat box
 // The message is the text to be displayed
 func addMediaChatBubble(box *fyne.Container, message string, isUser bool) {
-	label := widget.NewLabel("Sage: AI Generated Image......From Prompt")
+	label := widget.NewButton("Sage: AI Generated Image......From Prompt", nil)
 	//avatarImg, _ := chatAvatars()
 	//Check for message in db
 	//If message is in db, display the message
+	label.OnTapped = func() {
+		saveForLater(message)
+		myApp := fyne.CurrentApp()
+		imageDialog := myApp.NewWindow("View Image")
+
+		// Load your image into an image object
+		image := canvas.NewImageFromFile(message)
+
+		// Create a content container for the image
+		content := widget.NewCard(message, message, image)
+		image.FillMode = canvas.ImageFillStretch
+		imageDialog.Resize(fyne.NewSize(1200, 1200))
+		imageDialog.CenterOnScreen()
+		imageDialog.Icon()
+		imageDialog.SetTitle("AI Generated Image")
+		content.Resize(fyne.NewSize(960, 540))
+		imageDialog.Show()
+		imageDialog.FullScreen()
+		// Set the window content to the image container
+		imageDialog.SetContent(content)
+
+	}
 	var messageCard *widget.Card
 	image := canvas.NewImageFromFile(message)
 	image.FillMode = canvas.ImageFillStretch
@@ -120,23 +146,19 @@ func addMediaChatBubble(box *fyne.Container, message string, isUser bool) {
 
 	messageCard = widget.NewCard("", "", label)
 	messageCard.Image = image
+	messageCard.SetImage(image)
 	messageCard.Size()
 	messageCard.CreateRenderer()
 	messageCard.Refresh()
 
 	if isUser {
-
 		box.Add(container.NewHBox(layout.NewSpacer(), messageCard)) //avatarImg,
-
 	} else {
-
 		box.Add(container.NewHBox(
 			//botAvatarImg,
 			messageCard, layout.NewSpacer()))
-
 	}
 	container.NewScroll(box).SetMinSize(fyne.NewSize(100, 100))
-
 }
 
 func sendButton(inputBox *widget.Entry, tab1 *fyne.Container) *widget.Button {
