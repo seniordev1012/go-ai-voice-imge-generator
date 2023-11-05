@@ -2,7 +2,7 @@ package main
 
 import "fyne.io/fyne/v2"
 
-var windowSize = fyne.NewSize(960, 540)
+var windowSize = fyne.NewSize(1200, 1200)
 var mainTitle = "Sage"
 
 // No Hate After All, Just Love, Just Love,Bye.

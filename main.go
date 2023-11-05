@@ -25,11 +25,11 @@ func main() {
 	tabs, inputBoxContainer := mainApp(mapungubwe)
 	window := mapungubwe.NewWindow(aigenUi.MainTitle)
 	window.SetIcon(theme.MailAttachmentIcon())
-	window.SetFixedSize(true)
+	window.SetFixedSize(false)
 
 	window.CenterOnScreen()
 	window.Resize(aigenUi.WindowSize)
-	window.SetPadded(false)
+	window.SetPadded(true)
 	scrollApp := container.NewScroll(tabs)
 
 	window.SetContent(container.NewBorder(nil, inputBoxContainer, nil, nil, scrollApp))

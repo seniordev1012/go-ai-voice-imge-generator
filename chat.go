@@ -117,24 +117,7 @@ func addMediaChatBubble(box *fyne.Container, message string, isUser bool) {
 	//If message is in db, display the message
 	label.OnTapped = func() {
 		saveForLater(message)
-		myApp := fyne.CurrentApp()
-		imageDialog := myApp.NewWindow("View Image")
-
-		// Load your image into an image object
-		image := canvas.NewImageFromFile(message)
-
-		// Create a content container for the image
-		content := widget.NewCard(message, message, image)
-		image.FillMode = canvas.ImageFillStretch
-		imageDialog.Resize(fyne.NewSize(1200, 1200))
-		imageDialog.CenterOnScreen()
-		imageDialog.Icon()
-		imageDialog.SetTitle("AI Generated Image")
-		content.Resize(fyne.NewSize(960, 540))
-		imageDialog.Show()
-		imageDialog.FullScreen()
-		// Set the window content to the image container
-		imageDialog.SetContent(content)
+		newImageViewWindow(message)
 
 	}
 	var messageCard *widget.Card
@@ -159,6 +142,27 @@ func addMediaChatBubble(box *fyne.Container, message string, isUser bool) {
 			messageCard, layout.NewSpacer()))
 	}
 	container.NewScroll(box).SetMinSize(fyne.NewSize(100, 100))
+}
+
+func newImageViewWindow(message string) {
+	myApp := fyne.CurrentApp()
+	imageDialog := myApp.NewWindow("View Image")
+
+	// Load your image into an image object
+	image := canvas.NewImageFromFile(message)
+
+	// Create a content container for the image
+	content := widget.NewCard(message, message, image)
+	image.FillMode = canvas.ImageFillStretch
+	imageDialog.Resize(fyne.NewSize(1200, 1200))
+	imageDialog.CenterOnScreen()
+	imageDialog.Icon()
+	imageDialog.SetTitle("AI Generated Image")
+	content.Resize(fyne.NewSize(960, 540))
+	imageDialog.Show()
+	imageDialog.FullScreen()
+	// Set the window content to the image container
+	imageDialog.SetContent(content)
 }
 
 func sendButton(inputBox *widget.Entry, tab1 *fyne.Container) *widget.Button {
@@ -229,23 +233,49 @@ Upload image to platform , this is an attempt to have the ability
 to send images to a model and have data brought back to the chat ui and have user interact with it
 */
 func imageUploadInput(inputBox *widget.Entry, tab1 *fyne.Container) *widget.Button {
-	// Create a voice chat button for sending voice messages
-	voiceChatButton := widget.NewButtonWithIcon("Upload image", theme.MailAttachmentIcon(), func() {
-		//Fill in body for this part right here
+	// Create an "Upload Image" button
+	uploadImageButton := widget.NewButtonWithIcon("Upload Image", theme.MailAttachmentIcon(), func() {
+		// Implement the image upload functionality here
+		filePath := OpenFile()
+		if filePath != "" {
+			// You can perform further actions here, like displaying the image or saving the file path
+			// For example:
+			// image := canvas.NewImageFromFile(filePath)
+			// tab1.Add(widget.NewLabel("Image path: " + filePath))
+			// tab1.Add(container.NewCenter(image))
+		}
 	})
-	voiceChatButton.Importance = widget.WarningImportance
-	voiceChatButton.Alignment = widget.ButtonAlignCenter
 
-	voiceChatButton.Refresh()
-	voiceChatButton.Visible()
-	voiceChatButton.OnTapped = func() {
+	uploadImageButton.Importance = widget.WarningImportance
+	uploadImageButton.Alignment = widget.ButtonAlignCenter
 
+	uploadImageButton.Refresh()
+	uploadImageButton.Show()
+	uploadImageButton.OnTapped = func() {
+		// Add any additional actions you want to perform when the button is tapped
 		inputBox.Keyboard()
-		log.Println("Media upload button was pressed let us check was is happening")
+		log.Println("Upload Image button was pressed. Checking what is happening...")
 	}
 	inputBox.Show()
 
-	return voiceChatButton
+	return uploadImageButton
+}
+
+func OpenFile() string {
+	fileDialog := widget.NewEntry()
+	fileDialog.MultiLine = false
+	fileDialog.Text = "Select an image file..."
+	fileDialog.OnChanged = func(text string) {
+		// Placeholder text, no action needed
+	}
+	widget.NewForm(widget.NewFormItem("Select Image", fileDialog))
+
+	// Wait for file selection
+	filePath := fileDialog.Text
+	if filePath == "Select an image file..." {
+		return ""
+	}
+	return filePath
 }
 func recordingError(err error) bool {
 	if err != nil {
@@ -313,13 +343,15 @@ func botMessages(messageCall string, err error, tab1 *fyne.Container, contentTyp
 
 		//Check if message length is "platform" playable
 		if len(messageCall) > 0 {
+			if getAudioSettings() {
+				log.Println(getAudioSettings())
+				sendAudio, _ := pressPlayAudio(messageCall)
 
-			sendAudio, _ := pressPlayAudio(messageCall)
-
-			if sendAudio != true {
-				log.Printf("Error sending audio: %v", sendAudio)
+				if sendAudio != true {
+					log.Printf("Error sending audio: %v", sendAudio)
+				}
 			}
-			addChatBubble(tab1, "Bot: "+messageCall, false)
+			addChatBubble(tab1, "Sage:Sage:"+messageCall, false)
 		}
 	}
 
@@ -331,7 +363,6 @@ func botMessages(messageCall string, err error, tab1 *fyne.Container, contentTyp
 }
 
 func userMessages(message string, tab1 *fyne.Container) {
-
 	addChatBubble(tab1, "YOU: "+message, true)
 }
 
