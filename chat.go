@@ -4,6 +4,7 @@ import (
 	"aigen/aigenAudioAutoPlay"
 	"aigen/aigenRecorder"
 	"aigen/aigenRest"
+	"aigen/aigenUi"
 	"aigen/textHandler"
 	"fmt"
 	"fyne.io/fyne/v2"
@@ -14,6 +15,7 @@ import (
 	"fyne.io/fyne/v2/widget"
 	"github.com/atotto/clipboard"
 	"log"
+	"os"
 	"strings"
 )
 
@@ -325,6 +327,7 @@ func displayConvo(message string, tab1 *fyne.Container, inputBox *widget.Entry, 
 		} else if triggerWeatherInfo(message) {
 			weatherDetailsFineTune := fineTuneWeather()
 			defaultCallConverseLogic(weatherDetailsFineTune, tab1)
+		} else if triggerSettings(message) {
 			//} else if triggerProgramRun(message) {
 			//	message = strings.Replace(message, "run program", "", -1)
 			//	RunProgram(message)
@@ -332,6 +335,23 @@ func displayConvo(message string, tab1 *fyne.Container, inputBox *widget.Entry, 
 			defaultCallConverseLogic(message, tab1)
 		}
 	}
+}
+
+func triggerSettings(message string) bool {
+	if strings.Contains(message, "triggerSettings") {
+		aigenUi.AudioSettings(1)
+		return true
+	}
+	if strings.Contains(message, "TurnVoiceOff") {
+		aigenUi.AudioSettings(0)
+		return true
+	}
+	if strings.Contains(message, "Shutdown Platform") ||
+		strings.Contains(message, "SHUTDOWN") {
+		os.Exit(0)
+		return true
+	}
+	return false
 }
 
 // botMessages function to display messages from the bot
@@ -351,7 +371,7 @@ func botMessages(messageCall string, err error, tab1 *fyne.Container, contentTyp
 					log.Printf("Error sending audio: %v", sendAudio)
 				}
 			}
-			addChatBubble(tab1, "Sage:Sage:"+messageCall, false)
+			addChatBubble(tab1, "Sage:"+messageCall, false)
 		}
 	}
 

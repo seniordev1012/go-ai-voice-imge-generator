@@ -10,7 +10,7 @@ require (
 	github.com/hajimehoshi/go-mp3 v0.3.4
 	github.com/mattn/go-sqlite3 v1.14.16
 	github.com/sashabaranov/go-openai v1.5.2
-	github.com/youpy/go-wav v0.3.2
+	github.com/youpy/go-wav v0.3.0
 	github.com/zenwerk/go-wave v0.0.0-20230421164623-20cf3f50c337
 )
 

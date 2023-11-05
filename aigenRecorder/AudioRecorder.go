@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/gen2brain/malgo"
 	wave "github.com/zenwerk/go-wave"
+	"log"
 	"os"
 	"time"
 )
@@ -19,7 +20,7 @@ func VoiceRecorder() (string, error) {
 	})
 	if err != nil {
 		fmt.Println(err)
-		os.Exit(1)
+		os.Exit(0)
 	}
 	defer func() {
 		_ = ctx.Uninit()
@@ -51,13 +52,13 @@ func VoiceRecorder() (string, error) {
 	device, err := malgo.InitDevice(ctx.Context, deviceConfig, captureCallbacks)
 	if err != nil {
 		fmt.Println(err)
-		os.Exit(1)
+		os.Exit(0)
 	}
 
 	err = device.Start()
 	if err != nil {
 		fmt.Println(err)
-		os.Exit(1)
+		os.Exit(0)
 	}
 
 	// Record for 10 seconds
@@ -66,9 +67,14 @@ func VoiceRecorder() (string, error) {
 	device.Uninit()
 	filePathName := randomName()
 	f, err := os.Create(filePathName)
-	defer f.Close()
+	defer func(f *os.File) {
+		err := f.Close()
+		if err != nil {
+			log.Println(err)
+		}
+	}(f)
 	if err != nil {
-		panic(err)
+		log.Println(err)
 	}
 	param := wave.WriterParam{
 		Out:           f,
@@ -81,12 +87,17 @@ func VoiceRecorder() (string, error) {
 	_, err = w.Write(pCapturedSamples)
 	if err != nil {
 		fmt.Println(err)
-		os.Exit(1)
+		os.Exit(0)
 	}
 
 	fmt.Println("Recording saved to", filePathName)
 
-	defer w.Close()
+	defer func(w *wave.Writer) {
+		err := w.Close()
+		if err != nil {
+			log.Println(err)
+		}
+	}(w)
 
 	return filePathName, nil
 }
