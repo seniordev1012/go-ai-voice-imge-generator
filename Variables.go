@@ -7,6 +7,6 @@ package main
 // I REPEAT, DO NOT LEAK YOUR KEYS.
 // NOW REPEAT WITH ME, "I WILL NOT LEAK MY TOKENS"!
 const (
-	openKeys   = "OPENAI"
-	speechKeys = "AZURE"
+	openKeys   = "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"
+	speechKeys = "69fffe07f90a4505a58dc14425dff6a8"
 )
