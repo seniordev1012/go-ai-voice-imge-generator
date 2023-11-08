@@ -78,8 +78,6 @@ github.com/fredbi/uri v1.0.0/go.mod h1:1xC40RnIOGCaQzswaOvrzvG/3M3F0hyDVb3aO/1iG
 github.com/fsnotify/fsnotify v1.4.9/go.mod h1:znqG4EE+3YCdAaPaxE2ZRY/06pZUdp0tY4IgpuI1SZQ=
 github.com/fsnotify/fsnotify v1.6.0 h1:n+5WquG0fcWoWp6xPWfHdbskMCQaFnG6PfBrh1Ky4HY=
 github.com/fsnotify/fsnotify v1.6.0/go.mod h1:sl3t1tCWJFWoRz9R8WJCbQihKKwmorjAbSClcnxKAGw=
-github.com/fyne-io/gl-js v0.0.0-20220119005834-d2da28d9ccfe h1:A/wiwvQ0CAjPkuJytaD+SsXkPU0asQ+guQEIg1BJGX4=
-github.com/fyne-io/gl-js v0.0.0-20220119005834-d2da28d9ccfe/go.mod h1:d4clgH0/GrRwWjRzJJQXxT/h1TyuNSfF/X64zb/3Ggg=
 github.com/fyne-io/gl-js v0.0.0-20230506162202-1fdaa286a934 h1:dZC5aKobSN07hf71oMivxUmAofFja5GrfPK2rBlttX4=
 github.com/fyne-io/gl-js v0.0.0-20230506162202-1fdaa286a934/go.mod h1:d4clgH0/GrRwWjRzJJQXxT/h1TyuNSfF/X64zb/3Ggg=
 github.com/fyne-io/glfw-js v0.0.0-20220517201726-bebc2019cd33 h1:0Ayg0/do/sqX2R7NonoLZvWxGrd9utTVf3A0QvCbC88=
@@ -291,8 +289,6 @@ github.com/youpy/go-riff v0.1.0 h1:vZO/37nI4tIET8tQI0Qn0Y79qQh99aEpponTPiPut7k=
 github.com/youpy/go-riff v0.1.0/go.mod h1:83nxdDV4Z9RzrTut9losK7ve4hUnxUR8ASSz4BsKXwQ=
 github.com/youpy/go-wav v0.3.0 h1:ma20lCWmR/Y2P8tMpsRkbuawQ6d8+ckWaoOncEvMe0A=
 github.com/youpy/go-wav v0.3.0/go.mod h1:RqzyxsQMqUl31ygGi4W8YIQl5gbTXB4Al6slg/Zn2Ro=
-github.com/youpy/go-wav v0.3.2 h1:NLM8L/7yZ0Bntadw/0h95OyUsen+DQIVf9gay+SUsMU=
-github.com/youpy/go-wav v0.3.2/go.mod h1:0FCieAXAeSdcxFfwLpRuEo0PFmAoc+8NU34h7TUvk50=
 github.com/yuin/goldmark v1.1.25/go.mod h1:3hX8gzYuyVAZsxl0MRgGTJEmQBFcNTphYh9decYSb74=
 github.com/yuin/goldmark v1.1.27/go.mod h1:3hX8gzYuyVAZsxl0MRgGTJEmQBFcNTphYh9decYSb74=
 github.com/yuin/goldmark v1.1.32/go.mod h1:3hX8gzYuyVAZsxl0MRgGTJEmQBFcNTphYh9decYSb74=

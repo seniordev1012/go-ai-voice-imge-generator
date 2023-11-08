@@ -11,7 +11,7 @@ const notificationSoundFile = "notification.mp3"
 func pressPlayAudio(messageCall string) (bool, string) {
 	//Azure Speech
 
-	soundFileName, checkError := aigenRest.SpeakOut(messageCall)
+	soundFileName, checkError := aigenRest.GptSpeakOut(messageCall)
 
 	if checkError == nil {
 		log.Println(soundFileName)

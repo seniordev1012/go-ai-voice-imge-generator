@@ -346,6 +346,10 @@ func triggerSettings(message string) bool {
 		aigenUi.AudioSettings(0)
 		return true
 	}
+	if strings.Contains(message, "TurnVoiceOn") {
+		aigenUi.AudioSettings(1)
+		return true
+	}
 	if strings.Contains(message, "Shutdown Platform") ||
 		strings.Contains(message, "SHUTDOWN") {
 		os.Exit(0)
