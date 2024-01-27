@@ -15,7 +15,6 @@ import (
 
 type Response struct {
 	Text string `json:"text"`
-	// add other fields as needed
 }
 
 func Whisper(pathToFind string) string {

@@ -21,6 +21,7 @@ func main() {
 
 	mapungubwe.Settings().SetTheme(theme.DarkTheme())
 	aigenUi.SwitchUp(mapungubwe)
+	playWelcomeSound()
 
 	tabs, inputBoxContainer := mainApp(mapungubwe)
 	window := mapungubwe.NewWindow(aigenUi.MainTitle)
