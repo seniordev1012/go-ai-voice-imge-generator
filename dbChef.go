@@ -133,6 +133,7 @@ func createSettingsDatabase() error {
 			platform TEXT DEFAULT NULL,
 			audioOnly INTEGER DEFAULT 1,
 			theme TEXT DEFAULT 'auto',
+			voice TEXT DEFAULT 'AZURESPEECH',
 			language TEXT DEFAULT NULL,
 			createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 			accessToken TEXT DEFAULT NULL,

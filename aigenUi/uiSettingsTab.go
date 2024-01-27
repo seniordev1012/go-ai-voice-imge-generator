@@ -43,6 +43,19 @@ func AudioSettingsTab() *container.TabItem {
 	return audioSettingsTab
 }
 
+func DualVoiceSettings() *container.TabItem {
+	DualVoice := container.NewTabItem("Dual Speech Settings",
+		widget.NewSelect([]string{"AzureSpeech", "OpenAI"}, func(value string) {
+			log.Println("Select set to", value)
+			//UpdateSpeechProvider(value)
+		}))
+	return DualVoice
+}
+
+func UpdateSpeechProvider(value string) {
+	ChangeVoice(value)
+}
+
 func AudioSettings(soundIsOn int) {
 	ChangeSetting(soundIsOn)
 }

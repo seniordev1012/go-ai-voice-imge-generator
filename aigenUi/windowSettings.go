@@ -1,6 +1,8 @@
 package aigenUi
 
-import "fyne.io/fyne/v2"
+import (
+	"fyne.io/fyne/v2"
+)
 
 var WindowSize = fyne.NewSize(1200, 1200)
 var MainTitle = "Sage"
