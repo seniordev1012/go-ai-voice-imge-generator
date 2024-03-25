@@ -16,6 +16,8 @@ elif [ "$OSTYPE" == "linux-gnu" ]; then
     sudo apt-get install libssl-dev libasound2-dev
     sudo apt-get install libasound2
     sudo apt-get install libgl1-mesa-dev
+    sudo apt-get install libgl1-mesa-dev xorg-dev
+    sudo apt-get install libxrandr-dev
 elif [ "$OSTYPE" == "msys" ]; then
     echo "Windows"
     # install sound library
