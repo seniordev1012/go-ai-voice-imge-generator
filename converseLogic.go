@@ -2,8 +2,9 @@ package main
 
 import (
 	"aigen/aigenRest"
-	"fyne.io/fyne/v2"
 	"log"
+
+	"fyne.io/fyne/v2"
 )
 
 // Default logic to handle communication with GPT
@@ -11,7 +12,7 @@ func defaultCallConverseLogic(message string, tab1 *fyne.Container) {
 
 	//message = longTermMemory(message)
 
-	messageCall, err := aigenRest.MakeApiCall(message)
+	messageCall, err := aigenRest.CallClaude(message)
 	limit := 120
 	notificationMessage := messageCall
 

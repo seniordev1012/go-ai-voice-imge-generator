@@ -1,12 +1,13 @@
 module aigen
 
-go 1.20
+go 1.18
 
 require (
 	fyne.io/fyne/v2 v2.4.1
 	github.com/atotto/clipboard v0.1.4
 	github.com/gen2brain/malgo v0.11.10
 	github.com/go-sql-driver/mysql v1.7.0
+	github.com/gordonklaus/portaudio v0.0.0-20230709114228-aafa478834f5
 	github.com/hajimehoshi/go-mp3 v0.3.4
 	github.com/mattn/go-sqlite3 v1.14.16
 	github.com/sashabaranov/go-openai v1.5.2

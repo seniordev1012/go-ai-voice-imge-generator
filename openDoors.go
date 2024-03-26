@@ -8,4 +8,5 @@ func setUpPlatformEnvVars() {
 	SetEnvironmentVariable("OPENAI", openKeys)
 	SetEnvironmentVariable("SPEECH_KEY", speechKeys)
 	SetEnvironmentVariable("OPENWEATHER", openWeatherKeys)
+	SetEnvironmentVariable("ANTHROPIC", anthropicKeys)
 }
