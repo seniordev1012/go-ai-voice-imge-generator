@@ -13,7 +13,6 @@ func defaultCallConverseLogic(message string, tab1 *fyne.Container) {
 	model, err := getSelectedModel()
 	if err != nil {
 		log.Println(err)
-		return
 	}
 
 	var messageCall string

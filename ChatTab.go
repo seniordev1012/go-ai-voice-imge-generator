@@ -51,7 +51,7 @@ func ChatTab() (*fyne.Container, *container.TabItem) {
 		}
 	}
 
-	essentialsGen.StartUpCall(chat)
+	essentialsGen.StartUpCall()
 
 	return chat, aiGen
 }

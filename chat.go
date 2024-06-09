@@ -373,7 +373,7 @@ func botMessages(messageCall string, err error, tab1 *fyne.Container, contentTyp
 				log.Println(getAudioSettings())
 				sendAudio, _ := pressPlayAudio(messageCall)
 
-				if sendAudio != true {
+				if !sendAudio {
 					log.Printf("Error sending audio: %v", sendAudio)
 				}
 			}

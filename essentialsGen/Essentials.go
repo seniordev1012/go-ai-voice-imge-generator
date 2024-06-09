@@ -1,11 +1,7 @@
 package essentialsGen
 
-import (
-	"fyne.io/fyne/v2"
-)
-
 // StartUpCall This is a function that is called when the chat tab is opened
-func StartUpCall(chat *fyne.Container) {
+func StartUpCall() {
 	//messageCall, checkError := makeApiCall()
 	//
 	//addChatBubble(chat, "YOU: I am looking for a quote", false)

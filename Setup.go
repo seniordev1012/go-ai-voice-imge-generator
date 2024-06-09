@@ -26,49 +26,26 @@ func MigrationAssist() {
 	//CollectInstalledApps()
 }
 
-// dbInit Creates Required SQLite DBs for platform to function
-func dbInit() any {
-	extendBase := extensionsSource()
-	if extendBase != nil {
-		log.Println(extendBase)
-	}
-	masterBase := createMasterMessages()
-	if masterBase != nil {
-		log.Println(masterBase)
-	}
-	err := createGalleryDatabase()
-	if err != nil {
-		log.Println(err)
-	}
-	errs := createMessagesDatabase()
-	if errs != nil {
-		log.Println(errs)
-	}
-	userBase := createUserDatabase()
-	if userBase != nil {
-		log.Println(userBase)
-	}
-	settingsBase := createSettingsDatabase()
-	if settingsBase != nil {
-		log.Println(settingsBase)
-	}
-	mediaBase := createLocalMediaDatabase()
-	if mediaBase != nil {
-		log.Println(mediaBase)
-	}
-	activityBase := createProductivityDatabase()
-	if activityBase != nil {
-		log.Println(activityBase)
-	}
-	majorKeys := createKeyloggerDatabase()
-	if majorKeys != nil {
-		log.Printf("Error creating database: %v", majorKeys)
-	}
-	multiModels := createLLMSelectionDatabase()
-	if multiModels != nil {
-		log.Printf("Error creating database: %v", multiModels)
-	}
+type dbFunc func() error
 
+func executeDBFunc(fn dbFunc) {
+	if err := fn(); err != nil {
+		log.Printf("Error creating database: %v", err)
+	}
+}
+
+func dbInit() error {
+	executeDBFunc(extensionsSource)
+	executeDBFunc(createMasterMessages)
+	executeDBFunc(createGalleryDatabase)
+	executeDBFunc(createMessagesDatabase)
+	executeDBFunc(createUserDatabase)
+	executeDBFunc(createSettingsDatabase)
+	executeDBFunc(createLocalMediaDatabase)
+	executeDBFunc(createProductivityDatabase)
+	executeDBFunc(createKeyloggerDatabase)
+	executeDBFunc(createLLMSelectionDatabase)
+	executeDBFunc(createSpeechSelectionDatabase)
 	return nil
 }
 
@@ -79,7 +56,7 @@ func SetEnvironmentVariable(key string, tokenValue string) {
 	}
 }
 
-func CollectInstalledApps() {
+func _() {
 
 	// Open an SQLite database
 	db, err := sql.Open("sqlite3", "DB/installed_programs.db")

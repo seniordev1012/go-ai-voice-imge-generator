@@ -427,6 +427,38 @@ func createLLMSelectionDatabase() error {
 	return nil
 }
 
+func createSpeechSelectionDatabase() error {
+	// Open a connection to the database
+	db, err := sql.Open("sqlite3", "DB/speechSelection.db")
+	if err != nil {
+		return err
+	}
+	defer func(db *sql.DB) {
+		err := db.Close()
+		if err != nil {
+			log.Println(err)
+		}
+	}(db)
+
+	if db == nil {
+		log.Println("Speech Selection DB does not exist")
+	}
+	// Execute the SQL command to create the table
+	_, err = db.Exec(`
+				CREATE TABLE speechSelection (
+			id INTEGER PRIMARY KEY AUTOINCREMENT,
+			selection TEXT DEFAULT NULL,
+			created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+		)
+	`)
+	if err != nil {
+		return err
+	}
+	log.Printf("Speech Selection Database created successfully")
+
+	return nil
+}
+
 func getSelectedModel() (string, error) {
 	db, err := sql.Open("sqlite3", "DB/llmSelection.db")
 	if err != nil {

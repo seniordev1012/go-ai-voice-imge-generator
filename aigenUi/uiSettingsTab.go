@@ -37,7 +37,7 @@ func AudioSettingsTab() *container.TabItem {
 	audioSettingsTab := container.NewTabItem("Audio Settings", widget.NewAccordion(
 		widget.NewAccordionItem("Ai Voice Reply", widget.NewCheck("Audio Replies", func(OnandOff bool) {
 			//TODO: Add a function to toggle the audio replies
-			log.Printf("Audio Replies: %v", OnandOff)
+			log.Print("Audio Replies:", OnandOff)
 			var soundIsOn = 1
 			var soundIsOff = 0
 			if OnandOff {
@@ -97,7 +97,8 @@ func MultiSpeechModels() *widget.AccordionItem {
 	dualVoice := widget.NewAccordionItem(preselect,
 		widget.NewSelect([]string{"AzureSpeech", "OpenAI"}, func(value string) {
 			log.Println("Select set to", value)
-			UpdateSelectedModel(value)
+			ChangeVoice(value)
+			log.Println("Select set to speech model", value)
 		}))
 	return dualVoice
 }
@@ -166,13 +167,14 @@ func formButton(buttonText string, trigger string, formValue string, keysEntry *
 
 func formFields(placeHolder string, keysEntry *widget.Entry, apiTokens *widget.Button) *widget.Form {
 	form := &widget.Form{
-		Items: []*widget.FormItem{
-			{Text: placeHolder, Widget: keysEntry},
-		},
-		OnSubmit: apiTokens.OnTapped,
+		BaseWidget: widget.BaseWidget{},
+		Items:      []*widget.FormItem{{Text: placeHolder, Widget: keysEntry}},
+		OnSubmit:   apiTokens.OnTapped,
 		OnCancel: func() {
 			log.Println("Cancelled")
 		},
+		SubmitText: "",
+		CancelText: "",
 	}
 	return form
 }

@@ -3,6 +3,8 @@ package aigenRest
 import (
 	"encoding/json"
 	"fmt"
+	"io"
+	"log"
 	"net/http"
 	"strings"
 )
@@ -33,7 +35,12 @@ func CallOllama(message string) (string, error) {
 		fmt.Println(err)
 		return "", err
 	}
-	defer res.Body.Close()
+	defer func(Body io.ReadCloser) {
+		err := Body.Close()
+		if err != nil {
+			log.Println(err)
+		}
+	}(res.Body)
 
 	var response map[string]interface{}
 	err = json.NewDecoder(res.Body).Decode(&response)

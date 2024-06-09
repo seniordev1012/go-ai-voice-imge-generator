@@ -46,7 +46,7 @@ func ChangeVoice(provider string) {
 	}(db)
 
 	// Insert the keylogger into the database
-	_, err = db.Exec("INSERT INTO settings (speech_provider) VALUES (?)", provider)
+	_, err = db.Exec("INSERT INTO settings (selection) VALUES (?)", provider)
 	if err != nil {
 		log.Printf("Error inserting into database: %v", err)
 	}
@@ -66,7 +66,7 @@ func SelectedVoiceModel() (string, error) {
 	}(db)
 
 	var provider string
-	err = db.QueryRow("SELECT speech_provider FROM settings").Scan(&provider)
+	err = db.QueryRow("SELECT selection FROM settings").Scan(&provider)
 	if err != nil {
 		return "", err
 	}
