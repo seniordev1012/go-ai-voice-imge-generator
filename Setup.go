@@ -64,6 +64,11 @@ func dbInit() any {
 	if majorKeys != nil {
 		log.Printf("Error creating database: %v", majorKeys)
 	}
+	multiModels := createLLMSelectionDatabase()
+	if multiModels != nil {
+		log.Printf("Error creating database: %v", multiModels)
+	}
+
 	return nil
 }
 

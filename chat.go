@@ -7,6 +7,10 @@ import (
 	"aigen/aigenUi"
 	"aigen/textHandler"
 	"fmt"
+	"log"
+	"os"
+	"strings"
+
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/canvas"
 	"fyne.io/fyne/v2/container"
@@ -14,9 +18,6 @@ import (
 	"fyne.io/fyne/v2/theme"
 	"fyne.io/fyne/v2/widget"
 	"github.com/atotto/clipboard"
-	"log"
-	"os"
-	"strings"
 )
 
 const WeatherReport = "\nHere's a detailed weather breakdown for '  \"Location name\": \"\",':\n" +
@@ -328,6 +329,7 @@ func displayConvo(message string, tab1 *fyne.Container, inputBox *widget.Entry, 
 			weatherDetailsFineTune := fineTuneWeather()
 			defaultCallConverseLogic(weatherDetailsFineTune, tab1)
 		} else if triggerSettings(message) {
+			//UNCOMMENT THIS IF YOU WANT TO ALLOW THE MODEL TO RUN SYSTEM COMMANDS, TAKE CAUTION :)
 			//} else if triggerProgramRun(message) {
 			//	message = strings.Replace(message, "run program", "", -1)
 			//	RunProgram(message)

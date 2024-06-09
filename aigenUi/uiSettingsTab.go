@@ -2,12 +2,13 @@ package aigenUi
 
 import (
 	"aigen/aigenRest"
+	"log"
+	"os"
+
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/container"
 	"fyne.io/fyne/v2/theme"
 	"fyne.io/fyne/v2/widget"
-	"log"
-	"os"
 )
 
 const (
@@ -20,7 +21,14 @@ func GenSettings(mapungubwe fyne.App) *container.TabItem {
 		azureSpeechKeys()))
 	settingsTab.Icon = theme.SettingsIcon()
 	//use mapungubwe.Settings().SetTheme(theme.LightTheme())
-	mapungubwe.Settings().SetTheme(theme.DarkTheme())
+	mapungubwe.Storage()
+	return settingsTab
+}
+
+func MultiModelSettings(mapungubwe fyne.App) *container.TabItem {
+	settingsTab := container.NewTabItem("MultiModel Settings", widget.NewAccordion(MultiModels(), MultiSpeechModels()))
+	settingsTab.Icon = theme.SettingsIcon()
+	//use mapungubwe.Settings().SetTheme(theme.LightTheme())
 	mapungubwe.Storage()
 	return settingsTab
 }
@@ -52,6 +60,48 @@ func DualVoiceSettings() *container.TabItem {
 	return DualVoice
 }
 
+func MultiModels() *widget.AccordionItem {
+	selectedModel, err := GetSelectedModel()
+	if err != nil {
+		log.Println(err)
+	}
+
+	var preselect string
+	if selectedModel != "" {
+		preselect = selectedModel
+	} else {
+		preselect = "Select Chat Model"
+	}
+
+	dualVoice := widget.NewAccordionItem(preselect,
+		widget.NewSelect([]string{"OpenAI", "Claude", "Ollama"}, func(value string) {
+			log.Println("Select set to", value)
+			UpdateSelectedModel(value)
+		}))
+	return dualVoice
+}
+
+func MultiSpeechModels() *widget.AccordionItem {
+	selectedModel, err := SelectedVoiceModel()
+	if err != nil {
+		log.Println(err)
+	}
+
+	var preselect string
+	if selectedModel != "" {
+		preselect = selectedModel
+	} else {
+		preselect = "Select Speech Model"
+	}
+
+	dualVoice := widget.NewAccordionItem(preselect,
+		widget.NewSelect([]string{"AzureSpeech", "OpenAI"}, func(value string) {
+			log.Println("Select set to", value)
+			UpdateSelectedModel(value)
+		}))
+	return dualVoice
+}
+
 func UpdateSpeechProvider(value string) {
 	ChangeVoice(value)
 }
@@ -68,6 +118,8 @@ func azureSpeechKeys() *widget.AccordionItem {
 		"SPEECH_KEY")
 }
 
+// addToWatchList returns a new widget.AccordionItem that represents the "Add Watchlist" section in the UI.
+// It displays a label with the description "Add a new stock to the watchlist".
 func addToWatchList() *widget.AccordionItem {
 	return widget.NewAccordionItem("Add Watchlist", widget.NewLabel("Add a new stock to the watchlist"))
 }

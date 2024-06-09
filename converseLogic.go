@@ -9,10 +9,29 @@ import (
 
 // Default logic to handle communication with GPT
 func defaultCallConverseLogic(message string, tab1 *fyne.Container) {
-
 	//message = longTermMemory(message)
+	model, err := getSelectedModel()
+	if err != nil {
+		log.Println(err)
+		return
+	}
 
-	messageCall, err := aigenRest.CallClaude(message)
+	var messageCall string
+	var code error
+
+	switch model {
+	case "OpenAI", "":
+		messageCall, code = aigenRest.MakeApiCall(message)
+	case "Claude":
+		messageCall, code = aigenRest.CallClaude(message)
+	case "Ollama":
+		messageCall, code = aigenRest.CallOllama(message)
+	}
+
+	if code != nil {
+		log.Printf("Error making API call: %v", code)
+	}
+
 	limit := 120
 	notificationMessage := messageCall
 

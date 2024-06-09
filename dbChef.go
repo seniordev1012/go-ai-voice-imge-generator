@@ -2,8 +2,9 @@ package main
 
 import (
 	"database/sql"
-	_ "github.com/mattn/go-sqlite3"
 	"log"
+
+	_ "github.com/mattn/go-sqlite3"
 )
 
 // Messages Database
@@ -392,4 +393,55 @@ func extensionsSource() error {
 	log.Printf("Extensions Database created successfully")
 
 	return nil
+}
+
+func createLLMSelectionDatabase() error {
+	// Open a connection to the database
+	db, err := sql.Open("sqlite3", "DB/llmSelection.db")
+	if err != nil {
+		return err
+	}
+	defer func(db *sql.DB) {
+		err := db.Close()
+		if err != nil {
+			log.Println(err)
+		}
+	}(db)
+
+	if db == nil {
+		log.Println("LLM Selection DB does not exist")
+	}
+	// Execute the SQL command to create the table
+	_, err = db.Exec(`
+				CREATE TABLE llmSelection (
+			id INTEGER PRIMARY KEY AUTOINCREMENT,
+			selection TEXT DEFAULT NULL,
+			created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+		)
+	`)
+	if err != nil {
+		return err
+	}
+	log.Printf("LLM Selection Database created successfully")
+
+	return nil
+}
+
+func getSelectedModel() (string, error) {
+	db, err := sql.Open("sqlite3", "DB/llmSelection.db")
+	if err != nil {
+		return "", err
+	}
+	defer func(db *sql.DB) {
+		err := db.Close()
+		if err != nil {
+			log.Println(err)
+		}
+	}(db)
+	var selection string
+	err = db.QueryRow("SELECT selection FROM llmSelection").Scan(&selection)
+	if err != nil {
+		return "", err
+	}
+	return selection, nil
 }

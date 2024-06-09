@@ -9,6 +9,7 @@ const (
 	MessagesDB = "DB/messages.db"
 	SettingsDB = "DB/settings.db"
 	KeyboardDB = "DB/keylogger.db"
+	LLMDB      = "DB/llmSelection.db"
 )
 
 func ChangeSetting(soundIsOn int) {
@@ -51,6 +52,27 @@ func ChangeVoice(provider string) {
 	}
 }
 
+func SelectedVoiceModel() (string, error) {
+	db, err := sql.Open("sqlite3", SettingsDB)
+	if err != nil {
+		return "", err
+	}
+	defer func(db *sql.DB) {
+		err := db.Close()
+		if err != nil {
+			log.Println(err)
+		}
+
+	}(db)
+
+	var provider string
+	err = db.QueryRow("SELECT speech_provider FROM settings").Scan(&provider)
+	if err != nil {
+		return "", err
+	}
+	return provider, nil
+}
+
 func SoundIsOffON(soundIsOff int) {
 	db, err := sql.Open("sqlite3", SettingsDB)
 	if err != nil {
@@ -69,4 +91,41 @@ func SoundIsOffON(soundIsOff int) {
 	if err != nil {
 		log.Printf("Error inserting into database: %v", err)
 	}
+}
+
+func UpdateSelectedModel(selection string) error {
+	db, err := sql.Open("sqlite3", LLMDB)
+	if err != nil {
+		return err
+	}
+	defer func(db *sql.DB) {
+		err := db.Close()
+		if err != nil {
+			log.Println(err)
+		}
+	}(db)
+	_, err = db.Exec("UPDATE llmSelection SET selection = ? WHERE id = 1", selection)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func GetSelectedModel() (string, error) {
+	db, err := sql.Open("sqlite3", LLMDB)
+	if err != nil {
+		return "", err
+	}
+	defer func(db *sql.DB) {
+		err := db.Close()
+		if err != nil {
+			log.Println(err)
+		}
+	}(db)
+	var selection string
+	err = db.QueryRow("SELECT selection FROM llmSelection").Scan(&selection)
+	if err != nil {
+		return "", err
+	}
+	return selection, nil
 }
